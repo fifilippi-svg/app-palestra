@@ -62,8 +62,12 @@
   .acc-inner{padding:2px 14px 16px;}
   .goal{font-size:16px; color:var(--mute); margin-bottom:12px;}
 
-  .day-tabs{display:flex; gap:6px; margin:10px 0 12px; flex-wrap:wrap;}
-  .day-tab{font-family:var(--mono); font-size:14px; text-transform:uppercase; padding:10px 16px; border-radius:20px; border:1px solid var(--line); color:var(--mute); cursor:pointer; background:transparent;}
+  .day-tabs{display:flex; gap:8px; margin:12px 0 14px;}
+  .day-tab{flex:1 1 0; min-width:0; min-height:64px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+    font-family:var(--mono); text-transform:uppercase; padding:8px 6px; border-radius:8px; border:1.5px solid var(--line);
+    color:var(--mute); cursor:pointer; background:var(--surface2); line-height:1.15;}
+  .day-tab .dl{font-size:26px; font-weight:700;}
+  .day-tab .ds{font-size:12px; text-align:center;}
   .day-tab.active{background:var(--accent); color:var(--bg); border-color:var(--accent); font-weight:700;}
   .day-panel{display:none;}
   .day-panel.active{display:block;}
@@ -74,17 +78,17 @@
   .exlog .extarget{font-family:var(--mono); font-size:14px; color:var(--accent2); white-space:nowrap;}
   .exlog .exnote{font-size:14px; color:var(--warn); margin-top:2px;}
   .exlog .exlast{font-family:var(--mono); font-size:14px; color:var(--mute); margin-top:6px;}
-  .exlog .exrow{display:flex; gap:10px; margin-top:10px; align-items:center; flex-wrap:wrap;}
+  .exlog .exrow{display:flex; gap:8px; margin-top:10px; align-items:center; flex-wrap:nowrap;}
   .exlog input{
-    width:88px; min-height:52px; background:var(--bg); border:1.5px solid var(--line); border-radius:8px;
+    flex:1 1 0; min-width:0; width:auto; height:56px; background:var(--bg); border:1.5px solid var(--line); border-radius:8px;
     color:var(--text); font-family:var(--mono); font-size:19px; padding:10px 8px; text-align:center;
   }
   .exlog input:focus{outline:1px solid var(--accent); border-color:var(--accent);}
-  .exlog .unit{font-family:var(--mono); font-size:13px; color:var(--mute);}
+  .exlog .unit{font-family:var(--mono); font-size:13px; color:var(--mute); flex:0 0 auto;}
   .exlog button.logbtn{
-    margin-left:auto; min-height:52px; background:var(--accent); color:var(--bg); border:none; border-radius:8px;
-    font-family:var(--mono); font-size:15px; text-transform:uppercase; font-weight:700;
-    padding:10px 20px; cursor:pointer;
+    flex:0 0 56px; width:56px; height:56px; background:var(--accent); color:var(--bg); border:none; border-radius:8px;
+    font-family:var(--mono); font-size:17px; font-weight:700;
+    padding:0; cursor:pointer; display:flex; align-items:center; justify-content:center;
   }
   .exlog button.logbtn:active{opacity:.8;}
   .exlog button.histbtn{
@@ -226,7 +230,7 @@
 
 <section id="planSection">
   <h2><span class="n">04</span>Blocchi — allenati e registra</h2>
-  <p class="sub-note">Apri il blocco del periodo attuale → tocca il giorno (A/B/C) → inserisci peso e reps e premi "Registra" → poi premi "⏱ Timer recupero" per far partire il conto alla rovescia sul tempo previsto: a fine recupero senti un beep (e il telefono vibra, se supportato). Mentre il timer corre lo schermo resta acceso. Gli esercizi registrati oggi diventano <b style="color:var(--accent2)">verdi con ✓</b>.</p>
+  <p class="sub-note">Apri il blocco del periodo attuale → tocca il giorno (A/B/C) → inserisci peso e reps e premi "Rec" → poi premi "⏱ Timer recupero" per far partire il conto alla rovescia sul tempo previsto: a fine recupero senti un beep (e il telefono vibra, se supportato). Mentre il timer corre lo schermo resta acceso. Gli esercizi registrati oggi diventano <b style="color:var(--accent2)">verdi con ✓</b>.</p>
   <div id="accWrap"></div>
 </section>
 
@@ -439,7 +443,7 @@ PLAN.forEach((block, bi)=>{
     <div class="acc-body"><div class="acc-inner">
       <p class="goal">${block.goal}</p>
       <div class="day-tabs">
-        ${block.days.map((d,di)=>`<button class="day-tab ${di===0?'active':''}" onclick="switchDay('${block.id}',${di},this)">${d.label}</button>`).join('')}
+        ${block.days.map((d,di)=>{const [dl, ...rest] = d.label.split(' · '); return `<button class="day-tab ${di===0?'active':''}" onclick="switchDay('${block.id}',${di},this)"><span class="dl">${dl}</span>${rest.length?`<span class="ds">${rest.join(' · ')}</span>`:''}</button>`;}).join('')}
       </div>
       ${block.days.map((d,di)=>`
         <div class="day-panel ${di===0?'active':''}" id="panel-${block.id}-${di}">
@@ -458,7 +462,7 @@ PLAN.forEach((block, bi)=>{
                 <span class="unit">kg</span>
                 <input type="number" inputmode="numeric" placeholder="reps" data-role="rp">
                 <span class="unit">reps</span>
-                <button class="logbtn" onclick="logExercise('${block.id}','${d.id}',${ei})">Registra</button>
+                <button class="logbtn" onclick="logExercise('${block.id}','${d.id}',${ei})" aria-label="Registra">Rec</button>
               </div>
               <div class="timerwrap">
                 <button class="timerbtn" data-role="timerbtn" onclick="toggleTimer('${block.id}','${d.id}',${ei},${restSec})">⏱ Timer recupero (${ex.r})</button>
