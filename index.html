@@ -128,7 +128,7 @@
     padding:12px 10px; font-family:var(--body); font-size:18px; margin-bottom:10px; width:100%; min-height:52px;
   }
   .testform .row3{display:flex; gap:10px;}
-  .testform .row3 input{width:auto; flex:1; font-family:var(--mono); text-align:center;}
+  .testform .row3 input{width:auto; flex:1; min-width:0; font-family:var(--mono); text-align:center;}
   .testform button{
     width:100%; min-height:48px; background:var(--accent2); color:var(--bg); border:none; border-radius:8px;
     font-family:var(--mono); font-weight:700; text-transform:uppercase; font-size:15px; padding:12px; cursor:pointer;
@@ -141,6 +141,8 @@
 
   /* ===== v4: fruibilità ===== */
   body.has-timer{padding-bottom:130px;}
+  html:has(body.has-timer){scroll-padding-bottom:150px;}
+  .finishbtn, .exlog{scroll-margin-bottom:150px;}
 
   /* Banner seduta di oggi */
   .today{background:var(--surface); border:1.5px solid var(--accent); border-radius:10px; padding:14px; }
@@ -233,6 +235,30 @@
   .btn-a{background:var(--accent2); color:var(--bg); border:none;}
   .btn-b{background:transparent; color:var(--text); border:1.5px solid var(--line);}
   .setbox .info{font-family:var(--mono); font-size:13px; color:var(--mute); margin-top:10px;}
+
+  /* Concludi allenamento + calendario */
+  .acc-head .hcol{display:flex; flex-direction:column; min-width:0;}
+  .acc-head .period{white-space:nowrap;}
+  .finishbtn{width:100%; min-height:58px; margin:6px 0 4px; background:transparent; border:2px solid var(--accent2); color:var(--accent2);
+    border-radius:10px; font-family:var(--mono); font-size:16px; font-weight:700; text-transform:uppercase; cursor:pointer;}
+  .finishbtn.is-done{background:var(--accent2); color:var(--bg);}
+  .cal{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px;}
+  .cal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;}
+  .cal-title{font-family:var(--disp); font-size:22px; text-transform:uppercase;}
+  .cal-nav{width:48px; height:48px; background:var(--bg); border:1.5px solid var(--line); border-radius:8px; color:var(--text); font-size:24px; cursor:pointer;}
+  .cal-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:4px;}
+  .cal-dow span{font-family:var(--mono); font-size:12px; color:var(--mute); text-align:center; padding:4px 0;}
+  .cal-day{height:56px; min-width:0; overflow:hidden; border-radius:8px; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+    padding-top:4px; font-family:var(--mono); font-size:13px; color:var(--mute); border:1.5px solid transparent; position:relative;}
+  .cal-day.empty{background:transparent;}
+  .cal-day.today{border-color:var(--text); color:var(--text);}
+  .cal-day .wl{font-size:22px; font-weight:700; line-height:1.1; margin-top:1px;}
+  .cal-day.w{cursor:pointer; color:var(--text);}
+  .cal-day.wA{background:rgba(255,106,43,.22);} .cal-day.wA .wl{color:var(--accent);}
+  .cal-day.wB{background:rgba(47,209,166,.20);} .cal-day.wB .wl{color:var(--accent2);}
+  .cal-day.wC{background:rgba(242,201,76,.20);} .cal-day.wC .wl{color:var(--warn);}
+  .cal-day.multi .wl{font-size:15px;}
+  .cal-foot{font-family:var(--mono); font-size:14px; color:var(--mute); margin-top:10px;}
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#101314">
@@ -375,6 +401,20 @@
       <div class="info" id="dataInfo"></div>
     </div>
   </details>
+</section>
+
+<section id="calSection">
+  <h2><span class="n">05</span>Calendario allenamenti</h2>
+  <div class="cal">
+    <div class="cal-head">
+      <button class="cal-nav" aria-label="Mese precedente" onclick="calMove(-1)">‹</button>
+      <div class="cal-title" id="calTitle"></div>
+      <button class="cal-nav" aria-label="Mese successivo" onclick="calMove(1)">›</button>
+    </div>
+    <div class="cal-grid cal-dow"><span>Lu</span><span>Ma</span><span>Me</span><span>Gi</span><span>Ve</span><span>Sa</span><span>Do</span></div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-foot" id="calFoot"></div>
+  </div>
 </section>
 
 <footer>
@@ -629,8 +669,8 @@ PLAN.forEach((block, bi)=>{
   acc.className = 'acc';
   acc.innerHTML = `
     <div class="acc-head" onclick="toggleAcc(this)">
-      <div class="htxt"><span class="idx">B${bi+1}</span><span class="title">${block.title}</span></div>
-      <div style="display:flex;align-items:center;gap:10px;"><span class="period">${block.period}</span><span class="chev">›</span></div>
+      <div class="htxt"><span class="idx">B${bi+1}</span><span class="hcol"><span class="title">${block.title}</span><span class="period">${block.period}</span></span></div>
+      <span class="chev">›</span>
     </div>
     <div class="acc-body"><div class="acc-inner">
       <p class="goal">${block.goal}</p>
@@ -684,6 +724,7 @@ PLAN.forEach((block, bi)=>{
               <div class="hist" data-role="hist"></div>
             </div>
           `;}).join('')}
+          <button class="finishbtn" data-role="finish" data-b="${block.id}" data-d="${d.id}" onclick="finishWorkout('${block.id}','${d.id}')">✅ Concludi allenamento ${d.id}</button>
         </div>
       `).join('')}
     </div></div>
@@ -1034,6 +1075,10 @@ function suggestedDay(bi){
       if(iso > bestIso || (iso === bestIso && di > bestIdx)){ bestIso = iso; bestIdx = di; }
     }));
   });
+  getWorkouts().filter(w=>w.b===block.id).forEach(w=>{
+    const di = block.days.findIndex(d=>d.id===w.d);
+    if(di >= 0 && (w.iso > bestIso || (w.iso === bestIso && di > bestIdx))){ bestIso = w.iso; bestIdx = di; }
+  });
   if(bestIdx < 0) return { di: 0, reason: 'primo allenamento del blocco' };
   if(bestIso === todayISO()) return { di: bestIdx, reason: 'allenamento in corso oggi' };
   return { di: (bestIdx+1) % block.days.length, reason: `ultimo: giorno ${block.days[bestIdx].id} il ${dmOf(bestIso)}` };
@@ -1078,8 +1123,99 @@ function saveStartDate(v){
   goToday(t.bi, t.di);
 }
 
+/* ============ ALLENAMENTI CONCLUSI + CALENDARIO ============ */
+function getWorkouts(){ return lsGet('workouts', []); }
+function saveWorkouts(list){ lsSet('workouts', list); }
+
+function finishWorkout(b, d){
+  const iso = todayISO();
+  const list = getWorkouts();
+  const i = list.findIndex(w=>w.iso===iso && w.b===b && w.d===d);
+  if(i >= 0){
+    if(!confirm(`L'allenamento ${d} di oggi è già segnato nel calendario. Vuoi toglierlo?`)) return;
+    list.splice(i, 1);
+  } else {
+    list.push({iso, b, d, t: Date.now()});
+    if(timer) stopTimer();
+  }
+  saveWorkouts(list);
+  renderFinishButtons();
+  calMonth = null;
+  renderCalendar();
+  renderToday();
+  if(i < 0){
+    showToast(`Allenamento ${d} concluso ✓ — segnato nel calendario`, ()=>{
+      const l = getWorkouts(); const k = l.findIndex(w=>w.iso===iso && w.b===b && w.d===d);
+      if(k >= 0){ l.splice(k,1); saveWorkouts(l); renderFinishButtons(); renderCalendar(); renderToday(); }
+    });
+  }
+}
+function renderFinishButtons(){
+  const iso = todayISO();
+  const list = getWorkouts();
+  document.querySelectorAll('[data-role="finish"]').forEach(btn=>{
+    const done = list.some(w=>w.iso===iso && w.b===btn.dataset.b && w.d===btn.dataset.d);
+    btn.classList.toggle('is-done', done);
+    btn.textContent = done ? `✓ Allenamento ${btn.dataset.d} concluso oggi` : `✅ Concludi allenamento ${btn.dataset.d}`;
+  });
+}
+
+let calMonth = null;   // {y, m} con m 0-11
+const MESI = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+function calMove(delta){
+  if(!calMonth){ const n = new Date(); calMonth = {y:n.getFullYear(), m:n.getMonth()}; }
+  let m = calMonth.m + delta, y = calMonth.y;
+  if(m < 0){ m = 11; y--; } if(m > 11){ m = 0; y++; }
+  calMonth = {y, m};
+  renderCalendar();
+}
+function renderCalendar(){
+  if(!calMonth){ const n = new Date(); calMonth = {y:n.getFullYear(), m:n.getMonth()}; }
+  const {y, m} = calMonth;
+  document.getElementById('calTitle').textContent = `${MESI[m]} ${y}`;
+  const byDay = {};
+  getWorkouts().forEach(w=>{ (byDay[w.iso] = byDay[w.iso] || []).push(w); });
+  const first = new Date(y, m, 1);
+  const lead = (first.getDay() + 6) % 7;          // settimana che parte dal lunedì
+  const nDays = new Date(y, m+1, 0).getDate();
+  const tIso = todayISO();
+  let html = '';
+  for(let i=0; i<lead; i++) html += '<div class="cal-day empty"></div>';
+  let count = 0;
+  const letters = {A:0, B:0, C:0};
+  for(let day=1; day<=nDays; day++){
+    const iso = `${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const ws = byDay[iso] || [];
+    const cls = ['cal-day'];
+    if(iso === tIso) cls.push('today');
+    let inner = `<span>${day}</span>`;
+    if(ws.length){
+      count += ws.length;
+      ws.forEach(w=>{ if(letters[w.d] !== undefined) letters[w.d]++; });
+      cls.push('w', 'w' + ws[ws.length-1].d);
+      if(ws.length > 1) cls.push('multi');
+      inner += `<span class="wl">${ws.map(w=>w.d).join('')}</span>`;
+    }
+    const title = ws.length ? ` title="${ws.map(w=>`Blocco ${w.b.slice(1)} · giorno ${w.d}`).join(', ')}"` : '';
+    html += `<div class="${cls.join(' ')}" data-iso="${iso}"${title}${ws.length ? ` onclick="calTap('${iso}')"` : ''}>${inner}</div>`;
+  }
+  document.getElementById('calGrid').innerHTML = html;
+  document.getElementById('calFoot').textContent = count
+    ? `${count} allenament${count===1?'o':'i'} in ${MESI[m].toLowerCase()} · A ${letters.A} · B ${letters.B} · C ${letters.C}`
+    : `Nessun allenamento concluso in ${MESI[m].toLowerCase()}.`;
+}
+function calTap(iso){
+  const list = getWorkouts();
+  const ws = list.filter(w=>w.iso===iso);
+  if(!ws.length) return;
+  const desc = ws.map(w=>`giorno ${w.d} (blocco ${w.b.slice(1)})`).join(', ');
+  if(!confirm(`${dmOf(iso)}: ${desc}.\n\nVuoi togliere ${ws.length>1?'questi allenamenti':'questo allenamento'} dal calendario?`)) return;
+  saveWorkouts(list.filter(w=>w.iso!==iso));
+  renderCalendar(); renderFinishButtons(); renderToday();
+}
+
 /* ============ BACKUP ============ */
-const BACKUP_KEYS = k => k.startsWith('log:') || k === 'maxtests' || k === 'settings';
+const BACKUP_KEYS = k => k.startsWith('log:') || k === 'maxtests' || k === 'settings' || k === 'workouts';
 function allDataKeys(){
   const keys = [];
   for(let i=0; i<localStorage.length; i++){ const k = localStorage.key(i); if(BACKUP_KEYS(k)) keys.push(k); }
@@ -1091,8 +1227,9 @@ function renderDataInfo(){
     Object.values(lsGet(k, {})).forEach(list=> (list||[]).forEach(e=>{ n++; const iso = entryIso(e); if(iso > lastIso) lastIso = iso; }));
   });
   const tests = lsGet('maxtests', []).length;
+  const wk = getWorkouts().length;
   document.getElementById('dataInfo').textContent =
-    `${n} serie registrate${lastIso ? `, ultima il ${dmOf(lastIso)}` : ''} · ${tests} test massimali. I dati stanno solo su questo telefono: esporta un backup ogni tanto.`;
+    `${n} serie registrate${lastIso ? `, ultima il ${dmOf(lastIso)}` : ''} · ${wk} allenamenti conclusi · ${tests} test massimali. I dati stanno solo su questo telefono: esporta un backup ogni tanto.`;
 }
 async function exportBackup(){
   const data = {};
@@ -1184,6 +1321,8 @@ openBlock(start.bi);
 switchDay(PLAN[start.bi].id, start.di, accWrap.children[start.bi].querySelectorAll('.day-tab')[start.di]);
 renderTestHistory();
 renderDataInfo();
+renderFinishButtons();
+renderCalendar();
 document.getElementById('setFold').addEventListener('toggle', renderDataInfo);
 
 /* Ritorno in primo piano: aggiorna timer, Wake Lock, colori e seduta del giorno */
@@ -1194,6 +1333,8 @@ document.addEventListener('visibilitychange', ()=>{
   const openAcc = document.querySelector('.acc.open');
   if(openAcc) loadAllLogsForBlock(PLAN[Array.from(accWrap.children).indexOf(openAcc)].id);
   renderToday();
+  renderFinishButtons();
+  calMonth = null; renderCalendar();
 });
 </script>
 
