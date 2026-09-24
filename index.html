@@ -138,6 +138,101 @@
   .test-entry .rm{color:var(--accent); font-weight:700;}
 
   footer{padding:22px 16px; font-family:var(--mono); font-size:12.5px; color:var(--mute); text-align:center;}
+
+  /* ===== v4: fruibilità ===== */
+  body.has-timer{padding-bottom:130px;}
+
+  /* Banner seduta di oggi */
+  .today{background:var(--surface); border:1.5px solid var(--accent); border-radius:10px; padding:14px; }
+  .today .t1{font-family:var(--mono); font-size:13px; color:var(--accent); text-transform:uppercase; letter-spacing:.08em;}
+  .today .t2{font-family:var(--disp); font-size:26px; text-transform:uppercase; line-height:1.15; margin:4px 0 2px;}
+  .today .t3{font-size:15px; color:var(--mute);}
+  .today > button{margin-top:12px; width:100%; min-height:52px; background:var(--accent); color:var(--bg); border:none; border-radius:8px;
+    font-family:var(--mono); font-size:16px; font-weight:700; text-transform:uppercase; cursor:pointer;}
+  .linkbtn{background:none; border:none; color:var(--accent2); font:inherit; font-size:15px; text-decoration:underline; padding:6px 0; cursor:pointer;}
+
+  /* Sezioni richiudibili */
+  details.fold > summary{list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between;
+    font-family:var(--disp); font-size:24px; text-transform:uppercase; letter-spacing:.02em; min-height:48px;}
+  details.fold > summary::-webkit-details-marker{display:none;}
+  details.fold > summary .chev{font-family:var(--mono); color:var(--mute); transition:transform .2s;}
+  details.fold[open] > summary .chev{transform:rotate(90deg);}
+  details.fold h3.sub-h{font-family:var(--disp); font-size:20px; text-transform:uppercase; margin:20px 0 10px; color:var(--text);}
+
+  /* Card esercizio */
+  .exlog .exright{display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex:0 0 auto;}
+  .setbadge{font-family:var(--mono); font-size:14px; font-weight:700; border:1.5px solid var(--line); border-radius:6px; padding:2px 8px; color:var(--mute);}
+  .exlog.partial{border-color:rgba(47,209,166,.55); box-shadow:inset 4px 0 0 rgba(47,209,166,.55);}
+  .exlog.partial .setbadge{color:var(--accent2); border-color:var(--accent2);}
+  .exlog.done .setbadge{background:var(--accent2); color:var(--bg); border-color:var(--accent2);}
+  .renbtn{background:none; border:none; color:var(--mute); font-size:16px; padding:2px 6px; margin-left:2px; cursor:pointer; vertical-align:middle;}
+  .cmp{font-family:var(--mono); font-size:14px; color:var(--mute); margin-top:6px; line-height:1.45;}
+  .cmp b{color:var(--text); font-weight:600;}
+  .exlog.done .cmp.todayline b, .exlog.partial .cmp.todayline b{color:var(--accent2);}
+  .arr{font-weight:700; margin-left:2px;}
+  .arr.up{color:var(--accent2);} .arr.down{color:var(--danger);} .arr.eq{color:var(--mute);}
+  .suggest{display:none; margin-top:8px; font-size:15px; color:var(--warn); background:rgba(242,201,76,.08); border-radius:6px; padding:7px 10px;}
+  .suggest.show{display:block;}
+  .steprow{display:flex; gap:8px; margin-top:8px;}
+  .steprow button{flex:1 1 0; min-width:0; height:44px; background:var(--bg); border:1.5px solid var(--line); border-radius:8px;
+    color:var(--text); font-family:var(--mono); font-size:14px; font-weight:600; cursor:pointer; padding:0 2px;}
+  .steprow button:active{background:var(--surface);}
+  .painrow{display:flex; align-items:center; gap:10px; margin-top:10px; font-size:15px; color:var(--warn);}
+  .painrow select{background:var(--bg); color:var(--text); border:1.5px solid var(--line); border-radius:8px; font-family:var(--mono);
+    font-size:17px; height:44px; padding:0 10px; min-width:80px;}
+  .cardfoot{display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap;}
+  .cardfoot .histbtn{margin-top:0 !important;}
+  .exlog button.timerbtn{min-height:46px;}
+
+  /* Storico */
+  .hrow{display:flex; justify-content:space-between; align-items:center; gap:8px; padding:4px 0; border-bottom:1px solid var(--line);}
+  .delbtn{background:none; border:1px solid var(--line); color:var(--mute); border-radius:6px; font-size:15px; min-width:40px; height:36px; cursor:pointer; flex:0 0 auto;}
+  .delbtn:active{border-color:var(--danger); color:var(--danger);}
+
+  /* Grafici */
+  .chart{margin:8px 0 10px;}
+  .chart .ctitle{font-family:var(--mono); font-size:13px; color:var(--mute); margin-bottom:2px;}
+  .chart svg{display:block; width:100%; height:auto; overflow:visible;}
+  .chart .grid{stroke:var(--line); stroke-width:1;}
+  .chart .ln{fill:none; stroke:var(--accent2); stroke-width:2; stroke-linejoin:round; stroke-linecap:round;}
+  .chart .pt{fill:var(--accent2); stroke:var(--surface2); stroke-width:2;}
+  .chart .pt.sel{fill:var(--text);}
+  .chart .hit{fill:transparent; cursor:pointer;}
+  .chart .lbl{fill:var(--mute); font-family:var(--mono); font-size:12px;}
+  .chart .lbl.v{fill:var(--text); font-weight:600;}
+  .chart .cap{font-family:var(--mono); font-size:13px; color:var(--text); min-height:18px;}
+
+  /* Barra timer fissa */
+  #timerBar{position:fixed; left:0; right:0; bottom:0; z-index:50; display:none; align-items:center; gap:10px;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom)); background:#0B0E0F; border-top:2px solid var(--accent2);}
+  #timerBar.show{display:flex;}
+  #timerBar .tb-info{flex:1 1 auto; min-width:0;}
+  #timerBar .tb-name{font-size:14px; color:var(--mute); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  #timerBar .tb-time{font-family:var(--mono); font-size:44px; font-weight:700; color:var(--accent); line-height:1;}
+  #timerBar.done{border-top-color:var(--warn);}
+  #timerBar.done .tb-time{color:var(--warn);}
+  #timerBar button{height:56px; min-width:64px; border-radius:8px; font-family:var(--mono); font-size:15px; font-weight:700; cursor:pointer; flex:0 0 auto;}
+  #timerBar .tb-plus{background:transparent; border:1.5px solid var(--accent2); color:var(--accent2);}
+  #timerBar .tb-stop{background:var(--accent2); border:none; color:var(--bg);}
+
+  /* Toast annulla */
+  #toast{position:fixed; left:14px; right:14px; bottom:calc(16px + env(safe-area-inset-bottom)); z-index:60; display:none; align-items:center; gap:10px;
+    background:var(--text); color:var(--bg); border-radius:10px; padding:10px 12px 10px 16px; font-size:15px; box-shadow:0 6px 24px rgba(0,0,0,.4);}
+  body.has-timer #toast{bottom:calc(100px + env(safe-area-inset-bottom));}
+  #toast.show{display:flex;}
+  #toast span{flex:1 1 auto;}
+  #toast button{background:var(--bg); color:var(--text); border:none; border-radius:8px; height:44px; padding:0 16px; font-family:var(--mono); font-weight:700; font-size:14px; cursor:pointer;}
+
+  /* Impostazioni */
+  .setbox{background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:14px; margin-top:12px;}
+  .setbox label{display:block; font-size:15px; color:var(--mute); margin-bottom:6px;}
+  .setbox input[type=date]{width:100%; min-height:52px; background:var(--bg); border:1.5px solid var(--line); border-radius:8px; color:var(--text);
+    font-family:var(--mono); font-size:18px; padding:8px 10px;}
+  .setbox .btnrow{display:flex; gap:10px; margin-top:10px;}
+  .setbox .btnrow button{flex:1 1 0; min-height:52px; border-radius:8px; font-family:var(--mono); font-size:14px; font-weight:700; text-transform:uppercase; cursor:pointer;}
+  .btn-a{background:var(--accent2); color:var(--bg); border:none;}
+  .btn-b{background:transparent; color:var(--text); border:1.5px solid var(--line);}
+  .setbox .info{font-family:var(--mono); font-size:13px; color:var(--mute); margin-top:10px;}
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#101314">
@@ -152,7 +247,6 @@
 <header>
   <div class="eyebrow">Programma di periodizzazione · Ipertrofia</div>
   <h1>Piano Annuale — Tracker</h1>
-  <p class="sub">Obiettivo: aumento della massa muscolare. Apri un blocco, scegli il giorno, registra peso e ripetizioni, poi avvia il timer di recupero: conta alla rovescia e avvisa con beep e vibrazione quando è ora di ripartire.</p>
   <div class="meta-row">
     <div class="meta">ETÀ <b>52</b></div>
     <div class="meta">PESO <b>79 kg</b></div>
@@ -162,103 +256,141 @@
 </header>
 
 <section>
-  <h2><span class="n">01</span>Nota sulla spalla sinistra</h2>
-  <div class="callout danger">
-    <b>Non è una diagnosi medica.</b> Gli esercizi sono scelti per scaricare il vincolo sulla spalla, ma un'infiammazione con dolore persistente in spinta va valutata da un fisioterapista o ortopedico prima di caricare ulteriormente.
-  </div>
-  <div class="grid2">
-    <div class="card">
-      <h3>Escluso</h3>
-      <ul>
-        <li>Panca piana/inclinata con bilanciere</li>
-        <li>Military press bilanciere in piedi</li>
-        <li>Dip alle parallele</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Sostituzioni nel piano</h3>
-      <ul>
-        <li>Chest press a macchina (ROM regolabile)</li>
-        <li>Manubri presa neutra, escursione parziale</li>
-        <li>Shoulder press macchina solo se asintomatica</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<section>
-  <h2><span class="n">02</span>Timeline dell'anno</h2>
-  <div class="timeline">
-    <div class="tl-track">
-      <div class="tl-test">TEST 0</div>
-      <div class="tl-block"><div class="lbl">Blocco 1</div><div class="name">Fondamenta</div><div class="months">Mesi 1-2</div></div>
-      <div class="tl-block"><div class="lbl">Blocco 2</div><div class="name">Volume</div><div class="months">Mesi 3-4</div></div>
-      <div class="tl-test">TEST 3</div>
-      <div class="tl-block"><div class="lbl">Blocco 3</div><div class="name">Intensità</div><div class="months">Mesi 5-6</div></div>
-      <div class="tl-block"><div class="lbl">Blocco 4</div><div class="name">Metabolico</div><div class="months">Mesi 7-8</div></div>
-      <div class="tl-test">TEST 6</div>
-      <div class="tl-block"><div class="lbl">Blocco 5</div><div class="name">Forza-Ipert.</div><div class="months">Mesi 9-10</div></div>
-      <div class="tl-test">TEST 9</div>
-      <div class="tl-block"><div class="lbl">Blocco 6</div><div class="name">Special.</div><div class="months">Mesi 11-12</div></div>
-      <div class="tl-test">TEST 12</div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <h2><span class="n">03</span>Riscaldamento e defaticamento</h2>
-  <div class="grid2">
-    <div class="card">
-      <h3>Riscaldamento (8-10 min)</h3>
-      <ul>
-        <li>4-5 min cardio leggero</li>
-        <li>Mobilità anche/colonna/caviglie</li>
-        <li><b style="color:var(--warn)">Spalla</b>: extrarotazioni elastico 2×15, face pull 2×15, YTW 1×10/lato</li>
-        <li>2-3 serie di avvicinamento sul primo esercizio</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Defaticamento (5-8 min)</h3>
-      <ul>
-        <li>Stretching leggero pettorali/dorsali/ileopsoas</li>
-        <li>Mobilità spalla in scarico, mai in tensione se dolore</li>
-        <li>2-3 min respirazione diaframmatica</li>
-      </ul>
-    </div>
-  </div>
+  <div class="today" id="todayBox"></div>
 </section>
 
 <section id="planSection">
-  <h2><span class="n">04</span>Blocchi — allenati e registra</h2>
-  <p class="sub-note">Apri il blocco del periodo attuale → tocca il giorno (A/B/C) → inserisci peso e reps e premi "Rec" → poi premi "⏱ Timer recupero" per far partire il conto alla rovescia sul tempo previsto: a fine recupero senti un beep (e il telefono vibra, se supportato). Mentre il timer corre lo schermo resta acceso. Gli esercizi registrati oggi diventano <b style="color:var(--accent2)">verdi con ✓</b>.</p>
+  <h2><span class="n">01</span>Allenati e registra</h2>
+  <p class="sub-note">Scrivi kg e reps (sono già compilati con l'ultima serie) e premi <b>Rec</b>: la serie viene salvata e parte subito il timer di recupero, visibile nella barra in basso. Il contatore <b>2/3</b> indica le serie fatte oggi; a serie completate la card diventa <b style="color:var(--accent2)">verde con ✓</b>.</p>
   <div id="accWrap"></div>
 </section>
 
 <section>
-  <h2><span class="n">05</span>Test dei massimali</h2>
-  <div class="callout">
-    <b>3RM, non 1RM vero.</b> A 52 anni con spalla infiammata evitiamo il singolo massimale su spinte: il test a 3 ripetizioni con stima Epley (1RM ≈ peso × (1 + reps/30)) è più sicuro e sufficiente per tarare i carichi. Da ripetere circa ogni 3 mesi.
-  </div>
-  <div class="testform">
-    <select id="testExercise">
-      <option>Squat/Leg press</option>
-      <option>Stacco rumeno</option>
-      <option>Chest press macchina</option>
-      <option>Lat machine</option>
-      <option>Shoulder press macchina</option>
-    </select>
-    <div class="row3">
-      <input type="number" id="testWeight" placeholder="kg" inputmode="decimal">
-      <input type="number" id="testReps" placeholder="reps" value="3" inputmode="numeric">
+  <details class="fold" id="testFold">
+    <summary><span><span class="n" style="color:var(--accent);font-family:var(--mono);font-size:16px;margin-right:8px;">02</span>Test dei massimali</span><span class="chev">›</span></summary>
+    <div class="callout">
+      <b>3RM, non 1RM vero.</b> A 52 anni con spalla infiammata evitiamo il singolo massimale su spinte: il test a 3 ripetizioni con stima Epley (1RM ≈ peso × (1 + reps/30)) è più sicuro e sufficiente per tarare i carichi. Da ripetere circa ogni 3 mesi.
     </div>
-    <button onclick="saveTest()">Registra test</button>
-  </div>
-  <div id="testHistory"></div>
+    <div class="testform">
+      <select id="testExercise">
+        <option>Squat/Leg press</option>
+        <option>Stacco rumeno</option>
+        <option>Chest press macchina</option>
+        <option>Lat machine</option>
+        <option>Shoulder press macchina</option>
+      </select>
+      <div class="row3">
+        <input type="number" id="testWeight" placeholder="kg" inputmode="decimal">
+        <input type="number" id="testReps" placeholder="reps" value="3" inputmode="numeric">
+      </div>
+      <button onclick="saveTest()">Registra test</button>
+    </div>
+    <div id="testCharts"></div>
+    <div id="testHistory"></div>
+  </details>
+</section>
+
+<section>
+  <details class="fold">
+    <summary><span><span class="n" style="color:var(--accent);font-family:var(--mono);font-size:16px;margin-right:8px;">03</span>Info programma</span><span class="chev">›</span></summary>
+
+    <h3 class="sub-h">Nota sulla spalla sinistra</h3>
+    <div class="callout danger">
+      <b>Non è una diagnosi medica.</b> Gli esercizi sono scelti per scaricare il vincolo sulla spalla, ma un'infiammazione con dolore persistente in spinta va valutata da un fisioterapista o ortopedico prima di caricare ulteriormente. Il campo "Dolore spalla" negli esercizi di spinta serve solo come tuo promemoria.
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Escluso</h3>
+        <ul>
+          <li>Panca piana/inclinata con bilanciere</li>
+          <li>Military press bilanciere in piedi</li>
+          <li>Dip alle parallele</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Sostituzioni nel piano</h3>
+        <ul>
+          <li>Chest press a macchina (ROM regolabile)</li>
+          <li>Manubri presa neutra, escursione parziale</li>
+          <li>Shoulder press macchina solo se asintomatica</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub-h">Timeline dell'anno</h3>
+    <div class="timeline">
+      <div class="tl-track">
+        <div class="tl-test">TEST 0</div>
+        <div class="tl-block"><div class="lbl">Blocco 1</div><div class="name">Fondamenta</div><div class="months">Mesi 1-2</div></div>
+        <div class="tl-block"><div class="lbl">Blocco 2</div><div class="name">Volume</div><div class="months">Mesi 3-4</div></div>
+        <div class="tl-test">TEST 3</div>
+        <div class="tl-block"><div class="lbl">Blocco 3</div><div class="name">Intensità</div><div class="months">Mesi 5-6</div></div>
+        <div class="tl-block"><div class="lbl">Blocco 4</div><div class="name">Metabolico</div><div class="months">Mesi 7-8</div></div>
+        <div class="tl-test">TEST 6</div>
+        <div class="tl-block"><div class="lbl">Blocco 5</div><div class="name">Forza-Ipert.</div><div class="months">Mesi 9-10</div></div>
+        <div class="tl-test">TEST 9</div>
+        <div class="tl-block"><div class="lbl">Blocco 6</div><div class="name">Special.</div><div class="months">Mesi 11-12</div></div>
+        <div class="tl-test">TEST 12</div>
+      </div>
+    </div>
+
+    <h3 class="sub-h">Riscaldamento e defaticamento</h3>
+    <div class="grid2">
+      <div class="card">
+        <h3>Riscaldamento (8-10 min)</h3>
+        <ul>
+          <li>4-5 min cardio leggero</li>
+          <li>Mobilità anche/colonna/caviglie</li>
+          <li><b style="color:var(--warn)">Spalla</b>: extrarotazioni elastico 2×15, face pull 2×15, YTW 1×10/lato</li>
+          <li>2-3 serie di avvicinamento sul primo esercizio</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Defaticamento (5-8 min)</h3>
+        <ul>
+          <li>Stretching leggero pettorali/dorsali/ileopsoas</li>
+          <li>Mobilità spalla in scarico, mai in tensione se dolore</li>
+          <li>2-3 min respirazione diaframmatica</li>
+        </ul>
+      </div>
+    </div>
+  </details>
+</section>
+
+<section>
+  <details class="fold" id="setFold">
+    <summary><span><span class="n" style="color:var(--accent);font-family:var(--mono);font-size:16px;margin-right:8px;">04</span>Impostazioni e backup</span><span class="chev">›</span></summary>
+    <div class="setbox">
+      <label for="startDate">Data di inizio del programma</label>
+      <input type="date" id="startDate" onchange="saveStartDate(this.value)">
+      <div class="info">Serve per aprire da solo il blocco del periodo in corso.</div>
+    </div>
+    <div class="setbox">
+      <label>Backup dei dati (solo su questo telefono)</label>
+      <div class="btnrow">
+        <button class="btn-a" onclick="exportBackup()">Esporta backup</button>
+        <button class="btn-b" onclick="document.getElementById('importFile').click()">Importa backup</button>
+      </div>
+      <input type="file" id="importFile" accept=".json,application/json" style="display:none" onchange="importBackup(this)">
+      <div class="info" id="dataInfo"></div>
+    </div>
+  </details>
 </section>
 
 <footer>
   by Filippo Filippi — Programma generato con Claude, basato su principi generali di scienza dell'allenamento (Schoenfeld, Grgic — meta-analisi frequenza/volume). Le modifiche per la spalla sono buon senso pratico, non uno studio dedicato verificato. Non sostituisce il parere di un medico o fisioterapista.
 </footer>
+
+<div id="timerBar" role="timer" aria-live="polite">
+  <div class="tb-info">
+    <div class="tb-name" id="tbName"></div>
+    <div class="tb-time" id="tbTime">0:00</div>
+  </div>
+  <button class="tb-plus" onclick="addTimer(15)">+15"</button>
+  <button class="tb-stop" onclick="stopTimer()">Stop</button>
+</div>
+
+<div id="toast"><span id="toastMsg"></span><button id="toastBtn">Annulla</button></div>
 
 <script>
 const PLAN = [
@@ -423,15 +555,75 @@ const PLAN = [
   }
 ];
 
-/* ---------- helper: estrae i secondi dal testo di recupero, es. '90"' -> 90 ---------- */
-function parseRestSeconds(r){
-  const m = String(r).match(/\d+/);
-  return m ? parseInt(m[0], 10) : 60;
+/* ============ UTILITÀ ============ */
+const accWrap = document.getElementById('accWrap');
+const SHOULDER_RE = /chest press|shoulder press|croci|alzate/i;
+
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtKg(n){ return String(Math.round(n*100)/100).replace('.', ','); }
+function parseRestSeconds(r){ const m = String(r).match(/\d+/); return m ? parseInt(m[0],10) : 60; }
+function parseSets(t){ const m = String(t).match(/^(\d+)\s*(?:[×x]|giri)/i); return m ? parseInt(m[1],10) : 1; }
+function parseTargetReps(t){
+  if(/"/.test(t)) return null;                       // serie a tempo (plank): niente suggerimento
+  const m = String(t).match(/[×x]\s*(\d+)(?:-(\d+))?/);
+  return m ? parseInt(m[2] || m[1], 10) : null;      // per i range (6-8) conta il valore alto
 }
 
-/* ---------- RENDER ---------- */
-const accWrap = document.getElementById('accWrap');
+function lsGet(key, def){ try{ const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : def; }catch(e){ return def; } }
+function lsSet(key, val){ localStorage.setItem(key, JSON.stringify(val)); }
 
+/* ============ DATE ============ */
+function isoOf(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function todayISO(){ return isoOf(new Date()); }
+function legacyIso(dm){
+  // registrazioni vecchie: solo "gg/mm". Anno corrente, o precedente se la data sarebbe nel futuro.
+  const [dd, mm] = String(dm).split('/');
+  const y = new Date().getFullYear();
+  let iso = `${y}-${mm}-${dd}`;
+  if(iso > todayISO()) iso = `${y-1}-${mm}-${dd}`;
+  return iso;
+}
+function entryIso(e){ return e.iso || legacyIso(e.d); }
+function dmOf(iso){ const [y,m,d] = iso.split('-'); return `${d}/${m}`; }
+
+/* ============ DATI ============ */
+let settings = lsGet('settings', {});
+if(!settings.names) settings.names = {};
+function saveSettings(){ lsSet('settings', settings); }
+
+function getDayLog(b, d){ return lsGet(`log:${b}_${d}`, {}); }
+function getEntries(b, d, ei){ return getDayLog(b, d)[ei] || []; }
+function setEntries(b, d, ei, entries){
+  const log = getDayLog(b, d);
+  log[ei] = entries;
+  lsSet(`log:${b}_${d}`, log);
+}
+function exName(b, d, ei){
+  const ex = PLAN.find(x=>x.id===b).days.find(x=>x.id===d).exercises[ei];
+  return settings.names[`${b}_${d}_${ei}`] || ex.n;
+}
+function exDef(b, d, ei){ return PLAN.find(x=>x.id===b).days.find(x=>x.id===d).exercises[ei]; }
+
+/* raggruppa le serie per giorno di allenamento, in ordine cronologico */
+function sessionsOf(entries){
+  const out = [];
+  entries.forEach((e, idx)=>{
+    const iso = entryIso(e);
+    let s = out.find(x=>x.iso===iso);
+    if(!s){ s = {iso, sets:[]}; out.push(s); }
+    s.sets.push(Object.assign({idx}, e));
+  });
+  return out.sort((a,b)=> a.iso < b.iso ? -1 : a.iso > b.iso ? 1 : 0);
+}
+function cmpSet(a, b){
+  if(!b) return '';
+  if(a.w > b.w || (a.w === b.w && a.r > b.r)) return '<span class="arr up">↑</span>';
+  if(a.w < b.w || (a.w === b.w && a.r < b.r)) return '<span class="arr down">↓</span>';
+  return '<span class="arr eq">=</span>';
+}
+function setTxt(s){ return `${fmtKg(s.w)}×${s.r}${(s.p!==undefined && s.p!==null) ? ` <span style="color:var(--warn)">(spalla ${s.p})</span>` : ''}`; }
+
+/* ============ RENDER ============ */
 PLAN.forEach((block, bi)=>{
   const acc = document.createElement('div');
   acc.className = 'acc';
@@ -449,27 +641,46 @@ PLAN.forEach((block, bi)=>{
         <div class="day-panel ${di===0?'active':''}" id="panel-${block.id}-${di}">
           ${d.exercises.map((ex,ei)=>{
             const restSec = parseRestSeconds(ex.r);
+            const a = `'${block.id}','${d.id}',${ei}`;
             return `
-            <div class="exlog" id="ex-${block.id}-${d.id}-${ei}">
+            <div class="exlog" id="ex-${block.id}-${d.id}-${ei}" data-rest="${restSec}">
               <div class="exhead">
-                <span class="exname"><span class="donemark">✓</span>${ex.n}</span>
-                <span class="extarget">${ex.t} · ${ex.r}</span>
+                <span class="exname"><span class="donemark">✓</span><span data-role="name">${esc(exName(block.id,d.id,ei))}</span><button class="renbtn" aria-label="Rinomina esercizio" onclick="renameEx(${a})">✎</button></span>
+                <span class="exright">
+                  <span class="extarget">${ex.t} · ${ex.r}</span>
+                  <span class="setbadge" data-role="badge">0/${parseSets(ex.t)}</span>
+                </span>
               </div>
               ${ex.note?`<div class="exnote">${ex.note}</div>`:''}
-              <div class="exlast" data-role="last">Ultimo: —</div>
+              <div class="cmp todayline" data-role="today"></div>
+              <div class="cmp" data-role="prev"></div>
+              <div class="suggest" data-role="suggest"></div>
               <div class="exrow">
-                <input type="number" inputmode="decimal" placeholder="kg" data-role="w">
+                <input type="number" inputmode="decimal" placeholder="kg" data-role="w" step="0.5">
                 <span class="unit">kg</span>
                 <input type="number" inputmode="numeric" placeholder="reps" data-role="rp">
                 <span class="unit">reps</span>
-                <button class="logbtn" onclick="logExercise('${block.id}','${d.id}',${ei})" aria-label="Registra">Rec</button>
+                <button class="logbtn" aria-label="Registra" onclick="logExercise(${a})">Rec</button>
               </div>
-              <div class="timerwrap">
-                <button class="timerbtn" data-role="timerbtn" onclick="toggleTimer('${block.id}','${d.id}',${ei},${restSec})">⏱ Timer recupero (${ex.r})</button>
-                <div class="timer-display" data-role="timerdisp"></div>
+              <div class="steprow">
+                <button onclick="stepVal(${a},'w',-2.5)">−2,5 kg</button>
+                <button onclick="stepVal(${a},'w',2.5)">+2,5 kg</button>
+                <button onclick="stepVal(${a},'rp',-1)">−1 rep</button>
+                <button onclick="stepVal(${a},'rp',1)">+1 rep</button>
               </div>
-              <span class="saved-flash" data-role="flash">salvato ✓</span>
-              <button class="histbtn" onclick="toggleHist('${block.id}','${d.id}',${ei})">storico ▾</button>
+              ${SHOULDER_RE.test(ex.n) ? `
+              <div class="painrow">
+                <span>Dolore spalla</span>
+                <select data-role="pain" aria-label="Dolore spalla da 0 a 10">
+                  <option value="">—</option>
+                  ${Array.from({length:11},(_,i)=>`<option value="${i}">${i}</option>`).join('')}
+                </select>
+              </div>` : ''}
+              <div class="cardfoot">
+                <button class="timerbtn" data-role="timerbtn" onclick="toggleTimer(${a})">⏱ Timer (${ex.r})</button>
+                <button class="histbtn" onclick="toggleHist(${a})">storico ▾</button>
+                <span class="saved-flash" data-role="flash">salvato ✓</span>
+              </div>
               <div class="hist" data-role="hist"></div>
             </div>
           `;}).join('')}
@@ -480,22 +691,80 @@ PLAN.forEach((block, bi)=>{
   accWrap.appendChild(acc);
 });
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  document.querySelector('.acc').classList.add('open');
-  loadAllLogsForBlock(PLAN[0].id);
-});
+function cardEl(b, d, ei){ return document.getElementById(`ex-${b}-${d}-${ei}`); }
 
+function renderCard(b, d, ei){
+  const card = cardEl(b, d, ei);
+  if(!card) return;
+  const ex = exDef(b, d, ei);
+  const nSets = parseSets(ex.t);
+  const target = parseTargetReps(ex.t);
+  const entries = getEntries(b, d, ei);
+  const sessions = sessionsOf(entries);
+  const tIso = todayISO();
+  const today = sessions.find(s=>s.iso===tIso);
+  const past = sessions.filter(s=>s.iso!==tIso);
+  const prev = past[past.length-1];
+  const done = today ? today.sets.length : 0;
+
+  card.querySelector('[data-role="badge"]').textContent = `${done}/${nSets}`;
+  card.classList.toggle('done', done >= nSets);
+  card.classList.toggle('partial', done > 0 && done < nSets);
+
+  const todayEl = card.querySelector('[data-role="today"]');
+  todayEl.innerHTML = today
+    ? `Oggi: ${today.sets.map((s,i)=>`<b>${setTxt(s)}</b>${cmpSet(s, prev && prev.sets[i])}`).join(' · ')}`
+    : '';
+  todayEl.style.display = today ? '' : 'none';
+
+  card.querySelector('[data-role="prev"]').innerHTML = prev
+    ? `Scorsa (${dmOf(prev.iso)}): ${prev.sets.map(setTxt).join(' · ')}`
+    : 'Scorsa: —';
+
+  // Suggerimento carico: se nell'ultima seduta completa hai fatto tutte le reps previste
+  const sug = card.querySelector('[data-role="suggest"]');
+  const base = (today && done >= nSets) ? today : (!today ? prev : null);
+  let sugTxt = '';
+  if(base && target && base.sets.length >= nSets && base.sets.slice(0, nSets).every(s=>s.r >= target)){
+    const maxW = Math.max(...base.sets.map(s=>s.w));
+    if(maxW > 0){
+      sugTxt = base === today
+        ? `💡 Tutte le reps fatte: la prossima volta prova <b>${fmtKg(maxW+2.5)} kg</b>`
+        : `💡 L'ultima volta hai fatto tutte le reps: oggi prova <b>${fmtKg(maxW+2.5)} kg</b>`;
+    }
+  }
+  sug.innerHTML = sugTxt;
+  sug.classList.toggle('show', !!sugTxt);
+
+  // Precompila con l'ultima serie (solo se il campo è vuoto)
+  const last = entries[entries.length-1];
+  const wIn = card.querySelector('[data-role="w"]'), rIn = card.querySelector('[data-role="rp"]');
+  if(last){
+    if(wIn.value === '' && document.activeElement !== wIn) wIn.value = last.w;
+    if(rIn.value === '' && document.activeElement !== rIn) rIn.value = last.r;
+  }
+
+  const histEl = card.querySelector('[data-role="hist"]');
+  if(histEl.classList.contains('show')) renderHist(b, d, ei);
+}
+
+function loadAllLogsForBlock(blockId){
+  const block = PLAN.find(b=>b.id===blockId);
+  block.days.forEach(d=> d.exercises.forEach((ex, ei)=> renderCard(blockId, d.id, ei)));
+}
+
+function openBlock(bi){
+  const accs = Array.from(accWrap.children);
+  accs.forEach(a=>a.classList.remove('open'));
+  accs[bi].classList.add('open');
+  loadAllLogsForBlock(PLAN[bi].id);
+}
 function toggleAcc(head){
   const acc = head.parentElement;
   const wasOpen = acc.classList.contains('open');
   document.querySelectorAll('.acc.open').forEach(a=>a.classList.remove('open'));
-  if(!wasOpen){
-    acc.classList.add('open');
-    const blockId = PLAN[Array.from(accWrap.children).indexOf(acc)].id;
-    loadAllLogsForBlock(blockId);
-  }
+  if(!wasOpen) openBlock(Array.from(accWrap.children).indexOf(acc));
 }
-
 function switchDay(blockId, idx, btn){
   const tabs = btn.parentElement.querySelectorAll('.day-tab');
   tabs.forEach(t=>t.classList.remove('active'));
@@ -505,121 +774,221 @@ function switchDay(blockId, idx, btn){
   document.getElementById(`panel-${blockId}-${idx}`).classList.add('active');
 }
 
-/* ---------- TIMER DI RECUPERO ---------- */
-const activeTimers = {};
-
-function formatMMSS(totalSeconds){
-  const mm = Math.floor(totalSeconds/60);
-  const ss = String(totalSeconds%60).padStart(2,'0');
-  return `${mm}:${ss}`;
+/* ============ REGISTRAZIONE ============ */
+function stepVal(b, d, ei, role, delta){
+  const inp = cardEl(b, d, ei).querySelector(`[data-role="${role}"]`);
+  const v = Math.max(0, (parseFloat(inp.value) || 0) + delta);
+  inp.value = Math.round(v*100)/100;
 }
 
-/* Wake Lock: tiene lo schermo acceso mentre almeno un timer è attivo */
+function logExercise(b, d, ei){
+  const card = cardEl(b, d, ei);
+  const w = parseFloat(card.querySelector('[data-role="w"]').value);
+  const r = parseInt(card.querySelector('[data-role="rp"]').value, 10);
+  if(isNaN(w) || isNaN(r) || r <= 0){ return; }
+  const painSel = card.querySelector('[data-role="pain"]');
+  const entry = { d: todayDM(), iso: todayISO(), t: Date.now(), w, r };
+  if(painSel && painSel.value !== '') entry.p = parseInt(painSel.value, 10);
+
+  try{
+    const entries = getEntries(b, d, ei);
+    entries.push(entry);
+    setEntries(b, d, ei, entries);
+  }catch(e){
+    alert('Errore nel salvataggio. Riprova.');
+    return;
+  }
+  renderCard(b, d, ei);
+  const flash = card.querySelector('[data-role="flash"]');
+  flash.classList.add('show');
+  setTimeout(()=>flash.classList.remove('show'), 1200);
+
+  startTimer(b, d, ei);   // parte subito il recupero
+  showToast(`Salvato ${fmtKg(w)} kg × ${r}`, ()=>undoEntry(b, d, ei, entry.t));
+}
+function todayDM(){ return new Date().toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit'}); }
+
+function undoEntry(b, d, ei, t){
+  const entries = getEntries(b, d, ei);
+  const i = entries.findIndex(e=>e.t === t);
+  if(i >= 0){ entries.splice(i, 1); setEntries(b, d, ei, entries); }
+  if(timer && timer.cardId === `ex-${b}-${d}-${ei}`) stopTimer();
+  renderCard(b, d, ei);
+}
+
+function deleteEntry(b, d, ei, idx){
+  const entries = getEntries(b, d, ei);
+  const e = entries[idx];
+  if(!e) return;
+  if(!confirm(`Eliminare ${dmOf(entryIso(e))} — ${fmtKg(e.w)} kg × ${e.r}?`)) return;
+  entries.splice(idx, 1);
+  setEntries(b, d, ei, entries);
+  renderCard(b, d, ei);
+  renderHist(b, d, ei);
+}
+
+function renameEx(b, d, ei){
+  const cur = exName(b, d, ei);
+  const nv = prompt('Nome esercizio (lascia vuoto per il nome originale):', cur);
+  if(nv === null) return;
+  const key = `${b}_${d}_${ei}`;
+  if(nv.trim() === '' || nv.trim() === exDef(b, d, ei).n) delete settings.names[key];
+  else settings.names[key] = nv.trim();
+  saveSettings();
+  cardEl(b, d, ei).querySelector('[data-role="name"]').textContent = exName(b, d, ei);
+}
+
+/* ============ STORICO + GRAFICO ============ */
+function toggleHist(b, d, ei){
+  const histEl = cardEl(b, d, ei).querySelector('[data-role="hist"]');
+  histEl.classList.toggle('show');
+  if(histEl.classList.contains('show')) renderHist(b, d, ei);
+}
+function renderHist(b, d, ei){
+  const histEl = cardEl(b, d, ei).querySelector('[data-role="hist"]');
+  const entries = getEntries(b, d, ei);
+  if(!entries.length){ histEl.innerHTML = '<div>Nessuno storico ancora.</div>'; return; }
+  const sessions = sessionsOf(entries);
+  const pts = sessions.map(s=>({label: dmOf(s.iso), v: Math.max(...s.sets.map(x=>x.w))}));
+  const chart = pts.length >= 2 ? sparkline('Carico massimo per seduta (kg)', pts, 'kg') : '';
+  const rows = entries.map((e, idx)=>({e, idx})).reverse().map(({e, idx})=>`
+    <div class="hrow"><span>${dmOf(entryIso(e))} — ${fmtKg(e.w)}kg × ${e.r}${e.p!==undefined ? ` · spalla ${e.p}` : ''}</span>
+    <button class="delbtn" aria-label="Elimina" onclick="deleteEntry('${b}','${d}',${ei},${idx})">🗑</button></div>`).join('');
+  histEl.innerHTML = chart + rows;
+}
+
+let chartSeq = 0;
+function sparkline(title, pts, unit){
+  const id = 'ch' + (++chartSeq);
+  const W = 300, H = 110, L = 8, R = 8, T = 18, B = 22;
+  const vals = pts.map(p=>p.v);
+  let min = Math.min(...vals), max = Math.max(...vals);
+  if(min === max){ min -= 1; max += 1; }
+  const x = i => L + (pts.length === 1 ? 0 : i * (W - L - R) / (pts.length - 1));
+  const y = v => T + (H - T - B) * (1 - (v - min) / (max - min));
+  const path = pts.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(' ');
+  const last = pts.length - 1;
+  const lblIdx = [...new Set([0, last, vals.indexOf(Math.max(...vals))])];
+  const data = esc(JSON.stringify(pts));
+  return `
+  <div class="chart" id="${id}" data-pts="${data}" data-unit="${unit}">
+    <div class="ctitle">${title}</div>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)}">
+      <line class="grid" x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}"/>
+      <path class="ln" d="${path}"/>
+      ${pts.map((p,i)=>`<circle class="pt" data-i="${i}" cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="4.5"/>`).join('')}
+      ${lblIdx.map(i=>`<text class="lbl v" x="${x(i).toFixed(1)}" y="${(y(pts[i].v)-9).toFixed(1)}" text-anchor="${i===0?'start':i===last?'end':'middle'}">${fmtKg(pts[i].v)}</text>`).join('')}
+      <text class="lbl" x="${L}" y="${H-5}" text-anchor="start">${pts[0].label}</text>
+      <text class="lbl" x="${W-R}" y="${H-5}" text-anchor="end">${pts[last].label}</text>
+      ${pts.map((p,i)=>`<circle class="hit" cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="14" onclick="chartTap('${id}',${i})"/>`).join('')}
+    </svg>
+    <div class="cap" data-role="cap">Tocca un punto per il valore</div>
+  </div>`;
+}
+function chartTap(id, i){
+  const el = document.getElementById(id);
+  const pts = JSON.parse(el.dataset.pts);
+  el.querySelectorAll('.pt').forEach(c=>c.classList.toggle('sel', +c.dataset.i === i));
+  el.querySelector('[data-role="cap"]').textContent = `${pts[i].label}: ${fmtKg(pts[i].v)} ${el.dataset.unit}`;
+}
+
+/* ============ TOAST "ANNULLA" ============ */
+let toastTimeout = null;
+function showToast(msg, onUndo){
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  const btn = document.getElementById('toastBtn');
+  btn.onclick = ()=>{ hideToast(); onUndo(); };
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(hideToast, 6000);
+}
+function hideToast(){ document.getElementById('toast').classList.remove('show'); }
+
+/* ============ TIMER (uno alla volta, barra fissa in basso) ============ */
+let timer = null;
 let wakeLock = null;
+let audioCtx = null;
 
 async function acquireWakeLock(){
   if(!('wakeLock' in navigator) || wakeLock) return;
   try{
     wakeLock = await navigator.wakeLock.request('screen');
     wakeLock.addEventListener('release', ()=>{ wakeLock = null; });
-  }catch(e){
-    wakeLock = null; // non supportato o negato: il timer funziona lo stesso
-  }
+  }catch(e){ wakeLock = null; }
 }
-
-function releaseWakeLockIfIdle(){
-  if(Object.keys(activeTimers).length === 0 && wakeLock){
-    wakeLock.release().catch(()=>{});
-    wakeLock = null;
-  }
+function releaseWakeLock(){
+  if(wakeLock){ wakeLock.release().catch(()=>{}); wakeLock = null; }
 }
-
-/* Audio condiviso: creato/sbloccato al tocco su "Timer", così il beep suona anche su iPhone */
-let audioCtx = null;
 function unlockAudio(){
   try{
     if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if(audioCtx.state === 'suspended') audioCtx.resume();
   }catch(e){ audioCtx = null; }
 }
-
-function resetTimerUI(card, restSeconds){
+function formatMMSS(totalSeconds){
+  const mm = Math.floor(totalSeconds/60);
+  const ss = String(totalSeconds%60).padStart(2,'0');
+  return `${mm}:${ss}`;
+}
+function setCardTimerBtn(cardId, running){
+  const card = document.getElementById(cardId);
+  if(!card) return;
   const btn = card.querySelector('[data-role="timerbtn"]');
-  const disp = card.querySelector('[data-role="timerdisp"]');
-  disp.classList.remove('active');
-  btn.classList.remove('running','done');
-  btn.textContent = `⏱ Timer recupero (${restSeconds}")`;
+  btn.classList.toggle('running', running);
+  btn.textContent = running ? 'Stop timer' : `⏱ Timer (${card.dataset.rest}")`;
 }
 
-/* Il tempo rimasto si calcola dall'orario di fine: resta corretto anche se il telefono sospende l'app */
-function tickTimer(cardId){
-  const t = activeTimers[cardId];
-  if(!t) return;
-  const card = document.getElementById(cardId);
-  const btn = card.querySelector('[data-role="timerbtn"]');
-  const disp = card.querySelector('[data-role="timerdisp"]');
-  const remaining = Math.ceil((t.endAt - Date.now()) / 1000);
-
-  if(remaining <= 0){
-    clearInterval(t.intervalId);
-    delete activeTimers[cardId];
-    releaseWakeLockIfIdle();
-    disp.textContent = 'VIA!';
-    btn.classList.remove('running');
-    btn.classList.add('done');
-    btn.textContent = `⏱ Timer recupero (${t.restSeconds}")`;
-    playBeep();
-    setTimeout(()=>{
-      if(!activeTimers[cardId]){
-        disp.classList.remove('active');
-        btn.classList.remove('done');
-      }
-    }, 4000);
-    return;
-  }
-  disp.textContent = formatMMSS(remaining);
-}
-
-function toggleTimer(blockId, dayId, ei, restSeconds){
-  const cardId = `ex-${blockId}-${dayId}-${ei}`;
-  const card = document.getElementById(cardId);
-  const btn = card.querySelector('[data-role="timerbtn"]');
-  const disp = card.querySelector('[data-role="timerdisp"]');
-
-  // Se un timer è già attivo su questa card, stop/reset al tocco
-  if(activeTimers[cardId]){
-    clearInterval(activeTimers[cardId].intervalId);
-    delete activeTimers[cardId];
-    releaseWakeLockIfIdle();
-    resetTimerUI(card, restSeconds);
-    return;
-  }
-
+function startTimer(b, d, ei){
+  const cardId = `ex-${b}-${d}-${ei}`;
+  const rest = parseInt(cardEl(b, d, ei).dataset.rest, 10);
+  if(timer) clearTimer();
   unlockAudio();
   acquireWakeLock();
-
-  disp.classList.add('active');
-  disp.textContent = formatMMSS(restSeconds);
-  btn.classList.add('running');
-  btn.classList.remove('done');
-  btn.textContent = 'Stop';
-
-  const endAt = Date.now() + restSeconds * 1000;
-  const intervalId = setInterval(()=>tickTimer(cardId), 250);
-  activeTimers[cardId] = { endAt, intervalId, restSeconds };
+  timer = { cardId, endAt: Date.now() + rest*1000, intervalId: setInterval(tickTimer, 250) };
+  document.getElementById('tbName').textContent = `Recupero · ${exName(b, d, ei)}`;
+  const bar = document.getElementById('timerBar');
+  bar.classList.remove('done');
+  bar.classList.add('show');
+  document.body.classList.add('has-timer');
+  setCardTimerBtn(cardId, true);
+  tickTimer();
 }
-
-/* Quando l'app torna in primo piano: aggiorna subito i timer, riprende il Wake Lock e il colore "fatto oggi" */
-document.addEventListener('visibilitychange', ()=>{
-  if(document.visibilityState !== 'visible') return;
-  Object.keys(activeTimers).forEach(tickTimer);
-  if(Object.keys(activeTimers).length) acquireWakeLock();
-  const openAcc = document.querySelector('.acc.open');
-  if(openAcc){
-    const idx = Array.from(accWrap.children).indexOf(openAcc);
-    if(idx >= 0) loadAllLogsForBlock(PLAN[idx].id);
+function toggleTimer(b, d, ei){
+  if(timer && timer.cardId === `ex-${b}-${d}-${ei}`) stopTimer();
+  else startTimer(b, d, ei);
+}
+function addTimer(sec){
+  if(timer){ timer.endAt += sec*1000; tickTimer(); }
+}
+function clearTimer(){
+  if(!timer) return;
+  clearInterval(timer.intervalId);
+  setCardTimerBtn(timer.cardId, false);
+  timer = null;
+}
+function stopTimer(){
+  clearTimer();
+  releaseWakeLock();
+  document.getElementById('timerBar').classList.remove('show','done');
+  document.body.classList.remove('has-timer');
+}
+function tickTimer(){
+  if(!timer) return;
+  const remaining = Math.ceil((timer.endAt - Date.now()) / 1000);
+  const tEl = document.getElementById('tbTime');
+  if(remaining <= 0){
+    clearTimer();
+    releaseWakeLock();
+    tEl.textContent = 'VIA!';
+    const bar = document.getElementById('timerBar');
+    bar.classList.add('done');
+    playBeep();
+    setTimeout(()=>{ if(!timer){ bar.classList.remove('show','done'); document.body.classList.remove('has-timer'); } }, 5000);
+    return;
   }
-});
+  tEl.textContent = formatMMSS(remaining);
+}
 
 function playBeep(){
   try{
@@ -629,7 +998,6 @@ function playBeep(){
     const gain = ctx.createGain();
     gain.connect(ctx.destination);
     gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-
     let t = ctx.currentTime;
     for(let i=0; i<3; i++){
       const osc = ctx.createOscillator();
@@ -643,148 +1011,190 @@ function playBeep(){
       osc.stop(t + 0.2);
       t += 0.3;
     }
-  }catch(e){
-    // se l'audio non è disponibile, resta comunque il countdown visivo
-  }
+  }catch(e){ /* resta il countdown visivo */ }
   try{ if(navigator.vibrate){ navigator.vibrate([200,100,200,100,200]); } }catch(e){}
 }
 
-/* ---------- "Fatto oggi" ---------- */
-function todayISO(){
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+/* ============ SEDUTA DI OGGI ============ */
+function currentBlockIndex(){
+  if(!settings.startDate) return null;
+  const [sy, sm, sd] = settings.startDate.split('-').map(Number);
+  const n = new Date();
+  let months = (n.getFullYear()-sy)*12 + (n.getMonth()+1-sm) - (n.getDate() < sd ? 1 : 0);
+  if(months < 0) months = 0;
+  return { bi: Math.min(5, Math.floor(months/2)), month: months+1 };
 }
-function todayDM(){
-  return new Date().toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit'});
+function suggestedDay(bi){
+  const block = PLAN[bi];
+  let bestIdx = -1, bestIso = '';
+  block.days.forEach((d, di)=>{
+    const log = getDayLog(block.id, d.id);
+    Object.values(log).forEach(list=> (list||[]).forEach(e=>{
+      const iso = entryIso(e);
+      if(iso > bestIso || (iso === bestIso && di > bestIdx)){ bestIso = iso; bestIdx = di; }
+    }));
+  });
+  if(bestIdx < 0) return { di: 0, reason: 'primo allenamento del blocco' };
+  if(bestIso === todayISO()) return { di: bestIdx, reason: 'allenamento in corso oggi' };
+  return { di: (bestIdx+1) % block.days.length, reason: `ultimo: giorno ${block.days[bestIdx].id} il ${dmOf(bestIso)}` };
 }
-function isDoneToday(entries){
-  const iso = todayISO(), dm = todayDM();
-  // le registrazioni nuove hanno la data completa (iso); quelle vecchie solo giorno/mese
-  return entries.some(e => e.iso ? e.iso === iso : e.d === dm);
+function renderToday(){
+  const box = document.getElementById('todayBox');
+  const cur = currentBlockIndex();
+  const bi = cur ? cur.bi : 0;
+  const block = PLAN[bi];
+  const sd = suggestedDay(bi);
+  const day = block.days[sd.di];
+  let t1, t3;
+  if(cur){
+    t1 = cur.month > 12 ? 'Programma concluso · ultimo blocco' : `Mese ${cur.month} di 12 · Blocco ${bi+1}`;
+    t3 = sd.reason;
+  } else {
+    t1 = 'Blocco 1 (data di inizio non impostata)';
+    t3 = `${sd.reason} · <button class="linkbtn" onclick="openSettings()">imposta la data di inizio</button>`;
+  }
+  box.innerHTML = `
+    <div class="t1">${t1}</div>
+    <div class="t2">${block.title} — Giorno ${esc(day.label)}</div>
+    <div class="t3">${t3}</div>
+    <button onclick="goToday(${bi},${sd.di})">Vai all'allenamento</button>`;
+  return { bi, di: sd.di };
 }
-function markDone(card, entries){
-  card.classList.toggle('done', isDoneToday(entries));
+function goToday(bi, di){
+  openBlock(bi);
+  const acc = accWrap.children[bi];
+  switchDay(PLAN[bi].id, di, acc.querySelectorAll('.day-tab')[di]);
+  acc.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function openSettings(){
+  const f = document.getElementById('setFold');
+  f.open = true;
+  f.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function saveStartDate(v){
+  if(v) settings.startDate = v; else delete settings.startDate;
+  saveSettings();
+  const t = renderToday();
+  goToday(t.bi, t.di);
 }
 
-/* ---------- STORAGE (localStorage: dati salvati localmente su questo dispositivo/browser) ---------- */
-async function getDayLog(blockId, dayId){
+/* ============ BACKUP ============ */
+const BACKUP_KEYS = k => k.startsWith('log:') || k === 'maxtests' || k === 'settings';
+function allDataKeys(){
+  const keys = [];
+  for(let i=0; i<localStorage.length; i++){ const k = localStorage.key(i); if(BACKUP_KEYS(k)) keys.push(k); }
+  return keys;
+}
+function renderDataInfo(){
+  let n = 0, lastIso = '';
+  allDataKeys().filter(k=>k.startsWith('log:')).forEach(k=>{
+    Object.values(lsGet(k, {})).forEach(list=> (list||[]).forEach(e=>{ n++; const iso = entryIso(e); if(iso > lastIso) lastIso = iso; }));
+  });
+  const tests = lsGet('maxtests', []).length;
+  document.getElementById('dataInfo').textContent =
+    `${n} serie registrate${lastIso ? `, ultima il ${dmOf(lastIso)}` : ''} · ${tests} test massimali. I dati stanno solo su questo telefono: esporta un backup ogni tanto.`;
+}
+async function exportBackup(){
+  const data = {};
+  allDataKeys().forEach(k=> data[k] = localStorage.getItem(k));
+  const payload = JSON.stringify({ app:'ipertrofia-tracker', version:1, exported: new Date().toISOString(), data }, null, 1);
+  const name = `ipertrofia-backup-${todayISO()}.json`;
+  const blob = new Blob([payload], {type:'application/json'});
   try{
-    const raw = localStorage.getItem(`log:${blockId}_${dayId}`);
-    return raw ? JSON.parse(raw) : {};
+    const file = new File([blob], name, {type:'application/json'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title:'Backup allenamenti'});
+      return;
+    }
   }catch(e){
-    return {};
+    if(e && e.name === 'AbortError') return;   // condivisione annullata dall'utente
   }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+function importBackup(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    let obj;
+    try{ obj = JSON.parse(reader.result); }catch(e){ alert('File non valido.'); input.value=''; return; }
+    if(!obj || obj.app !== 'ipertrofia-tracker' || typeof obj.data !== 'object'){ alert('Questo file non è un backup di questa app.'); input.value=''; return; }
+    const keys = Object.keys(obj.data).filter(BACKUP_KEYS);
+    if(!confirm(`Il backup del ${String(obj.exported).slice(0,10)} sostituirà TUTTI i dati attuali su questo telefono. Continuare?`)){ input.value=''; return; }
+    allDataKeys().forEach(k=>localStorage.removeItem(k));
+    keys.forEach(k=>localStorage.setItem(k, obj.data[k]));
+    location.reload();
+  };
+  reader.readAsText(file);
 }
 
-async function loadAllLogsForBlock(blockId){
-  const block = PLAN.find(b=>b.id===blockId);
-  for(const d of block.days){
-    const dayLog = await getDayLog(blockId, d.id);
-    d.exercises.forEach((ex,ei)=>{
-      const entries = dayLog[ei] || [];
-      const card = document.getElementById(`ex-${blockId}-${d.id}-${ei}`);
-      if(!card) return;
-      const lastEl = card.querySelector('[data-role="last"]');
-      if(entries.length){
-        const last = entries[entries.length-1];
-        lastEl.textContent = `Ultimo: ${last.w}kg × ${last.r} (${last.d})`;
-      } else {
-        lastEl.textContent = 'Ultimo: —';
-      }
-      card.dataset.entries = JSON.stringify(entries);
-      markDone(card, entries);
-    });
-  }
-}
-
-async function logExercise(blockId, dayId, ei){
-  const card = document.getElementById(`ex-${blockId}-${dayId}-${ei}`);
-  const w = card.querySelector('[data-role="w"]').value;
-  const rp = card.querySelector('[data-role="rp"]').value;
-  if(!w || !rp){ return; }
-  const today = new Date();
-  const dateStr = today.toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit'});
-
-  try{
-    const dayLog = await getDayLog(blockId, dayId);
-    const entries = dayLog[ei] || [];
-    entries.push({d:dateStr, iso:todayISO(), w:parseFloat(w), r:parseInt(rp)});
-    if(entries.length > 12) entries.shift();
-    dayLog[ei] = entries;
-    localStorage.setItem(`log:${blockId}_${dayId}`, JSON.stringify(dayLog));
-
-    card.querySelector('[data-role="last"]').textContent = `Ultimo: ${w}kg × ${rp} (${dateStr})`;
-    card.dataset.entries = JSON.stringify(entries);
-    markDone(card, entries);
-    const flash = card.querySelector('[data-role="flash"]');
-    flash.classList.add('show');
-    setTimeout(()=>flash.classList.remove('show'), 1200);
-    card.querySelector('[data-role="w"]').value = '';
-    card.querySelector('[data-role="rp"]').value = '';
-
-    const histEl = card.querySelector('[data-role="hist"]');
-    if(histEl.classList.contains('show')) renderHist(card);
-  }catch(e){
-    alert('Errore nel salvataggio. Riprova.');
-  }
-}
-
-function toggleHist(blockId, dayId, ei){
-  const card = document.getElementById(`ex-${blockId}-${dayId}-${ei}`);
-  const histEl = card.querySelector('[data-role="hist"]');
-  histEl.classList.toggle('show');
-  if(histEl.classList.contains('show')) renderHist(card);
-}
-
-function renderHist(card){
-  const entries = JSON.parse(card.dataset.entries || '[]');
-  const histEl = card.querySelector('[data-role="hist"]');
-  if(!entries.length){ histEl.innerHTML = '<div>Nessuno storico ancora.</div>'; return; }
-  histEl.innerHTML = entries.slice().reverse().map(e=>`<div>${e.d} — ${e.w}kg × ${e.r}</div>`).join('');
-}
-
-/* ---------- TEST MASSIMALI ---------- */
-async function getTestHistory(){
-  try{
-    const raw = localStorage.getItem('maxtests');
-    return raw ? JSON.parse(raw) : [];
-  }catch(e){
-    return [];
-  }
-}
-
-async function saveTest(){
+/* ============ TEST MASSIMALI ============ */
+function getTestHistory(){ return lsGet('maxtests', []); }
+function saveTest(){
   const ex = document.getElementById('testExercise').value;
   const w = parseFloat(document.getElementById('testWeight').value);
-  const r = parseInt(document.getElementById('testReps').value);
+  const r = parseInt(document.getElementById('testReps').value, 10);
   if(!w || !r){ return; }
   const rm = Math.round(w * (1 + r/30) * 10) / 10;
   const dateStr = new Date().toLocaleDateString('it-IT', {day:'2-digit', month:'2-digit', year:'numeric'});
-
   try{
-    const hist = await getTestHistory();
-    hist.push({d:dateStr, ex, w, r, rm});
-    localStorage.setItem('maxtests', JSON.stringify(hist));
+    const hist = getTestHistory();
+    hist.push({d:dateStr, iso:todayISO(), ex, w, r, rm});
+    lsSet('maxtests', hist);
     document.getElementById('testWeight').value = '';
     document.getElementById('testReps').value = 3;
-    renderTestHistory(hist);
+    renderTestHistory();
   }catch(e){
     alert('Errore nel salvataggio del test. Riprova.');
   }
 }
-
-function renderTestHistory(hist){
+function deleteTest(idx){
+  const hist = getTestHistory();
+  const t = hist[idx];
+  if(!t || !confirm(`Eliminare il test ${t.d} · ${t.ex}?`)) return;
+  hist.splice(idx, 1);
+  lsSet('maxtests', hist);
+  renderTestHistory();
+}
+function renderTestHistory(){
+  const hist = getTestHistory();
   const el = document.getElementById('testHistory');
-  if(!hist.length){ el.innerHTML = ''; return; }
-  el.innerHTML = hist.slice().reverse().map(t=>`
+  const ch = document.getElementById('testCharts');
+  el.innerHTML = hist.map((t, idx)=>({t, idx})).reverse().map(({t, idx})=>`
     <div class="test-entry">
-      <span>${t.d} · ${t.ex} — ${t.w}kg × ${t.r}</span>
-      <span class="rm">~${t.rm}kg 1RM</span>
-    </div>
-  `).join('');
+      <span>${t.d} · ${esc(t.ex)} — ${fmtKg(t.w)}kg × ${t.r}</span>
+      <span style="display:flex;align-items:center;gap:8px;"><span class="rm">~${fmtKg(t.rm)}kg 1RM</span>
+      <button class="delbtn" aria-label="Elimina test" onclick="deleteTest(${idx})">🗑</button></span>
+    </div>`).join('');
+  const byEx = {};
+  hist.forEach(t=>{ (byEx[t.ex] = byEx[t.ex] || []).push({label: t.d.slice(0,5), v: t.rm}); });
+  ch.innerHTML = Object.entries(byEx).filter(([,pts])=>pts.length >= 2)
+    .map(([ex, pts])=>sparkline(`${esc(ex)} — 1RM stimato (kg)`, pts, 'kg')).join('');
 }
 
-getTestHistory().then(renderTestHistory);
+/* ============ AVVIO ============ */
+document.getElementById('startDate').value = settings.startDate || '';
+const start = renderToday();
+openBlock(start.bi);
+switchDay(PLAN[start.bi].id, start.di, accWrap.children[start.bi].querySelectorAll('.day-tab')[start.di]);
+renderTestHistory();
+renderDataInfo();
+document.getElementById('setFold').addEventListener('toggle', renderDataInfo);
+
+/* Ritorno in primo piano: aggiorna timer, Wake Lock, colori e seduta del giorno */
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState !== 'visible') return;
+  tickTimer();
+  if(timer) acquireWakeLock();
+  const openAcc = document.querySelector('.acc.open');
+  if(openAcc) loadAllLogsForBlock(PLAN[Array.from(accWrap.children).indexOf(openAcc)].id);
+  renderToday();
+});
 </script>
 
 <script>
