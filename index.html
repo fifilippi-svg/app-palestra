@@ -281,6 +281,24 @@
   .goalrow input{height:48px; background:var(--bg); border:1.5px solid var(--line); border-radius:8px; color:var(--text); font-family:var(--mono); font-size:16px; padding:0 8px;}
   .goalrow input#goalKg{width:80px; text-align:center;}
   .goalrow input#goalDate{flex:1 1 150px; min-width:0;}
+
+  /* ---- v8: volume settimanale ---- */
+  .volhead{display:flex; align-items:center; justify-content:space-between; gap:8px; margin:4px 0 10px;}
+  .voltitle{font-family:var(--mono); font-size:14px; color:var(--text); text-align:center; flex:1 1 auto;}
+  .volhead button{width:44px; height:44px; background:var(--bg); border:1.5px solid var(--line); border-radius:8px; color:var(--text); font-size:22px; cursor:pointer;}
+  .volhead button:disabled{opacity:.3; cursor:default;}
+  .vrow{display:grid; grid-template-columns:104px minmax(0,1fr) 62px; align-items:center; gap:8px; min-height:34px;}
+  .vname{font-size:15px;}
+  .vbar{position:relative; height:14px; background:var(--bg); border-radius:4px; overflow:visible;}
+  .vfill{position:absolute; left:0; top:0; bottom:0; background:var(--mute); border-radius:0 4px 4px 0; min-width:2px;}
+  .vfill.ok{background:var(--accent2);}
+  .vmark{position:absolute; top:-4px; bottom:-4px; width:0; border-left:2px dashed var(--warn);}
+  .vval{font-family:var(--mono); font-size:15px; text-align:right;}
+  .vval small{color:var(--mute); font-size:12px;}
+  .vlegend{font-family:var(--mono); font-size:12.5px; color:var(--mute); margin-top:10px; display:flex; align-items:center; gap:6px;}
+  .vmark-l{display:inline-block; width:0; height:14px; border-left:2px dashed var(--warn);}
+  .vempty{font-size:15px; color:var(--mute); padding:6px 0;}
+  #volSum{font-family:var(--mono); font-size:14px; color:var(--mute); margin-left:auto; margin-right:10px; text-transform:none; white-space:nowrap; flex:0 0 auto;}
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#101314">
@@ -473,6 +491,22 @@
     <div class="cal-grid" id="calGrid"></div>
     <div class="cal-foot" id="calFoot"></div>
   </div>
+</section>
+
+<section>
+  <details class="fold" id="volFold">
+    <summary><span><span class="n">07</span>Volume settimanale</span><span id="volSum"></span><span class="chev">›</span></summary>
+    <div class="volhead">
+      <button aria-label="Settimana precedente" onclick="volMove(-1)">‹</button>
+      <div class="voltitle" id="volTitle"></div>
+      <button id="volNext" aria-label="Settimana successiva" onclick="volMove(1)">›</button>
+    </div>
+    <div id="volBox"></div>
+    <details class="note">
+      <summary>Come si legge</summary>
+      <p class="sub-note">Serie registrate da lunedì a domenica per ogni muscolo. Una serie conta per ciascun muscolo principale dell'esercizio (es. una serie di leg press vale 1 per quadricipiti e 1 per glutei; un superset curl + push-down vale 1 per bicipiti e 1 per tricipiti). La linea tratteggiata a <b>10 serie</b> viene dalla meta-analisi di Schoenfeld, Ogborn e Krieger (Journal of Sports Sciences, 2017): la crescita muscolare media era 5,4% con meno di 5 serie a settimana per muscolo, 6,6% con 5-9 e 9,8% con 10 o più. È un riferimento medio, non un obbligo: il tuo piano per blocco resta quello da seguire.</p>
+    </details>
+  </details>
 </section>
 
 <footer>
@@ -1121,7 +1155,7 @@ let stopwatch = null;   // {cardId, b, d, ei, start, intervalId}
 function toggleStopwatch(b, d, ei){
   const cardId = `ex-${b}-${d}-${ei}`;
   if(stopwatch && stopwatch.cardId === cardId){
-    const sec = Math.round((Date.now() - stopwatch.start) / 1000);
+    const sec = Math.floor((Date.now() - stopwatch.start) / 1000);   // uguale a quello mostrato sul display
     stopStopwatch();
     if(sec < 1){ flash(cardEl(b,d,ei), 'Troppo breve', true); return; }
     logExercise(b, d, ei, sec);        // Stop = salva la serie e parte il recupero
@@ -1189,6 +1223,7 @@ function renameEx(b, d, ei){
   else settings.names[key] = clean;
   saveSettings();
   cardEl(b, d, ei).querySelector('[data-role="name"]').textContent = exName(b, d, ei);
+  renderVolume();
 }
 
 /* ============ STORICO + GRAFICO ============ */
@@ -1427,6 +1462,7 @@ function playBeep(){
 function renderTodayKeep(anchor){
   const before = anchor ? anchor.getBoundingClientRect().top : null;
   renderToday();
+  renderVolume();
   if(anchor){ const diff = anchor.getBoundingClientRect().top - before; if(Math.abs(diff) > 0.5) window.scrollBy(0, diff); }
 }
 function currentBlockIndex(){
@@ -1654,6 +1690,80 @@ function renderWeight(){
     <button class="delbtn" aria-label="Elimina pesata del ${dmOf(w.iso)}" onclick="deleteWeight('${w.iso}')">🗑</button></div>`).join('');
 }
 
+/* ============ VOLUME SETTIMANALE PER MUSCOLO ============ */
+/* Muscoli principali di ogni esercizio (dal nome). Una serie conta 1 per ciascun muscolo principale. */
+const MUSCLE_RULES = [
+  [/stacco/i, ['Femorali','Glutei']],
+  [/leg press|squat|hack|affondi|step-up|bulgari/i, ['Quadricipiti','Glutei']],
+  [/leg extension/i, ['Quadricipiti']],
+  [/leg curl/i, ['Femorali']],
+  [/hip thrust|glute/i, ['Glutei']],
+  [/chest press|croci|^panca|petto|pectoral/i, ['Petto']],
+  [/lat machine|pulley|rematore|trazioni|pulldown/i, ['Dorso']],
+  [/shoulder press|alzate|military|lento avanti|face pull|extrarotazion/i, ['Spalle']],
+  [/(^|\+\s*)curl|bicipit/i, ['Bicipiti']],
+  [/push-down|pushdown|tricipit|french/i, ['Tricipiti']],
+  [/polpacci|calf/i, ['Polpacci']],
+  [/plank|crunch|core|addominal/i, ['Core']],
+];
+const MUSCLE_ORDER = ['Petto','Dorso','Spalle','Bicipiti','Tricipiti','Quadricipiti','Femorali','Glutei','Polpacci','Core','Altro'];
+const VOLUME_REF = 10;   // ≥10 serie/settimana per muscolo: Schoenfeld, Ogborn, Krieger, J Sports Sci 2017;35(11):1073-82
+function musclesOf(name){
+  const n = String(name).replace(/^\+\s*/, '');
+  const out = new Set();
+  MUSCLE_RULES.forEach(([re, ms])=>{ if(re.test(n)) ms.forEach(m=>out.add(m)); });
+  return out.size ? [...out] : ['Altro'];
+}
+function weekStart(offset){
+  const d = new Date(); d.setHours(12,0,0,0);
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + offset*7);   // lunedì
+  return d;
+}
+function volumeFor(offset){
+  const from = weekStart(offset), to = new Date(from); to.setDate(to.getDate() + 6);
+  const a = isoOf(from), z = isoOf(to);
+  const tot = {};
+  let sets = 0;
+  PLAN.forEach(bl=> bl.days.forEach(dd=>{
+    const log = getDayLog(bl.id, dd.id);
+    dd.exercises.forEach((ex, ei)=>{
+      const list = Array.isArray(log[ei]) ? log[ei] : [];
+      const n = list.filter(e=>{ if(!e) return false; const iso = entryIso(e); return iso >= a && iso <= z; }).length;
+      if(!n) return;
+      sets += n;
+      musclesOf(exName(bl.id, dd.id, ei)).forEach(m=>{ tot[m] = (tot[m] || 0) + n; });
+    });
+  }));
+  return {from, to, tot, sets};
+}
+let volOffset = 0;
+function volMove(delta){ volOffset = Math.min(0, volOffset + delta); renderVolume(); }
+function renderVolume(){
+  const box = document.getElementById('volBox');
+  if(!box) return;
+  const cur = volumeFor(volOffset), prev = volumeFor(volOffset - 1);
+  const fmtD = d => `${d.getDate()} ${MESI[d.getMonth()].slice(0,3).toLowerCase()}`;
+  const range = cur.from.getMonth() === cur.to.getMonth()
+    ? `${cur.from.getDate()}–${fmtD(cur.to)}` : `${fmtD(cur.from)} – ${fmtD(cur.to)}`;
+  document.getElementById('volTitle').textContent = `${volOffset === 0 ? 'Questa settimana' : volOffset === -1 ? 'Settimana scorsa' : 'Settimana'} · ${range}`;
+  document.getElementById('volNext').disabled = volOffset >= 0;
+  const sumEl = document.getElementById('volSum');
+  if(sumEl) sumEl.textContent = cur.sets ? `${cur.sets} serie` : '';
+  const muscles = MUSCLE_ORDER.filter(m=>cur.tot[m] || prev.tot[m]);
+  if(!muscles.length){ box.innerHTML = '<div class="vempty">Nessuna serie registrata in questa settimana.</div>'; return; }
+  const max = Math.max(VOLUME_REF + 2, ...muscles.map(m=>cur.tot[m] || 0));
+  const refPct = VOLUME_REF / max * 100;
+  box.innerHTML = muscles.map(m=>{
+    const v = cur.tot[m] || 0, pv = prev.tot[m] || 0;
+    const showRef = m !== 'Core' && m !== 'Altro';
+    return `<div class="vrow" aria-label="${m}: ${v} serie${showRef ? `, riferimento ${VOLUME_REF}` : ''}">
+      <span class="vname">${m}</span>
+      <span class="vbar"><span class="vfill${showRef && v >= VOLUME_REF ? ' ok' : ''}" style="width:${(v/max*100).toFixed(1)}%"></span>${showRef ? `<span class="vmark" style="left:${refPct.toFixed(1)}%"></span>` : ''}</span>
+      <span class="vval"><b>${v}</b><small>${pv ? ` (${pv})` : ''}</small></span>
+    </div>`;
+  }).join('') + `<div class="vlegend"><span class="vmark-l"></span> ${VOLUME_REF} serie/settimana · tra parentesi la settimana precedente</div>`;
+}
+
 /* ============ BACKUP ============ */
 const BACKUP_KEYS = k => k.startsWith('log:') || k === 'maxtests' || k === 'settings' || k === 'workouts' || k === 'bodyweight';
 function allDataKeys(){
@@ -1781,6 +1891,7 @@ try{
   renderDataInfo();
   renderCalendar();
   renderWeight();
+  renderVolume();
   document.getElementById('setFold').addEventListener('toggle', renderDataInfo);
 }catch(e){
   console.error(e);
@@ -1798,6 +1909,7 @@ document.addEventListener('visibilitychange', ()=>{
   if(openIdx >= 0) loadAllLogsForBlock(PLAN[openIdx].id);
   renderTodayKeep(document.activeElement && document.activeElement.closest ? document.activeElement.closest('.exlog') : null);
   renderCalendar();
+  renderVolume();
 });
 </script>
 
