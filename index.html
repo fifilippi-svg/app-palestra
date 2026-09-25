@@ -299,6 +299,64 @@
   .vmark-l{display:inline-block; width:0; height:14px; border-left:2px dashed var(--warn);}
   .vempty{font-size:15px; color:var(--mute); padding:6px 0;}
   #volSum{font-family:var(--mono); font-size:14px; color:var(--mute); margin-left:auto; margin-right:10px; text-transform:none; white-space:nowrap; flex:0 0 auto;}
+
+  /* ---- v9: riepilogo + modalità focus ---- */
+  .focusbtn{width:100%; min-height:52px; margin:0 0 12px; background:transparent; border:1.5px dashed var(--accent); color:var(--accent);
+    border-radius:10px; font-family:var(--mono); font-size:15px; font-weight:700; cursor:pointer;}
+  #focus{position:fixed; inset:0; z-index:45; background:var(--bg); display:none; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding:calc(10px + env(safe-area-inset-top)) 14px calc(150px + env(safe-area-inset-bottom));}
+  #focus.show{display:block;}
+  body.focus-open, body.sheet-open{overflow:hidden;}
+  .fbar{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
+  .fbar button{height:48px; min-width:48px; border-radius:8px; border:1.5px solid var(--line); background:var(--surface); color:var(--text);
+    font-family:var(--mono); font-size:15px; font-weight:700; cursor:pointer; padding:0 12px;}
+  .fbar button:disabled{opacity:.3;}
+  #focusCount{flex:1 1 auto; text-align:center; font-family:var(--mono); font-size:15px; color:var(--mute);}
+  #focusDots{display:flex; gap:6px; justify-content:center; margin:2px 0 12px;}
+  .fdot{width:12px; height:12px; border-radius:50%; background:var(--line);}
+  .fdot.part{background:rgba(47,209,166,.5);} .fdot.ok{background:var(--accent2);}
+  .fdot.cur{outline:2px solid var(--accent); outline-offset:2px;}
+  #focusStage .exlog{padding:16px; margin:0;}
+  #focusStage .exname{font-size:26px;}
+  #focusStage .extarget{font-size:17px;}
+  #focusStage .setbadge{font-size:18px; padding:3px 10px;}
+  #focusStage .cmp{font-size:16px;}
+  #focusStage .exrow input{height:68px; font-size:26px;}
+  #focusStage .logbtn{flex-basis:68px; width:68px; height:68px; font-size:20px;}
+  #focusStage .logspacer{flex-basis:68px; width:68px;}
+  #focusStage .steprow button{height:52px; font-size:16px;}
+  #focusStage .swbtn{height:68px; font-size:18px;}
+  #focusStage .swtime{font-size:44px;}
+  .fnav{display:flex; gap:10px; margin-top:14px;}
+  .fnav button{flex:1 1 0; min-height:56px; border-radius:10px; border:1.5px solid var(--line); background:var(--surface); color:var(--text);
+    font-family:var(--mono); font-size:16px; font-weight:700; cursor:pointer;}
+  .fnav button:disabled{opacity:.3;}
+  .fend{text-align:center; padding:30px 0;}
+  .fend-t{font-family:var(--disp); font-size:30px; text-transform:uppercase;}
+  .fend-s{color:var(--mute); margin:6px 0 18px;}
+
+  #sheet{position:fixed; inset:0; z-index:70; display:none; background:rgba(0,0,0,.6); align-items:flex-end; justify-content:center;}
+  #sheet.show{display:flex;}
+  .sheet-card{background:var(--surface); width:100%; max-width:560px; max-height:88vh; overflow-y:auto; border-radius:16px 16px 0 0;
+    padding:18px 16px calc(18px + env(safe-area-inset-bottom)); border-top:2px solid var(--accent2);}
+  .swk + .swk{border-top:1px solid var(--line); margin-top:16px; padding-top:16px;}
+  .shead{font-family:var(--disp); font-size:28px; text-transform:uppercase; line-height:1.1;}
+  .shead small{display:block; font-family:var(--mono); font-size:14px; color:var(--mute); text-transform:none; margin-top:4px;}
+  .sgrid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0 10px;}
+  .sbox{background:var(--bg); border-radius:10px; padding:10px 12px;}
+  .sv{font-family:var(--mono); font-size:28px; font-weight:700; line-height:1.1;}
+  .sl{font-size:13px; color:var(--mute);}
+  .scmp{font-size:15px; color:var(--mute); margin:6px 0;}
+  .srecs{margin:10px 0; display:flex; flex-direction:column; gap:6px;}
+  .srecs div{background:rgba(242,201,76,.10); border-left:3px solid var(--warn); border-radius:0 8px 8px 0; padding:8px 10px; font-size:15px;}
+  .srecs small{color:var(--mute);}
+  .srow{display:flex; justify-content:space-between; gap:10px; padding:6px 0; border-bottom:1px solid var(--line); font-size:14px;}
+  .srow span:last-child{font-family:var(--mono); color:var(--mute); text-align:right;}
+  .sbtns{display:flex; gap:10px; margin-top:12px;}
+  .sbtn-b{flex:1 1 0; min-height:48px; border-radius:10px; background:transparent; border:1.5px solid var(--line); color:var(--mute);
+    font-family:var(--mono); font-size:14px; font-weight:700; cursor:pointer;}
+  .sclose{width:100%; min-height:54px; margin-top:14px; border:none; border-radius:10px; background:var(--accent2); color:var(--bg);
+    font-family:var(--mono); font-size:16px; font-weight:700; text-transform:uppercase; cursor:pointer;}
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#101314">
@@ -332,7 +390,7 @@
   <h2><span class="n">01</span>Allenati e registra</h2>
   <details class="note">
     <summary>Come si usa</summary>
-    <p class="sub-note">Kg e reps sono già compilati con l'ultima serie (puoi scrivere i decimali con la virgola, es. 62,5). Se vuoi, tocca il <b>RIR</b> (ripetizioni che avresti ancora potuto fare: 0-1, 2, 3+). Premi <b>Rec</b>: la serie viene salvata e parte il timer di recupero, visibile nella barra in basso. Negli esercizi a tempo (plank) premi <b>▶ Avvia</b> e poi <b>Stop e salva</b>; nei superset scrivi i pesi dei due esercizi. Il contatore <b>2/3</b> indica le serie fatte oggi; a serie completate la card diventa <b style="color:var(--accent2)">verde con ✓</b>. A fine seduta premi <b>Concludi allenamento</b>: la lettera del giorno compare nel calendario in fondo.</p>
+    <p class="sub-note">Kg e reps sono già compilati con l'ultima serie (puoi scrivere i decimali con la virgola, es. 62,5). Se vuoi, tocca il <b>RIR</b> (ripetizioni che avresti ancora potuto fare: 0-1, 2, 3+). Premi <b>Rec</b>: la serie viene salvata e parte il timer di recupero, visibile nella barra in basso. Negli esercizi a tempo (plank) premi <b>▶ Avvia</b> e poi <b>Stop e salva</b>; nei superset scrivi i pesi dei due esercizi. Il contatore <b>2/3</b> indica le serie fatte oggi; a serie completate la card diventa <b style="color:var(--accent2)">verde con ✓</b>. Con <b>🎯 Modalità focus</b> vedi un esercizio alla volta a tutto schermo: finite le serie previste passa da solo al successivo. A fine seduta premi <b>Concludi allenamento</b>: vedi il riepilogo con eventuali record 🏆 e la lettera del giorno compare nel calendario (toccandola lo riapri).</p>
   </details>
   <div id="accWrap"></div>
 </section>
@@ -524,6 +582,26 @@
   </div>
   <button class="tb-plus" onclick="addTimer(15)" aria-label="Aggiungi 15 secondi">+15"</button>
   <button class="tb-stop" onclick="stopTimer()">Stop</button>
+</div>
+
+<div id="focus" role="dialog" aria-modal="true" aria-label="Modalità focus">
+  <div class="fbar">
+    <button onclick="closeFocus()" aria-label="Esci dalla modalità focus">✕ Esci</button>
+    <span id="focusCount"></span>
+  </div>
+  <div id="focusDots" aria-hidden="true"></div>
+  <div id="focusStage"></div>
+  <div class="fnav">
+    <button id="focusPrev" onclick="focusMove(-1)">‹ Precedente</button>
+    <button id="focusNext" onclick="focusMove(1)">Successivo ›</button>
+  </div>
+</div>
+
+<div id="sheet" role="dialog" aria-modal="true" aria-label="Riepilogo allenamento" onclick="if(event.target===this) closeSummary()">
+  <div class="sheet-card">
+    <div id="sheetBody"></div>
+    <button class="sclose" onclick="closeSummary()">Chiudi</button>
+  </div>
 </div>
 
 <div id="toast" role="status"><span id="toastMsg"></span><button id="toastBtn">Annulla</button></div>
@@ -865,6 +943,7 @@ function buildBlock(bi){
       </div>
       ${block.days.map((d,di)=>`
         <div class="day-panel ${di===0?'active':''}" id="panel-${block.id}-${di}" role="tabpanel">
+          <button class="focusbtn" onclick="openFocus('${block.id}','${d.id}')">🎯 Modalità focus · un esercizio alla volta</button>
           ${d.exercises.map((ex,ei)=>cardHTML(block.id, d.id, ei, ex)).join('')}
           <button class="finishbtn" data-role="finish" data-b="${block.id}" data-d="${d.id}" onclick="finishWorkout('${block.id}','${d.id}')">✅ Concludi allenamento ${d.id}</button>
         </div>`).join('')}
@@ -1148,6 +1227,7 @@ function logExercise(b, d, ei, secsFromWatch){
   flash(card, 'salvato ✓');
   startTimer(b, d, ei);   // parte subito il recupero
   showToast(msg, ()=>undoEntry(b, d, ei, entry.t));
+  focusAfterLog(b, d, ei);
 }
 
 /* ============ CRONOMETRO (esercizi a tempo) ============ */
@@ -1193,6 +1273,7 @@ function stopStopwatch(){
 }
 
 function undoEntry(b, d, ei, t){
+  if(focusState){ clearTimeout(focusState.adv); }
   const entries = getEntries(b, d, ei);
   const i = entries.findIndex(e=>e.t === t);
   if(i >= 0){ entries.splice(i, 1); setEntries(b, d, ei, entries); }
@@ -1538,23 +1619,16 @@ function finishWorkout(b, d){
   const iso = todayISO();
   const list = getWorkouts();
   const i = list.findIndex(w=>w.iso===iso && w.b===b && w.d===d);
-  if(i >= 0){
-    if(!confirm(`L'allenamento ${d} di oggi è già segnato nel calendario. Vuoi toglierlo?`)) return;
-    list.splice(i, 1);
-  } else {
-    list.push({iso, b, d, t: Date.now()});
-    if(stopwatch) stopStopwatch();
-    if(timer) stopTimer(); else releaseWakeLock();
-  }
+  if(i >= 0){ openSummary(iso, [{b, d}], 'remove'); return; }     // già concluso: mostra il riepilogo
+  list.push({iso, b, d, t: Date.now()});
+  if(stopwatch) stopStopwatch();
+  if(timer) stopTimer(); else releaseWakeLock();
   if(!saveWorkouts(list)) return;
+  if(focusState) closeFocus();
   refreshWorkoutViews();
-  if(i < 0){
-    showToast(`Allenamento ${d} concluso ✓ — segnato nel calendario`, ()=>{
-      const l = getWorkouts(); const k = l.findIndex(w=>w.iso===iso && w.b===b && w.d===d);
-      if(k >= 0){ l.splice(k,1); saveWorkouts(l); refreshWorkoutViews(); }
-    });
-  }
+  openSummary(iso, [{b, d}], 'undo');
 }
+
 function refreshWorkoutViews(){ renderFinishButtons(); renderCalendar(); renderTodayKeep(document.activeElement && document.activeElement.closest ? document.activeElement.closest('.day-panel, .cal') : null); }
 function renderFinishButtons(){
   const iso = todayISO();
@@ -1612,12 +1686,208 @@ function renderCalendar(){
     : `Nessun allenamento concluso in ${MESI[m].toLowerCase()}.`;
 }
 function calTap(iso){
-  const list = getWorkouts();
-  const ws = list.filter(w=>w.iso===iso);
-  if(!ws.length) return;
-  const desc = ws.map(w=>`giorno ${w.d} (blocco ${w.b.slice(1)})`).join(', ');
-  if(!confirm(`${dmOf(iso)}: ${desc}.\n\nVuoi togliere ${ws.length>1?'questi allenamenti':'questo allenamento'} dal calendario?`)) return;
-  if(saveWorkouts(list.filter(w=>w.iso!==iso))) refreshWorkoutViews();
+  const ws = getWorkouts().filter(w=>w.iso===iso);
+  if(ws.length) openSummary(iso, ws.map(w=>({b:w.b, d:w.d})), 'remove');
+}
+
+/* ============ RIEPILOGO ALLENAMENTO + RECORD ============ */
+function epley(w, r){ return w * (1 + r / 30); }
+function tonnage(e){ return (Number(e.w)||0)*(Number(e.r)||0) + (Number(e.w2)||0)*(Number(e.r2)||0); }
+function fmtInt(n){ return Math.round(n).toLocaleString('it-IT'); }
+/* Tutte le serie dello stesso esercizio (stesso nome nel piano) in qualunque blocco, prima di una data */
+function historyBefore(b, d, ei, iso){
+  const base = exDef(b, d, ei).n.toLowerCase().trim();
+  const out = [];
+  PLAN.forEach(bl=> bl.days.forEach(dd=> dd.exercises.forEach((ex, j)=>{
+    if(ex.n.toLowerCase().trim() !== base) return;
+    getEntries(bl.id, dd.id, j).forEach(e=>{ if(entryIso(e) < iso) out.push(e); });
+  })));
+  return out;
+}
+function recordsFor(b, d, ei, iso, todaySets){
+  const ex = exDef(b, d, ei), kind = exKind(ex), name = exName(b, d, ei);
+  const hist = historyBefore(b, d, ei, iso);
+  if(!hist.length || !todaySets.length) return [];
+  const recs = [];
+  const check = (label, todayVals, prevVals, fmt, unit)=>{
+    const t = Math.max(...todayVals), p = Math.max(...prevVals);
+    if(isFinite(t) && isFinite(p) && t > p) recs.push(`🏆 <b>${esc(label)}</b>: ${fmt(t)}${unit} <small>(prima ${fmt(p)}${unit})</small>`);
+    return isFinite(t) && isFinite(p) && t > p;
+  };
+  if(kind === 'timed'){
+    const tv = todaySets.map(e=>Number(e.s)).filter(v=>v>0), pv = hist.map(e=>Number(e.s)).filter(v=>v>0);
+    if(tv.length && pv.length) check(`${name} — tenuta`, tv, pv, fmtSecs, '');
+    return recs;
+  }
+  const parts = kind === 'super' ? superParts(ex.n) : [name];
+  [['w','r'], ['w2','r2']].slice(0, parts.length).forEach(([kw, kr], k)=>{
+    const tw = todaySets.filter(e=>Number(e[kw])>0), pw = hist.filter(e=>Number(e[kw])>0);
+    if(!tw.length || !pw.length) return;
+    const lbl = parts[k];
+    // prima il peso massimo; se non è un record, il 1RM stimato (Epley) da una singola serie
+    if(!check(`${lbl} — peso massimo`, tw.map(e=>Number(e[kw])), pw.map(e=>Number(e[kw])), fmtKg, ' kg')){
+      check(`${lbl} — 1RM stimato`, tw.map(e=>epley(Number(e[kw]), Number(e[kr])||0)), pw.map(e=>epley(Number(e[kw]), Number(e[kr])||0)),
+        v=>fmtKg(Math.round(v*10)/10), ' kg');
+    }
+  });
+  return recs;
+}
+function workoutSummary(iso, b, d){
+  const block = PLAN.find(x=>x.id===b), day = block.days.find(x=>x.id===d);
+  let sets = 0, kg = 0, exDone = 0, times = [];
+  const rows = [], recs = [];
+  const prevIsos = new Set();
+  day.exercises.forEach((ex, ei)=>{
+    const all = getEntries(b, d, ei);
+    const today = all.filter(e=>entryIso(e) === iso);
+    all.forEach(e=>{ const i2 = entryIso(e); if(i2 < iso) prevIsos.add(i2); });
+    if(!today.length) return;
+    exDone++;
+    sets += today.length;
+    today.forEach(e=>{ kg += tonnage(e); if(e.t) times.push(Number(e.t)); });
+    const ss = sessionsOf(today)[0];
+    rows.push(`<div class="srow"><span>${esc(exName(b,d,ei))}</span><span>${ss.sets.map(setTxt).join(' · ')}</span></div>`);
+    recs.push(...recordsFor(b, d, ei, iso, today));
+  });
+  // seduta precedente dello stesso giorno (A/B/C) di questo blocco
+  const prevIso = [...prevIsos].sort().pop();
+  let prev = null;
+  if(prevIso){
+    prev = {iso: prevIso, sets: 0, kg: 0};
+    day.exercises.forEach((ex, ei)=> getEntries(b, d, ei).filter(e=>entryIso(e) === prevIso).forEach(e=>{ prev.sets++; prev.kg += tonnage(e); }));
+  }
+  const mins = times.length >= 2 ? Math.round((Math.max(...times) - Math.min(...times)) / 60000) : null;
+  return {block, day, sets, kg, exDone, nEx: day.exercises.length, mins, rows, recs, prev};
+}
+function deltaTxt(now, before, unit){
+  const dlt = now - before;
+  if(!before) return '';
+  const pct = Math.round(dlt / before * 100);
+  const cls = dlt > 0 ? 'up' : dlt < 0 ? 'down' : 'eq';
+  return `<span class="arr ${cls}">${dlt > 0 ? '+' : ''}${fmtInt(dlt)}${unit} (${pct > 0 ? '+' : ''}${pct}%)</span>`;
+}
+function openSummary(iso, list, mode){
+  const html = list.map(({b, d})=>{
+    const S = workoutSummary(iso, b, d);
+    const stats = `
+      <div class="sgrid">
+        <div class="sbox"><div class="sv">${S.mins === null ? '—' : S.mins < 1 ? '&lt;1′' : S.mins + '′'}</div><div class="sl">durata${S.mins !== null ? ' (1ª→ultima serie)' : ''}</div></div>
+        <div class="sbox"><div class="sv">${S.sets}</div><div class="sl">serie</div></div>
+        <div class="sbox"><div class="sv">${fmtInt(S.kg)}</div><div class="sl">kg sollevati</div></div>
+        <div class="sbox"><div class="sv">${S.exDone}/${S.nEx}</div><div class="sl">esercizi</div></div>
+      </div>`;
+    const cmp = S.prev ? `<div class="scmp">Rispetto al ${dmOf(S.prev.iso)}: serie ${deltaTxt(S.sets, S.prev.sets, '') || '='} · kg ${deltaTxt(S.kg, S.prev.kg, ' kg') || '='}</div>`
+                       : `<div class="scmp">Prima volta che registri il giorno ${d} di questo blocco.</div>`;
+    const recs = S.recs.length ? `<div class="srecs">${S.recs.map(r=>`<div>${r}</div>`).join('')}</div>`
+                               : (S.sets ? '<div class="scmp">Nessun nuovo record oggi.</div>' : '');
+    const empty = S.sets ? '' : '<div class="scmp">Nessuna serie registrata per questo giorno.</div>';
+    const btn = mode === 'undo'
+      ? `<button class="sbtn-b" onclick="undoFinish('${iso}','${b}','${d}')">Annulla conclusione</button>`
+      : `<button class="sbtn-b" onclick="removeWorkout('${iso}','${b}','${d}')">Togli dal calendario</button>`;
+    return `<div class="swk">
+      <div class="shead">✅ Allenamento ${d} <small>${esc(S.block.title)} · ${dmOf(iso)}</small></div>
+      ${stats}${empty}${cmp}${recs}
+      ${S.rows.length ? `<details class="note"><summary>Dettaglio serie</summary>${S.rows.join('')}</details>` : ''}
+      <div class="sbtns">${btn}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('sheetBody').innerHTML = html;
+  document.getElementById('sheet').classList.add('show');
+  document.body.classList.add('sheet-open');
+}
+function closeSummary(){
+  document.getElementById('sheet').classList.remove('show');
+  document.body.classList.remove('sheet-open');
+}
+function undoFinish(iso, b, d){
+  saveWorkouts(getWorkouts().filter(w=>!(w.iso===iso && w.b===b && w.d===d)));
+  closeSummary();
+  refreshWorkoutViews();
+  showToast(`Allenamento ${d} tolto dal calendario`, null);
+}
+function removeWorkout(iso, b, d){
+  if(!confirm(`Togliere l'allenamento ${d} del ${dmOf(iso)} dal calendario? Le serie registrate restano.`)) return;
+  undoFinish(iso, b, d);
+}
+
+/* ============ MODALITÀ FOCUS (un esercizio alla volta) ============ */
+let focusState = null;   // {b, d, idx, n}
+function doneToday(b, d, ei){
+  const iso = todayISO();
+  return getEntries(b, d, ei).filter(e=>entryIso(e) === iso).length;
+}
+function openFocus(b, d){
+  const day = PLAN.find(x=>x.id===b).days.find(x=>x.id===d);
+  const n = day.exercises.length;
+  let idx = day.exercises.findIndex((ex, ei)=> doneToday(b, d, ei) < parseSets(ex.t));
+  if(idx < 0) idx = n;     // tutto fatto: schermata finale
+  focusState = {b, d, idx, n};
+  document.getElementById('focus').classList.add('show');
+  document.body.classList.add('focus-open');
+  showFocus();
+}
+function parkFocusedCard(){
+  // rimette la card al suo posto nella pagina
+  const ph = document.getElementById('focusPh');
+  const card = document.querySelector('#focusStage .exlog');
+  if(ph && card){ ph.replaceWith(card); }
+  else if(ph) ph.remove();
+}
+function showFocus(){
+  const {b, d, idx, n} = focusState;
+  parkFocusedCard();
+  const stage = document.getElementById('focusStage');
+  stage.innerHTML = '';
+  const day = PLAN.find(x=>x.id===b).days.find(x=>x.id===d);
+  document.getElementById('focusPrev').disabled = idx <= 0;
+  document.getElementById('focusNext').disabled = idx >= n;
+  const dots = day.exercises.map((ex, ei)=>{
+    const dn = doneToday(b, d, ei), ns = parseSets(ex.t);
+    return `<span class="fdot${ei===idx?' cur':''}${dn>=ns?' ok':dn>0?' part':''}"></span>`;
+  }).join('');
+  document.getElementById('focusDots').innerHTML = dots;
+  if(idx >= n){
+    document.getElementById('focusCount').textContent = 'Fine';
+    const done = getWorkouts().some(w=>w.iso===todayISO() && w.b===b && w.d===d);
+    stage.innerHTML = `<div class="fend">
+      <div class="fend-t">💪 Esercizi completati</div>
+      <div class="fend-s">${day.exercises.filter((ex,ei)=>doneToday(b,d,ei) >= parseSets(ex.t)).length} di ${n} con tutte le serie previste</div>
+      <button class="finishbtn${done?' is-done':''}" onclick="finishWorkout('${b}','${d}')">${done ? `✓ Allenamento ${d} concluso oggi` : `✅ Concludi allenamento ${d}`}</button>
+    </div>`;
+    return;
+  }
+  document.getElementById('focusCount').textContent = `Esercizio ${idx+1} di ${n}`;
+  const card = cardEl(b, d, idx);
+  const ph = document.createElement('div');
+  ph.id = 'focusPh';
+  card.replaceWith(ph);
+  stage.appendChild(card);
+  renderCard(b, d, idx);
+  document.getElementById('focus').scrollTop = 0;
+}
+function focusMove(delta){
+  if(!focusState) return;
+  focusState.idx = Math.max(0, Math.min(focusState.n, focusState.idx + delta));
+  showFocus();
+}
+function closeFocus(){
+  if(!focusState) return;
+  parkFocusedCard();
+  document.getElementById('focusStage').innerHTML = '';
+  document.getElementById('focus').classList.remove('show');
+  document.body.classList.remove('focus-open');
+  const {b} = focusState;
+  focusState = null;
+  loadAllLogsForBlock(b);
+}
+/* Dopo l'ultima serie prevista si passa da soli all'esercizio successivo (il recupero intanto corre) */
+function focusAfterLog(b, d, ei){
+  if(!focusState || focusState.b !== b || focusState.d !== d || focusState.idx !== ei) return;
+  const ex = exDef(b, d, ei);
+  if(doneToday(b, d, ei) === parseSets(ex.t)){
+    clearTimeout(focusState.adv);
+    focusState.adv = setTimeout(()=>{ if(focusState && focusState.idx === ei) focusMove(1); }, 1200);
+  }
 }
 
 /* ============ PESO CORPOREO ============ */
@@ -1910,6 +2180,7 @@ document.addEventListener('visibilitychange', ()=>{
   renderTodayKeep(document.activeElement && document.activeElement.closest ? document.activeElement.closest('.exlog') : null);
   renderCalendar();
   renderVolume();
+  if(focusState) showFocus();
 });
 </script>
 
