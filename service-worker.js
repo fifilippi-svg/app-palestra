@@ -1,7 +1,7 @@
 /* Service worker — app palestra
    - Pagina: prima dalla rete (così gli aggiornamenti arrivano subito), se non c'è rete o è lenta usa la copia salvata.
    - Altri file (icone, manifest): dalla copia salvata, aggiornata in background. */
-const CACHE_NAME = "ipertrofia-cache-v6";
+const CACHE_NAME = "ipertrofia-cache-v7";
 const ASSETS = [
   "./index.html",
   "./manifest.json",

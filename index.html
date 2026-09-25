@@ -250,6 +250,37 @@
   #toast button{background:var(--bg); color:var(--text); border:none; border-radius:8px; height:44px; padding:0 16px; font-family:var(--mono); font-weight:700; font-size:14px; cursor:pointer;}
   /* Mentre scrivi (tastiera aperta) le barre fisse spariscono: su iPhone interferiscono con lo scroll */
   body.typing #timerBar, body.typing #toast{visibility:hidden;}
+
+  /* ---- v7: esercizi a tempo, superset, RIR, peso corporeo ---- */
+  .swrow{display:flex; align-items:center; gap:12px; margin-top:10px;}
+  .swbtn{flex:1 1 auto; height:56px; border-radius:8px; border:2px solid var(--accent); background:transparent; color:var(--accent);
+    font-family:var(--mono); font-size:16px; font-weight:700; text-transform:uppercase; cursor:pointer;}
+  .swbtn.running{background:var(--accent); color:var(--bg);}
+  .swtime{font-family:var(--mono); font-size:36px; font-weight:700; color:var(--mute); min-width:96px; text-align:right;}
+  .swtime.running{color:var(--accent);}
+  .sslbl{font-size:15px; color:var(--mute); margin-top:10px; margin-bottom:-4px;}
+  .logspacer{flex:0 0 56px; width:56px;}
+  .rirrow{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:10px; font-family:var(--mono); font-size:15px; color:var(--text);}
+  .rirrow small{color:var(--mute); font-size:12px; display:block;}
+  .seg{display:flex; gap:6px;}
+  .seg button{min-width:56px; height:44px; border-radius:8px; border:1.5px solid var(--line); background:var(--bg); color:var(--mute);
+    font-family:var(--mono); font-size:15px; font-weight:700; cursor:pointer;}
+  .seg button.on{background:var(--warn); border-color:var(--warn); color:var(--bg);}
+  .rirtag{font-size:12px; color:var(--warn); font-weight:600;}
+  .chart .ref{stroke:var(--warn); stroke-width:1.5; stroke-dasharray:5 4;}
+  .chart .lbl.reflbl{fill:var(--warn);}
+  .bwrow{display:flex; gap:8px; align-items:center;}
+  .bwrow input{flex:1 1 auto; min-width:0; height:56px; background:var(--bg); border:1.5px solid var(--line); border-radius:8px;
+    color:var(--text); font-family:var(--mono); font-size:20px; text-align:center;}
+  .bwrow input.bad{border-color:var(--danger);}
+  .bwrow button{flex:0 0 auto; height:56px; padding:0 18px; border:none; border-radius:8px; background:var(--accent2); color:var(--bg);
+    font-family:var(--mono); font-size:15px; font-weight:700; text-transform:uppercase; cursor:pointer;}
+  #bwSummary{font-size:15px; color:var(--mute); margin:10px 0 4px; line-height:1.5;}
+  #bwSummary b{color:var(--text);}
+  .goalrow{display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:15px; color:var(--mute);}
+  .goalrow input{height:48px; background:var(--bg); border:1.5px solid var(--line); border-radius:8px; color:var(--text); font-family:var(--mono); font-size:16px; padding:0 8px;}
+  .goalrow input#goalKg{width:80px; text-align:center;}
+  .goalrow input#goalDate{flex:1 1 150px; min-width:0;}
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#101314">
@@ -268,7 +299,7 @@
     <summary>Profilo</summary>
     <div class="meta-row">
       <div class="meta">ETÀ <b>52</b></div>
-      <div class="meta">PESO <b>79 kg</b></div>
+      <div class="meta">PESO <b id="profileWeight">—</b></div>
       <div class="meta">ALTEZZA <b>177 cm</b></div>
       <div class="meta">FREQUENZA <b>3 gg/sett</b></div>
     </div>
@@ -283,14 +314,35 @@
   <h2><span class="n">01</span>Allenati e registra</h2>
   <details class="note">
     <summary>Come si usa</summary>
-    <p class="sub-note">Kg e reps sono già compilati con l'ultima serie (puoi scrivere i decimali con la virgola, es. 62,5). Premi <b>Rec</b>: la serie viene salvata e parte il timer di recupero, visibile nella barra in basso. Il contatore <b>2/3</b> indica le serie fatte oggi; a serie completate la card diventa <b style="color:var(--accent2)">verde con ✓</b>. A fine seduta premi <b>Concludi allenamento</b>: la lettera del giorno compare nel calendario in fondo.</p>
+    <p class="sub-note">Kg e reps sono già compilati con l'ultima serie (puoi scrivere i decimali con la virgola, es. 62,5). Se vuoi, tocca il <b>RIR</b> (ripetizioni che avresti ancora potuto fare: 0-1, 2, 3+). Premi <b>Rec</b>: la serie viene salvata e parte il timer di recupero, visibile nella barra in basso. Negli esercizi a tempo (plank) premi <b>▶ Avvia</b> e poi <b>Stop e salva</b>; nei superset scrivi i pesi dei due esercizi. Il contatore <b>2/3</b> indica le serie fatte oggi; a serie completate la card diventa <b style="color:var(--accent2)">verde con ✓</b>. A fine seduta premi <b>Concludi allenamento</b>: la lettera del giorno compare nel calendario in fondo.</p>
   </details>
   <div id="accWrap"></div>
 </section>
 
 <section>
+  <h2><span class="n">02</span>Peso corporeo</h2>
+  <div class="bwrow">
+    <input type="text" id="bwInput" inputmode="decimal" autocomplete="off" enterkeyhint="done" placeholder="peso di oggi (kg)" aria-label="Peso di oggi in kg">
+    <button onclick="saveWeight()">Salva</button>
+  </div>
+  <div id="bwSummary"></div>
+  <div id="bwChart"></div>
+  <details class="note">
+    <summary>Obiettivo</summary>
+    <div class="goalrow">
+      <input type="text" id="goalKg" inputmode="decimal" autocomplete="off" aria-label="Peso obiettivo in kg" onchange="saveGoal()"> kg entro il
+      <input type="date" id="goalDate" aria-label="Data obiettivo" onchange="saveGoal()">
+    </div>
+  </details>
+  <details class="note">
+    <summary>Tutte le pesate</summary>
+    <div id="bwList" style="font-family:var(--mono);font-size:14px;color:var(--mute);"></div>
+  </details>
+</section>
+
+<section>
   <details class="fold">
-    <summary><span><span class="n">02</span>Test dei massimali</span><span class="chev">›</span></summary>
+    <summary><span><span class="n">03</span>Test dei massimali</span><span class="chev">›</span></summary>
     <details class="note">
       <summary>Perché 3RM e non 1RM</summary>
       <div class="callout">
@@ -318,7 +370,7 @@
 
 <section>
   <details class="fold">
-    <summary><span><span class="n">03</span>Info programma</span><span class="chev">›</span></summary>
+    <summary><span><span class="n">04</span>Info programma</span><span class="chev">›</span></summary>
 
     <details class="sub">
       <summary>Nota sulla spalla sinistra<span class="chev">›</span></summary>
@@ -391,7 +443,7 @@
 
 <section>
   <details class="fold" id="setFold">
-    <summary><span><span class="n">04</span>Impostazioni e backup</span><span class="chev">›</span></summary>
+    <summary><span><span class="n">05</span>Impostazioni e backup</span><span class="chev">›</span></summary>
     <div class="setbox">
       <label for="startDate">Data di inizio del programma</label>
       <input type="date" id="startDate" onchange="saveStartDate(this.value)">
@@ -410,7 +462,7 @@
 </section>
 
 <section id="calSection">
-  <h2><span class="n">05</span>Calendario allenamenti</h2>
+  <h2><span class="n">06</span>Calendario allenamenti</h2>
   <div class="cal">
     <div class="cal-head">
       <button class="cal-nav" aria-label="Mese precedente" onclick="calMove(-1)">‹</button>
@@ -623,6 +675,25 @@ function parseTargetReps(t){
 }
 function stepFor(name){ return SMALL_STEP_RE.test(name) ? 1 : 2.5; }
 
+/* Tipo di esercizio: 'timed' (a tempo), 'super' (due esercizi in superset), 'normal' */
+function exKind(ex){
+  if(/"/.test(ex.t) || /circuito/i.test(ex.n)) return 'timed';
+  if(/ \+ /.test(ex.n) && !/^\+/.test(ex.n.trim())) return 'super';
+  return 'normal';
+}
+function superParts(name){
+  return name.replace(/\(superset\)/i, '').split(' + ').map(x=>x.trim()).filter(Boolean)
+    .map(x=>x.charAt(0).toUpperCase() + x.slice(1)).slice(0, 2);
+}
+function parseTargetSecs(t){ const m = String(t).match(/[×x]\s*(\d+)(?:-(\d+))?"/); return m ? parseInt(m[2] || m[1], 10) : null; }
+/* RIR obiettivo dal blocco: "RIR 3" → [3,3], "RIR 1-2" → [1,2] */
+function blockRir(b){
+  const m = String(PLAN.find(x=>x.id===b).period).match(/RIR\s*(\d)(?:-(\d))?/);
+  return m ? [parseInt(m[1],10), parseInt(m[2] || m[1],10)] : null;
+}
+const RIR_LBL = {1:'0-1', 2:'2', 3:'3+'};
+function fmtSecs(n){ n = Math.round(Number(n)); return n >= 60 ? `${Math.floor(n/60)}'${String(n%60).padStart(2,'0')}"` : `${n}"`; }
+
 /* Lettura sicura: se il dato salvato è rotto o del tipo sbagliato, usa il valore di default */
 function lsGet(key, def){
   try{
@@ -687,16 +758,17 @@ function migrateLegacy(){
 /* raggruppa le serie per giorno di allenamento, in ordine cronologico */
 function sessionsOf(entries){
   const out = [];
+  const num = v => (v === undefined || v === null || v === '') ? null : Number(v);
   entries.forEach((e, idx)=>{
     const iso = entryIso(e);
     let s = out.find(x=>x.iso===iso);
     if(!s){ s = {iso, sets:[]}; out.push(s); }
-    s.sets.push({idx, w:Number(e.w), r:parseInt(e.r,10), p:(e.p===undefined || e.p===null) ? null : parseInt(e.p,10)});
+    s.sets.push({idx, w:num(e.w), r:num(e.r), w2:num(e.w2), r2:num(e.r2), s:num(e.s),
+      p:num(e.p), rir:num(e.rir)});
   });
   return out.sort((a,b)=> a.iso < b.iso ? -1 : a.iso > b.iso ? 1 : 0);
 }
 
-/* Stesso esercizio in altri blocchi/giorni (es. Leg press del blocco 1 quando inizi il blocco 2) */
 function lastSessionElsewhere(b, d, ei){
   const base = exDef(b, d, ei).n.toLowerCase().trim();
   const tIso = todayISO();
@@ -713,11 +785,27 @@ function lastSessionElsewhere(b, d, ei){
 
 function cmpSet(a, b){
   if(!b) return '';
-  if(a.w > b.w || (a.w === b.w && a.r > b.r)) return '<span class="arr up" aria-label="meglio">↑</span>';
-  if(a.w < b.w || (a.w === b.w && a.r < b.r)) return '<span class="arr down" aria-label="peggio">↓</span>';
+  let d;
+  if(a.s !== null && b.s !== null) d = a.s - b.s;
+  else if(a.w2 !== null && b.w2 !== null) d = ((a.w||0)+(a.w2||0)) - ((b.w||0)+(b.w2||0)) || ((a.r||0)+(a.r2||0)) - ((b.r||0)+(b.r2||0));
+  else if(a.w !== null && b.w !== null) d = (a.w - b.w) || ((a.r||0) - (b.r||0));
+  else return '';
+  if(d > 0) return '<span class="arr up" aria-label="meglio">↑</span>';
+  if(d < 0) return '<span class="arr down" aria-label="peggio">↓</span>';
   return '<span class="arr eq" aria-label="uguale">=</span>';
 }
-function setTxt(s){ return `${fmtKg(s.w)}×${esc(s.r)}${s.p !== null && !isNaN(s.p) ? ` <span style="color:var(--warn)">(spalla ${esc(s.p)})</span>` : ''}`; }
+
+function setTxt(s){
+  let t;
+  if(s.s !== null) t = fmtSecs(s.s);
+  else {
+    t = `${fmtKg(s.w)}×${esc(s.r)}`;
+    if(s.w2 !== null) t += ` + ${fmtKg(s.w2)}×${esc(s.r2)}`;
+  }
+  if(s.rir !== null && RIR_LBL[s.rir]) t += ` <span class="rirtag">RIR ${RIR_LBL[s.rir]}</span>`;
+  if(s.p !== null && !isNaN(s.p)) t += ` <span style="color:var(--warn)">(spalla ${esc(s.p)})</span>`;
+  return t;
+}
 
 /* ============ BLOCCHI (costruiti solo quando li apri: app più leggera) ============ */
 PLAN.forEach((block, bi)=>{
@@ -753,10 +841,50 @@ function buildBlock(bi){
 function cardHTML(b, d, ei, ex){
   const restSec = parseRestSeconds(ex.r);
   const a = `'${b}','${d}',${ei}`;
-  const st = stepFor(ex.n);
-  const stTxt = fmtKg(st);
+  const kind = exKind(ex);
+  const st = stepFor(ex.n), stTxt = fmtKg(st);
+  const inW  = (role, lbl)=>`<input type="text" inputmode="decimal" autocomplete="off" enterkeyhint="next" placeholder="kg" data-role="${role}" aria-label="${lbl}">`;
+  const inR  = (role, lbl, last)=>`<input type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="${last?'done':'next'}" placeholder="reps" data-role="${role}" aria-label="${lbl}">`;
+  const rec  = `<button class="logbtn" aria-label="Registra serie" onclick="logExercise(${a})">Rec</button>`;
+  let inputs = '', steps = '';
+  if(kind === 'timed'){
+    const tgt = parseTargetSecs(ex.t);
+    inputs = `
+    <div class="swrow">
+      <button class="swbtn" data-role="sw" onclick="toggleStopwatch(${a})">▶ Avvia</button>
+      <span class="swtime" data-role="swtime" aria-live="off">0:00</span>
+    </div>
+    <div class="exrow">
+      <input type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="done" placeholder="secondi" data-role="s" aria-label="Durata in secondi">
+      <span class="unit">sec${tgt ? ` (obiettivo ${tgt}")` : ''}</span>
+      ${rec}
+    </div>`;
+    steps = `<button onclick="stepVal(${a},'s',-5)" aria-label="meno 5 secondi">−5 s</button><button onclick="stepVal(${a},'s',5)" aria-label="più 5 secondi">+5 s</button>`;
+  } else if(kind === 'super'){
+    const [p1, p2] = superParts(ex.n);
+    inputs = `
+    <div class="sslbl">① ${esc(p1)}</div>
+    <div class="exrow">${inW('w', 'Peso '+p1)}<span class="unit">kg</span>${inR('rp', 'Ripetizioni '+p1)}<span class="unit">reps</span><span class="logspacer"></span></div>
+    <div class="sslbl">② ${esc(p2 || '')}</div>
+    <div class="exrow">${inW('w2', 'Peso '+(p2||''))}<span class="unit">kg</span>${inR('rp2', 'Ripetizioni '+(p2||''), true)}<span class="unit">reps</span>${rec}</div>`;
+    steps = `<button onclick="stepVal(${a},'w',-${st})" aria-label="① meno ${stTxt} kg">① −${stTxt}</button><button onclick="stepVal(${a},'w',${st})" aria-label="① più ${stTxt} kg">① +${stTxt}</button>
+      <button onclick="stepVal(${a},'w2',-${st})" aria-label="② meno ${stTxt} kg">② −${stTxt}</button><button onclick="stepVal(${a},'w2',${st})" aria-label="② più ${stTxt} kg">② +${stTxt}</button>`;
+  } else {
+    inputs = `
+    <div class="exrow">${inW('w', 'Peso in kg')}<span class="unit">kg</span>${inR('rp', 'Ripetizioni', true)}<span class="unit">reps</span>${rec}</div>`;
+    steps = `<button onclick="stepVal(${a},'w',-${st})" aria-label="meno ${stTxt} kg">−${stTxt} kg</button><button onclick="stepVal(${a},'w',${st})" aria-label="più ${stTxt} kg">+${stTxt} kg</button>
+      <button onclick="stepVal(${a},'rp',-1)" aria-label="meno 1 ripetizione">−1 rep</button><button onclick="stepVal(${a},'rp',1)" aria-label="più 1 ripetizione">+1 rep</button>`;
+  }
+  const rr = blockRir(b);
+  const rirRow = (kind !== 'timed' && rr) ? `
+    <div class="rirrow">
+      <span>RIR <small>obiettivo ${rr[0]===rr[1] ? rr[0] : rr[0]+'-'+rr[1]}</small></span>
+      <div class="seg" role="group" aria-label="Ripetizioni in riserva">
+        ${[1,2,3].map(v=>`<button data-rir="${v}" aria-pressed="false" onclick="setRir(${a},${v})">${RIR_LBL[v]}</button>`).join('')}
+      </div>
+    </div>` : '';
   return `
-  <div class="exlog" id="ex-${b}-${d}-${ei}" data-rest="${restSec}">
+  <div class="exlog" id="ex-${b}-${d}-${ei}" data-rest="${restSec}" data-kind="${kind}">
     <div class="exhead">
       <span class="exname"><span class="donemark">✓</span><span data-role="name">${esc(exName(b,d,ei))}</span><button class="renbtn" aria-label="Rinomina esercizio" onclick="renameEx(${a})">✎</button></span>
       <span class="exright">
@@ -768,19 +896,9 @@ function cardHTML(b, d, ei, ex){
     <div class="cmp todayline" data-role="today" style="display:none"></div>
     <div class="cmp" data-role="prev" style="display:none"></div>
     <div class="suggest" data-role="suggest"></div>
-    <div class="exrow">
-      <input type="text" inputmode="decimal" autocomplete="off" enterkeyhint="next" placeholder="kg" data-role="w" aria-label="Peso in kg">
-      <span class="unit">kg</span>
-      <input type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="done" placeholder="reps" data-role="rp" aria-label="Ripetizioni">
-      <span class="unit">reps</span>
-      <button class="logbtn" aria-label="Registra serie" onclick="logExercise(${a})">Rec</button>
-    </div>
-    <div class="steprow">
-      <button onclick="stepVal(${a},'w',-${st})" aria-label="meno ${stTxt} kg">−${stTxt} kg</button>
-      <button onclick="stepVal(${a},'w',${st})" aria-label="più ${stTxt} kg">+${stTxt} kg</button>
-      <button onclick="stepVal(${a},'rp',-1)" aria-label="meno 1 ripetizione">−1 rep</button>
-      <button onclick="stepVal(${a},'rp',1)" aria-label="più 1 ripetizione">+1 rep</button>
-    </div>
+    ${inputs}
+    <div class="steprow">${steps}</div>
+    ${rirRow}
     ${SHOULDER_RE.test(ex.n) ? `
     <div class="painrow">
       <span>Dolore spalla</span>
@@ -790,12 +908,25 @@ function cardHTML(b, d, ei, ex){
       </select>
     </div>` : ''}
     <div class="cardfoot">
-      <button class="timerbtn" data-role="timerbtn" onclick="toggleTimer(${a})">⏱ Timer (${ex.r})</button>
+      <button class="timerbtn" data-role="timerbtn" onclick="toggleTimer(${a})">⏱ Recupero (${ex.r})</button>
       <button class="histbtn" onclick="toggleHist(${a})" aria-expanded="false">storico ▾</button>
       <span class="flash" data-role="flash" aria-live="polite"></span>
     </div>
     <div class="hist" data-role="hist"></div>
   </div>`;
+}
+
+/* RIR: tocca per scegliere, ritocca per togliere; resta selezionato per le serie successive */
+function setRir(b, d, ei, v){
+  const card = cardEl(b, d, ei);
+  const cur = parseInt(card.dataset.rir || '0', 10);
+  const nv = cur === v ? 0 : v;
+  card.dataset.rir = nv ? String(nv) : '';
+  card.querySelectorAll('.seg button').forEach(btn=>{
+    const on = parseInt(btn.dataset.rir,10) === nv;
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', String(on));
+  });
 }
 
 function cardEl(b, d, ei){ return document.getElementById(`ex-${b}-${d}-${ei}`); }
@@ -804,8 +935,8 @@ function renderCard(b, d, ei){
   const card = cardEl(b, d, ei);
   if(!card) return;
   const ex = exDef(b, d, ei);
+  const kind = exKind(ex);
   const nSets = parseSets(ex.t);
-  const target = parseTargetReps(ex.t);
   const step = stepFor(ex.n);
   const entries = getEntries(b, d, ei);
   const sessions = sessionsOf(entries);
@@ -831,30 +962,53 @@ function renderCard(b, d, ei){
   prevEl.innerHTML = prev ? `Scorsa (${prevWhere}${dmOf(prev.iso)}): ${prev.sets.map(setTxt).join(' · ')}` : '';
   prevEl.style.display = prev ? '' : 'none';
 
-  // Suggerimento carico: tutte le reps previste fatte nelle serie di lavoro
+  // Suggerimento: guarda l'ultima seduta completa (oggi se finita, altrimenti la precedente)
   const sug = card.querySelector('[data-role="suggest"]');
   const base = (today && done >= nSets) ? today : (!today ? prev : null);
   let sugTxt = '';
-  if(base && target && base.sets.length >= nSets){
+  if(base && base.sets.length >= nSets){
     const work = base.sets.slice(0, nSets);
-    if(work.every(s=>s.r >= target)){
-      const w = Math.max(...work.map(s=>s.w));
-      if(w > 0){
-        sugTxt = base === today
-          ? `💡 Tutte le reps fatte: la prossima volta prova <b>${fmtKg(w+step)} kg</b>`
-          : `💡 L'ultima volta hai fatto tutte le reps: oggi prova <b>${fmtKg(w+step)} kg</b>`;
+    const when = base === today ? 'la prossima volta' : 'oggi';
+    if(kind === 'timed'){
+      const tgt = parseTargetSecs(ex.t);
+      if(tgt && work.every(s=>s.s !== null && s.s >= tgt)){
+        sugTxt = `💡 Tenuta raggiunta in tutte le serie: ${when} prova <b>${fmtSecs(Math.max(...work.map(s=>s.s)) + 5)}</b>`;
+      }
+    } else {
+      const target = parseTargetReps(ex.t);
+      const repsOk = target && work.every(s=>s.r !== null && s.r >= target && (kind !== 'super' || (s.r2 !== null && s.r2 >= target)));
+      if(repsOk){
+        const rr = blockRir(b);
+        const tooHard = rr && work.some(s=>s.rir !== null && s.rir < rr[0]);
+        const w1 = Math.max(...work.map(s=>s.w || 0));
+        const w2 = kind === 'super' ? Math.max(...work.map(s=>s.w2 || 0)) : 0;
+        if(tooHard){
+          sugTxt = `💡 Reps fatte ma con meno margine del previsto (RIR obiettivo ${rr[0]===rr[1]?rr[0]:rr[0]+'-'+rr[1]}): ${when} <b>mantieni il carico</b>`;
+        } else if(kind === 'super' && (w1 > 0 || w2 > 0)){
+          sugTxt = `💡 Tutte le reps fatte: ${when} prova <b>① ${fmtKg(w1+step)} kg · ② ${fmtKg(w2+step)} kg</b>`;
+        } else if(w1 > 0){
+          sugTxt = base === today
+            ? `💡 Tutte le reps fatte: la prossima volta prova <b>${fmtKg(w1+step)} kg</b>`
+            : `💡 L'ultima volta hai fatto tutte le reps: oggi prova <b>${fmtKg(w1+step)} kg</b>`;
+        }
       }
     }
   }
   sug.innerHTML = sugTxt;
   sug.classList.toggle('show', !!sugTxt);
 
-  // Precompila con l'ultima serie (solo se il campo è vuoto e non lo stai usando)
+  // Precompila con l'ultima serie (solo campi vuoti e non in uso)
   const lastSet = today ? today.sets[today.sets.length-1] : (prev ? prev.sets[prev.sets.length-1] : null);
-  const wIn = card.querySelector('[data-role="w"]'), rIn = card.querySelector('[data-role="rp"]');
+  const fill = (role, v, fmt)=>{
+    const inp = card.querySelector(`[data-role="${role}"]`);
+    if(inp && v !== null && v !== undefined && !isNaN(v) && inp.value === '' && document.activeElement !== inp) inp.value = fmt ? fmt(v) : String(v);
+  };
   if(lastSet){
-    if(wIn.value === '' && document.activeElement !== wIn) wIn.value = fmtKg(lastSet.w);
-    if(rIn.value === '' && document.activeElement !== rIn) rIn.value = lastSet.r;
+    if(kind === 'timed') fill('s', lastSet.s);
+    else {
+      fill('w', lastSet.w, fmtKg); fill('rp', lastSet.r);
+      if(kind === 'super'){ fill('w2', lastSet.w2, fmtKg); fill('rp2', lastSet.r2); }
+    }
   }
 
   const histEl = card.querySelector('[data-role="hist"]');
@@ -896,7 +1050,7 @@ function stepVal(b, d, ei, role, delta){
   const cur = parseNum(inp.value);
   if(isNaN(cur) && inp.value.trim() !== ''){ flash(cardEl(b,d,ei), 'Numero non valido', true); inp.classList.add('bad'); return; }
   const v = Math.max(0, (isNaN(cur) ? 0 : cur) + delta);
-  inp.value = role === 'w' ? fmtKg(v) : String(Math.round(v));
+  inp.value = (role === 'w' || role === 'w2') ? fmtKg(v) : String(Math.round(v));
   inp.classList.remove('bad');
 }
 
@@ -909,31 +1063,99 @@ function flash(card, msg, isErr){
   f._t = setTimeout(()=>f.classList.remove('show'), isErr ? 2500 : 1200);
 }
 
-function logExercise(b, d, ei){
+function logExercise(b, d, ei, secsFromWatch){
   const card = cardEl(b, d, ei);
-  const wIn = card.querySelector('[data-role="w"]'), rIn = card.querySelector('[data-role="rp"]');
-  const w = parseNum(wIn.value);
-  const r = parseInt(String(rIn.value).trim(), 10);
-  wIn.classList.toggle('bad', isNaN(w) || w < 0);
-  rIn.classList.toggle('bad', isNaN(r) || r <= 0);
-  if(isNaN(w) || w < 0 || isNaN(r) || r <= 0){ flash(card, 'Inserisci kg e reps', true); return; }
-  if(w > 500 && !confirm(`${fmtKg(w)} kg: confermi? (forse manca la virgola)`)) return;
+  const kind = card.dataset.kind;
+  const get = role => card.querySelector(`[data-role="${role}"]`);
+  const entry = { iso: todayISO(), t: Date.now() };
+  let msg = '';
 
-  if(document.activeElement && document.activeElement.blur) document.activeElement.blur();   // chiude la tastiera
-  const painSel = card.querySelector('[data-role="pain"]');
-  const entry = { iso: todayISO(), t: Date.now(), w, r };
+  if(kind === 'timed'){
+    const sIn = get('s');
+    const sec = secsFromWatch !== undefined ? secsFromWatch : parseInt(String(sIn.value).trim(), 10);
+    const bad = isNaN(sec) || sec <= 0;
+    sIn.classList.toggle('bad', bad);
+    if(bad){ flash(card, 'Inserisci i secondi o usa ▶ Avvia', true); return; }
+    if(sec > 1800 && !confirm(`${fmtSecs(sec)}: confermi?`)) return;
+    entry.s = sec;
+    sIn.value = String(sec);
+    msg = `Salvato ${fmtSecs(sec)}`;
+  } else {
+    const roles = kind === 'super' ? [['w','rp'],['w2','rp2']] : [['w','rp']];
+    const vals = roles.map(([rw, rr])=>{
+      const w = parseNum(get(rw).value), r = parseInt(String(get(rr).value).trim(), 10);
+      get(rw).classList.toggle('bad', isNaN(w) || w < 0);
+      get(rr).classList.toggle('bad', isNaN(r) || r <= 0);
+      return {w, r};
+    });
+    if(vals.some(v=>isNaN(v.w) || v.w < 0 || isNaN(v.r) || v.r <= 0)){ flash(card, 'Inserisci kg e reps', true); return; }
+    const heavy = vals.find(v=>v.w > 500);
+    if(heavy && !confirm(`${fmtKg(heavy.w)} kg: confermi? (forse manca la virgola)`)) return;
+    entry.w = vals[0].w; entry.r = vals[0].r;
+    if(kind === 'super'){ entry.w2 = vals[1].w; entry.r2 = vals[1].r; }
+    const rir = parseInt(card.dataset.rir || '0', 10);
+    if(rir) entry.rir = rir;
+    get('w').value = fmtKg(vals[0].w);
+    if(kind === 'super') get('w2').value = fmtKg(vals[1].w);
+    msg = kind === 'super'
+      ? `Salvato ${fmtKg(vals[0].w)}×${vals[0].r} + ${fmtKg(vals[1].w)}×${vals[1].r}`
+      : `Salvato ${fmtKg(vals[0].w)} kg × ${vals[0].r}`;
+  }
+  const painSel = get('pain');
   if(painSel && painSel.value !== '') entry.p = parseInt(painSel.value, 10);
 
+  if(document.activeElement && document.activeElement.blur) document.activeElement.blur();   // chiude la tastiera
   const entries = getEntries(b, d, ei);
   entries.push(entry);
   if(!setEntries(b, d, ei, entries)) return;
 
-  wIn.value = fmtKg(w);
   renderCard(b, d, ei);
   renderTodayKeep(card);
   flash(card, 'salvato ✓');
   startTimer(b, d, ei);   // parte subito il recupero
-  showToast(`Salvato ${fmtKg(w)} kg × ${r}`, ()=>undoEntry(b, d, ei, entry.t));
+  showToast(msg, ()=>undoEntry(b, d, ei, entry.t));
+}
+
+/* ============ CRONOMETRO (esercizi a tempo) ============ */
+let stopwatch = null;   // {cardId, b, d, ei, start, intervalId}
+function toggleStopwatch(b, d, ei){
+  const cardId = `ex-${b}-${d}-${ei}`;
+  if(stopwatch && stopwatch.cardId === cardId){
+    const sec = Math.round((Date.now() - stopwatch.start) / 1000);
+    stopStopwatch();
+    if(sec < 1){ flash(cardEl(b,d,ei), 'Troppo breve', true); return; }
+    logExercise(b, d, ei, sec);        // Stop = salva la serie e parte il recupero
+    return;
+  }
+  if(stopwatch) stopStopwatch();
+  if(timer) stopTimer();
+  unlockAudio();
+  acquireWakeLock();
+  stopwatch = { cardId, start: Date.now(), intervalId: setInterval(tickStopwatch, 250) };
+  const card = cardEl(b, d, ei);
+  const btn = card.querySelector('[data-role="sw"]');
+  btn.classList.add('running');
+  btn.textContent = '■ Stop e salva';
+  card.querySelector('[data-role="swtime"]').classList.add('running');
+  tickStopwatch();
+}
+function tickStopwatch(){
+  if(!stopwatch) return;
+  const card = document.getElementById(stopwatch.cardId);
+  if(!card){ stopStopwatch(); return; }
+  card.querySelector('[data-role="swtime"]').textContent = formatMMSS(Math.floor((Date.now() - stopwatch.start) / 1000));
+}
+function stopStopwatch(){
+  if(!stopwatch) return;
+  clearInterval(stopwatch.intervalId);
+  const card = document.getElementById(stopwatch.cardId);
+  if(card){
+    const btn = card.querySelector('[data-role="sw"]');
+    btn.classList.remove('running');
+    btn.textContent = '▶ Avvia';
+    card.querySelector('[data-role="swtime"]').classList.remove('running');
+  }
+  stopwatch = null;
 }
 
 function undoEntry(b, d, ei, t){
@@ -978,53 +1200,72 @@ function toggleHist(b, d, ei){
   if(histEl.classList.contains('show')) renderHist(b, d, ei);
 }
 function renderHist(b, d, ei){
-  const histEl = cardEl(b, d, ei).querySelector('[data-role="hist"]');
+  const card = cardEl(b, d, ei);
+  const histEl = card.querySelector('[data-role="hist"]');
   const entries = getEntries(b, d, ei);
   if(!entries.length){ histEl.innerHTML = '<div>Nessuno storico in questo blocco.</div>'; return; }
+  const kind = card.dataset.kind;
   const sessions = sessionsOf(entries);
-  const pts = sessions.map(s=>({label: dmOf(s.iso), v: Math.max(...s.sets.map(x=>x.w))}));
-  const chart = pts.length >= 2 ? sparkline('Carico massimo per seduta (kg)', pts, 'kg') : '';
+  let chart = '';
+  if(sessions.length >= 2){
+    if(kind === 'timed'){
+      const pts = sessions.map(s=>({label: dmOf(s.iso), v: Math.max(...s.sets.map(x=>x.s || 0))})).filter(p=>p.v > 0);
+      if(pts.length >= 2) chart = sparkline('Tenuta massima per seduta (secondi)', pts, 's');
+    } else {
+      const lbl = kind === 'super' ? `Carico massimo per seduta — ① ${superParts(exDef(b,d,ei).n)[0]} (kg)` : 'Carico massimo per seduta (kg)';
+      const pts = sessions.map(s=>({label: dmOf(s.iso), v: Math.max(...s.sets.map(x=>x.w || 0))})).filter(p=>p.v > 0);
+      if(pts.length >= 2) chart = sparkline(lbl, pts, 'kg');
+    }
+  }
+  const byIdx = {};
+  sessions.forEach(ss=>ss.sets.forEach(x=>{ byIdx[x.idx] = x; }));
   const rows = entries.map((e, idx)=>({e, idx})).reverse().map(({e, idx})=>{
     const dm = dmOf(entryIso(e));
-    const p = (e.p===undefined || e.p===null) ? '' : ` · spalla ${esc(parseInt(e.p,10))}`;
-    return `<div class="hrow"><span>${dm} — ${fmtKg(e.w)}kg × ${esc(parseInt(e.r,10))}${p}</span>
+    return `<div class="hrow"><span>${dm} — ${setTxt(byIdx[idx])}</span>
     <button class="delbtn" aria-label="Elimina serie del ${dm}" onclick="deleteEntry('${b}','${d}',${ei},${idx})">🗑</button></div>`;
   }).join('');
   histEl.innerHTML = chart + rows;
 }
 
 let chartSeq = 0;
-function sparkline(title, pts, unit){
+function sparkline(title, pts, unit, ref){
   const id = 'ch' + (++chartSeq);
   const W = 300, H = 110, L = 8, R = 8, T = 18, B = 22;
   const vals = pts.map(p=>p.v);
-  let min = Math.min(...vals), max = Math.max(...vals);
+  let min = Math.min(...vals, ...(ref ? [ref.v] : [])), max = Math.max(...vals, ...(ref ? [ref.v] : []));
   if(min === max){ min -= 1; max += 1; }
-  const x = i => L + (pts.length === 1 ? 0 : i * (W - L - R) / (pts.length - 1));
+  const pad = (max - min) * 0.08; min -= pad; max += pad;
+  const x = i => L + (pts.length === 1 ? (W-L-R)/2 : i * (W - L - R) / (pts.length - 1));
   const y = v => T + (H - T - B) * (1 - (v - min) / (max - min));
   const path = pts.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(' ');
   const last = pts.length - 1;
   const lblIdx = [...new Set([0, last, vals.indexOf(Math.max(...vals))])];
+  const fmtV = v => unit === 's' ? fmtSecs(v) : fmtKg(v);
+  const refSvg = ref ? `<line class="ref" x1="${L}" x2="${W-R}" y1="${y(ref.v).toFixed(1)}" y2="${y(ref.v).toFixed(1)}"/>
+      <text class="lbl reflbl" x="${L}" y="${(y(ref.v)-6).toFixed(1)}" text-anchor="start">${esc(ref.label)}</text>` : '';
   return `
   <div class="chart" id="${id}" data-pts="${esc(JSON.stringify(pts))}" data-unit="${esc(unit)}">
     <div class="ctitle">${esc(title)}</div>
     <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)}">
       <line class="grid" x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}"/>
+      ${refSvg}
       <path class="ln" d="${path}"/>
       ${pts.map((p,i)=>`<circle class="pt" data-i="${i}" cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="4.5"/>`).join('')}
-      ${lblIdx.map(i=>`<text class="lbl v" x="${x(i).toFixed(1)}" y="${(y(pts[i].v)-9).toFixed(1)}" text-anchor="${i===0?'start':i===last?'end':'middle'}">${fmtKg(pts[i].v)}</text>`).join('')}
+      ${lblIdx.map(i=>`<text class="lbl v" x="${x(i).toFixed(1)}" y="${(y(pts[i].v)-9).toFixed(1)}" text-anchor="${i===0&&pts.length>1?'start':i===last&&pts.length>1?'end':'middle'}">${fmtV(pts[i].v)}</text>`).join('')}
       <text class="lbl" x="${L}" y="${H-5}" text-anchor="start">${esc(pts[0].label)}</text>
-      <text class="lbl" x="${W-R}" y="${H-5}" text-anchor="end">${esc(pts[last].label)}</text>
+      ${pts.length > 1 ? `<text class="lbl" x="${W-R}" y="${H-5}" text-anchor="end">${esc(pts[last].label)}</text>` : ''}
       ${pts.map((p,i)=>`<circle class="hit" cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="14" onclick="chartTap('${id}',${i})"/>`).join('')}
     </svg>
     <div class="cap" data-role="cap">Tocca un punto per il valore</div>
   </div>`;
 }
+
 function chartTap(id, i){
   const el = document.getElementById(id);
   const pts = JSON.parse(el.dataset.pts);
   el.querySelectorAll('.pt').forEach(c=>c.classList.toggle('sel', +c.dataset.i === i));
-  el.querySelector('[data-role="cap"]').textContent = `${pts[i].label}: ${fmtKg(pts[i].v)} ${el.dataset.unit}`;
+  const u = el.dataset.unit;
+  el.querySelector('[data-role="cap"]').textContent = `${pts[i].label}: ${u === 's' ? fmtSecs(pts[i].v) : fmtKg(pts[i].v) + ' ' + u}`;
 }
 
 /* ============ TOAST ============ */
@@ -1043,8 +1284,19 @@ function showToast(msg, onUndo, isErr){
 function hideToast(){ document.getElementById('toast').classList.remove('show'); }
 
 /* Mentre scrivi nei campi, barra timer e toast spariscono (sono fissi: non spostano la pagina) */
-document.addEventListener('focusin', e=>{ if(e.target.matches && e.target.matches('input')) document.body.classList.add('typing'); });
-document.addEventListener('focusout', ()=> document.body.classList.remove('typing'));
+/* Mentre scrivi: l'avviso in basso si chiude e la barra timer si nasconde.
+   Quando smetti, la barra ricompare con un attimo di ritardo, così non "ruba" il tocco sul pulsante che stai premendo. */
+let typingOff = null;
+document.addEventListener('focusin', e=>{
+  if(e.target.matches && e.target.matches('input')){ clearTimeout(typingOff); document.body.classList.add('typing'); hideToast(); }
+});
+document.addEventListener('focusout', ()=>{
+  clearTimeout(typingOff);
+  typingOff = setTimeout(()=>{
+    const a = document.activeElement;
+    if(!(a && a.matches && a.matches('input'))) document.body.classList.remove('typing');
+  }, 400);
+});
 
 /* ============ TIMER (uno alla volta, barra fissa in basso) ============ */
 let timer = null;
@@ -1087,12 +1339,13 @@ function setCardTimerBtn(cardId, running){
   if(!card) return;
   const btn = card.querySelector('[data-role="timerbtn"]');
   btn.classList.toggle('running', running);
-  btn.textContent = running ? 'Stop timer' : `⏱ Timer (${card.dataset.rest}")`;
+  btn.textContent = running ? 'Stop recupero' : `⏱ Recupero (${card.dataset.rest}")`;
 }
 function startTimer(b, d, ei){
   const cardId = `ex-${b}-${d}-${ei}`;
   const rest = parseInt(cardEl(b, d, ei).dataset.rest, 10);
   if(timer) clearTimer();
+  if(stopwatch && stopwatch.cardId !== cardId) stopStopwatch();
   clearTimeout(hideBarTimeout);
   unlockAudio();
   acquireWakeLock();
@@ -1254,6 +1507,7 @@ function finishWorkout(b, d){
     list.splice(i, 1);
   } else {
     list.push({iso, b, d, t: Date.now()});
+    if(stopwatch) stopStopwatch();
     if(timer) stopTimer(); else releaseWakeLock();
   }
   if(!saveWorkouts(list)) return;
@@ -1330,8 +1584,78 @@ function calTap(iso){
   if(saveWorkouts(list.filter(w=>w.iso!==iso))) refreshWorkoutViews();
 }
 
+/* ============ PESO CORPOREO ============ */
+function getWeights(){
+  return lsGet('bodyweight', []).filter(w=>w && ISO_RE.test(w.iso) && !isNaN(Number(w.kg)))
+    .sort((a,b)=> a.iso < b.iso ? -1 : a.iso > b.iso ? 1 : 0);
+}
+function goalKg(){ const g = Number(settings.goalKg); return g > 0 ? g : 77; }
+function goalDate(){ return ISO_RE.test(settings.goalDate) ? settings.goalDate : '2027-03-31'; }
+function saveWeight(){
+  const inp = document.getElementById('bwInput');
+  const kg = parseNum(inp.value);
+  if(isNaN(kg) || kg < 30 || kg > 300){ inp.classList.add('bad'); showToast('Inserisci il peso in kg (es. 81,4)', null, true); return; }
+  inp.classList.remove('bad');
+  if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  const iso = todayISO();
+  const list = getWeights().filter(w=>w.iso !== iso);      // una pesata al giorno: la nuova sostituisce
+  list.push({iso, kg});
+  if(!lsSet('bodyweight', list)) return;
+  inp.value = '';
+  renderWeight();
+  showToast(`Peso di oggi: ${fmtKg(kg)} kg`, null);
+}
+function deleteWeight(iso){
+  if(!confirm(`Eliminare la pesata del ${dmOf(iso)}?`)) return;
+  lsSet('bodyweight', getWeights().filter(w=>w.iso !== iso));
+  renderWeight();
+}
+function saveGoal(){
+  const g = parseNum(document.getElementById('goalKg').value);
+  const dt = document.getElementById('goalDate').value;
+  if(!isNaN(g) && g >= 30 && g <= 300) settings.goalKg = g;
+  if(ISO_RE.test(dt)) settings.goalDate = dt;
+  saveSettings();
+  renderWeight();
+}
+function renderWeight(){
+  const list = getWeights();
+  const gk = goalKg(), gd = goalDate();
+  document.getElementById('goalKg').value = fmtKg(gk);
+  document.getElementById('goalDate').value = gd;
+  const sumEl = document.getElementById('bwSummary');
+  const last = list[list.length-1];
+  const profile = document.getElementById('profileWeight');
+  if(profile) profile.textContent = last ? `${fmtKg(last.kg)} kg` : '—';
+  if(!last){
+    sumEl.innerHTML = `Nessuna pesata ancora. Obiettivo <b>${fmtKg(gk)} kg</b> entro il ${dmOf(gd)}/${gd.slice(0,4)}.`;
+    document.getElementById('bwChart').innerHTML = '';
+    document.getElementById('bwList').innerHTML = '';
+    return;
+  }
+  // media degli ultimi 7 giorni (riduce le oscillazioni giornaliere)
+  const d7 = new Date(); d7.setDate(d7.getDate() - 6);
+  const recent = list.filter(w=>w.iso >= isoOf(d7));
+  const avg7 = recent.length ? recent.reduce((s,w)=>s+Number(w.kg),0) / recent.length : null;
+  const ref = avg7 !== null ? avg7 : Number(last.kg);
+  const toGo = ref - gk;
+  const daysLeft = Math.round((new Date(gd + 'T12:00:00') - new Date(todayISO() + 'T12:00:00')) / 86400000);
+  let pace = '';
+  if(toGo <= 0) pace = '🎯 Obiettivo raggiunto.';
+  else if(daysLeft > 0) pace = `Mancano <b>${fmtKg(Math.round(toGo*10)/10)} kg</b> in ${daysLeft} giorni: circa <b>${fmtKg(Math.round(toGo/daysLeft*7*100)/100)} kg a settimana</b>.`;
+  else pace = `La data obiettivo è passata: mancano ${fmtKg(Math.round(toGo*10)/10)} kg.`;
+  sumEl.innerHTML = `Ultima: <b>${fmtKg(last.kg)} kg</b> (${dmOf(last.iso)})` +
+    (avg7 !== null && recent.length > 1 ? ` · media 7 giorni <b>${fmtKg(Math.round(avg7*10)/10)} kg</b>` : '') +
+    `<br>${pace}`;
+  const pts = list.slice(-60).map(w=>({label: dmOf(w.iso), v: Number(w.kg)}));
+  document.getElementById('bwChart').innerHTML = sparkline('Peso corporeo (kg)', pts, 'kg', {v: gk, label: `obiettivo ${fmtKg(gk)}`});
+  document.getElementById('bwList').innerHTML = list.slice().reverse().map(w=>`
+    <div class="hrow"><span>${dmOf(w.iso)}/${w.iso.slice(2,4)} — ${fmtKg(w.kg)} kg</span>
+    <button class="delbtn" aria-label="Elimina pesata del ${dmOf(w.iso)}" onclick="deleteWeight('${w.iso}')">🗑</button></div>`).join('');
+}
+
 /* ============ BACKUP ============ */
-const BACKUP_KEYS = k => k.startsWith('log:') || k === 'maxtests' || k === 'settings' || k === 'workouts';
+const BACKUP_KEYS = k => k.startsWith('log:') || k === 'maxtests' || k === 'settings' || k === 'workouts' || k === 'bodyweight';
 function allDataKeys(){
   const keys = [];
   for(let i=0; i<localStorage.length; i++){ const k = localStorage.key(i); if(k && BACKUP_KEYS(k)) keys.push(k); }
@@ -1344,8 +1668,9 @@ function renderDataInfo(){
   });
   const tests = getTestHistory().length;
   const wk = getWorkouts().length;
+  const bw = getWeights().length;
   document.getElementById('dataInfo').textContent =
-    `${n} serie registrate${lastIso ? `, ultima il ${dmOf(lastIso)}` : ''} · ${wk} allenamenti conclusi · ${tests} test massimali. I dati stanno solo su questo telefono: esporta un backup ogni tanto.`;
+    `${n} serie registrate${lastIso ? `, ultima il ${dmOf(lastIso)}` : ''} · ${wk} allenamenti conclusi · ${bw} pesate · ${tests} test massimali. I dati stanno solo su questo telefono: esporta un backup ogni tanto.`;
 }
 async function exportBackup(){
   const data = {};
@@ -1373,7 +1698,7 @@ async function exportBackup(){
 function validBackupValue(k, raw){
   if(typeof raw !== 'string') return false;
   let v; try{ v = JSON.parse(raw); }catch(e){ return false; }
-  if(k === 'maxtests' || k === 'workouts') return Array.isArray(v);
+  if(k === 'maxtests' || k === 'workouts' || k === 'bodyweight') return Array.isArray(v);
   return !!v && typeof v === 'object' && !Array.isArray(v);
 }
 function importBackup(input){
@@ -1455,6 +1780,7 @@ try{
   renderTestHistory();
   renderDataInfo();
   renderCalendar();
+  renderWeight();
   document.getElementById('setFold').addEventListener('toggle', renderDataInfo);
 }catch(e){
   console.error(e);
@@ -1465,7 +1791,8 @@ try{
 document.addEventListener('visibilitychange', ()=>{
   if(document.visibilityState !== 'visible') return;
   tickTimer();
-  if(timer) acquireWakeLock();
+  tickStopwatch();
+  if(timer || stopwatch) acquireWakeLock();
   if(audioCtx && audioCtx.state !== 'running') audioCtx.resume().catch(()=>{});
   const openIdx = Array.from(accWrap.children).findIndex(a=>a.classList.contains('open'));
   if(openIdx >= 0) loadAllLogsForBlock(PLAN[openIdx].id);
