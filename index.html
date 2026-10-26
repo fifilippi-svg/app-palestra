@@ -358,6 +358,62 @@
     font-family:var(--mono); font-size:14px; font-weight:700; cursor:pointer;}
   .sclose{width:100%; min-height:54px; margin-top:14px; border:none; border-radius:10px; background:var(--accent2); color:var(--bg);
     font-family:var(--mono); font-size:16px; font-weight:700; text-transform:uppercase; cursor:pointer;}
+
+  /* ---- v13: intestazione compatta, card più corte, focus ---- */
+  header{padding:calc(10px + env(safe-area-inset-top)) 16px 4px !important;}
+  header h1{font-size:22px; line-height:1.2; margin:0;}
+  header details.note{margin:0;}
+  section{padding:14px 16px;}
+  .today{padding:12px;}
+  .today .t2{font-size:22px;}
+  .todaybtns{display:flex; gap:8px; margin-top:10px;}
+  .todaybtns button{min-height:50px; border-radius:8px; font-family:var(--mono); font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap; padding:0 6px;}
+  .rirtag{white-space:nowrap;}
+  .todaybtns .tb-main{flex:1.4 1 0; background:var(--accent); color:var(--bg); border:none;}
+  .todaybtns .tb-alt{flex:1 1 0; background:transparent; color:var(--text); border:1.5px solid var(--line);}
+  #planSection > h2{margin-bottom:0;}
+  .focusbtn{min-height:44px !important; margin:0 0 10px !important; font-size:14px !important;}
+  .day-tabs{margin:6px 0 10px;}
+  .day-tab{min-height:56px;}
+  .exlog{padding:10px 12px;}
+  .exright{flex-direction:row-reverse; align-items:center; gap:8px;}
+  .cmp{margin-top:4px;}
+  .exrow{margin-top:8px;}
+  .steprow{margin-top:6px;}
+  .steprow button{height:40px;}
+  .rirrow{margin-top:6px;}
+  .rirrow small{display:inline; margin-left:4px;}
+  .seg button{height:40px; min-width:52px;}
+  .painrow{margin-top:6px;}
+  .painrow select{height:40px;}
+  .cardfoot{margin-top:8px;}
+  .timerbtn, .histbtn{min-height:42px !important;}
+  .suggest{cursor:pointer; margin-top:6px;}
+  .suggest:active{background:rgba(242,201,76,.2);}
+  .sugtap{font-size:13px; color:var(--mute); white-space:nowrap;}
+  .chk{display:flex !important; align-items:center; gap:10px; color:var(--text) !important; font-size:16px !important; min-height:44px;}
+  .chk input{width:22px; height:22px; accent-color:var(--accent2);}
+  #focusRest{font-family:var(--mono); font-size:20px; font-weight:700; color:var(--accent); min-width:64px; text-align:right; visibility:hidden;}
+  #focusRest.on{visibility:visible;}
+  #focusRest.via{color:var(--warn);}
+  #focusNextInfo{margin-top:12px; font-size:15px; color:var(--mute); text-align:center;}
+  #focusNextInfo b{color:var(--text);}
+  #focusStage .exname{font-size:24px;}
+  /* riga in fondo alla card sempre su una riga: recupero · storico · "salvato" */
+  .cardfoot{flex-wrap:nowrap;}
+  .cardfoot .timerbtn{flex:0 1 auto; white-space:nowrap; min-width:0;}
+  .cardfoot .histbtn{flex:0 0 auto; white-space:nowrap;}
+  .cardfoot .flash{flex:1 1 auto; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .rirrow > span{white-space:nowrap;}
+  @media (max-width:380px){
+    .steprow button{font-size:12.5px;}
+    .timerbtn{font-size:13px; padding:8px 10px;}
+    .histbtn{padding:0 10px;}
+    .rirrow{font-size:14px; gap:6px;}
+    .rirrow small{font-size:11px; margin-left:2px;}
+    .seg{gap:4px;}
+    .seg button{min-width:46px; font-size:14px;}
+  }
 </style>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#101314">
@@ -370,8 +426,7 @@
 <body>
 
 <header>
-  <div class="eyebrow">Programma annuale · Ipertrofia</div>
-  <h1>Piano Annuale — Tracker</h1>
+  <h1>🏋️ Piano annuale · Ipertrofia</h1>
   <details class="note">
     <summary>Profilo</summary>
     <div class="meta-row">
@@ -389,11 +444,11 @@
 
 <section id="planSection">
   <h2><span class="n">01</span>Allenati e registra</h2>
+  <div id="accWrap"></div>
   <details class="note">
     <summary>Come si usa</summary>
     <p class="sub-note">Kg e reps sono già compilati con l'ultima serie (puoi scrivere i decimali con la virgola, es. 62,5). Se vuoi, tocca il <b>RIR</b> (ripetizioni che avresti ancora potuto fare: 0-1, 2, 3+). Premi <b>Rec</b>: la serie viene salvata e parte il timer di recupero, visibile nella barra in basso. Negli esercizi a tempo (plank) premi <b>▶ Avvia</b> e poi <b>Stop e salva</b>; nei superset scrivi i pesi dei due esercizi. Il contatore <b>2/3</b> indica le serie fatte oggi; a serie completate la card diventa <b style="color:var(--accent2)">verde con ✓</b>. Con <b>🎯 Modalità focus</b> vedi un esercizio alla volta a tutto schermo: finite le serie previste passa da solo al successivo. A fine seduta premi <b>Concludi allenamento</b>: vedi il riepilogo con eventuali record 🏆 e la lettera del giorno compare nel calendario (toccandola lo riapri).</p>
   </details>
-  <div id="accWrap"></div>
 </section>
 
 <section>
@@ -527,6 +582,12 @@
       <div class="info">Serve per aprire da solo il blocco del periodo in corso.</div>
     </div>
     <div class="setbox">
+      <label>Avviso di fine recupero</label>
+      <label class="chk"><input type="checkbox" id="loudBeep" onchange="toggleLoudBeep(this.checked)"> 🔔 Beep anche con iPhone in silenzioso</label>
+      <div class="btnrow"><button class="btn-b" onclick="testBeep()">Prova il suono</button></div>
+      <div class="info">Se il beep abbassa o ferma la musica che stai ascoltando, disattiva questa opzione: tornerà il beep normale, che però col silenzioso non si sente.</div>
+    </div>
+    <div class="setbox">
       <label>Backup dei dati (solo su questo telefono)</label>
       <div class="btnrow">
         <button class="btn-a" onclick="exportBackup()">Esporta backup</button>
@@ -596,9 +657,11 @@
   <div class="fbar">
     <button onclick="closeFocus()" aria-label="Esci dalla modalità focus">✕ Esci</button>
     <span id="focusCount"></span>
+    <span id="focusRest" aria-live="off"></span>
   </div>
   <div id="focusDots" aria-hidden="true"></div>
   <div id="focusStage"></div>
+  <div id="focusNextInfo"></div>
   <div class="fnav">
     <button id="focusPrev" onclick="focusMove(-1)">‹ Precedente</button>
     <button id="focusNext" onclick="focusMove(1)">Successivo ›</button>
@@ -989,6 +1052,26 @@ function cmpSet(a, b){
   return '<span class="arr eq" aria-label="uguale">=</span>';
 }
 
+/* "Scorsa" in una riga: se il peso è lo stesso in tutte le serie lo scrive una volta sola
+   (es. 41,25 × 12·12·11 · RIR 2) invece di ripeterlo a ogni serie */
+function compactSets(sets){
+  if(!sets.length) return '';
+  const allTimed = sets.every(x=>x.s !== null);
+  const sameW = sets.every(x=>x.s === null && x.w2 === null && x.w === sets[0].w);
+  let t;
+  if(allTimed) t = sets.map(x=>fmtSecs(x.s)).join('·');
+  else if(sameW) t = `${fmtKg(sets[0].w)} × ${sets.map(x=>esc(x.r)).join('·')}`;
+  else return sets.map(setTxt).join(' · ');
+  const rirs = sets.map(x=>x.rir).filter(v=>v !== null && RIR_LBL[v]);
+  if(rirs.length){
+    t += rirs.length === sets.length && rirs.every(v=>v === rirs[0])
+      ? ` <span class="rirtag">RIR ${RIR_LBL[rirs[0]]}</span>`
+      : ` <span class="rirtag">RIR ${sets.map(x=>x.rir !== null && RIR_LBL[x.rir] ? RIR_LBL[x.rir] : '–').join('·')}</span>`;
+  }
+  const pains = sets.map(x=>x.p).filter(v=>v !== null && !isNaN(v));
+  if(pains.length) t += ` <span style="color:var(--warn)">(spalla max ${Math.max(...pains)})</span>`;
+  return t;
+}
 function setTxt(s){
   let t;
   if(s.s !== null) t = fmtSecs(s.s);
@@ -1019,16 +1102,16 @@ function buildBlock(bi){
   if(acc.dataset.built) return;
   const block = PLAN[bi];
   acc.querySelector('.acc-body').innerHTML = `<div class="acc-inner">
-      <details class="note"><summary>Obiettivo del blocco</summary><p class="goal">${block.goal}</p></details>
       <div class="day-tabs" role="tablist">
         ${block.days.map((d,di)=>{const [dl, ...rest] = d.label.split(' · '); return `<button class="day-tab ${di===0?'active':''}" role="tab" aria-selected="${di===0}" onclick="switchDay(${bi},${di})"><span class="dl">${dl}</span>${rest.length?`<span class="ds">${rest.join(' · ')}</span>`:''}</button>`;}).join('')}
       </div>
       ${block.days.map((d,di)=>`
         <div class="day-panel ${di===0?'active':''}" id="panel-${block.id}-${di}" role="tabpanel">
-          <button class="focusbtn" onclick="openFocus('${block.id}','${d.id}')">🎯 Modalità focus · un esercizio alla volta</button>
+          <button class="focusbtn" onclick="openFocus('${block.id}','${d.id}')">🎯 Modalità focus</button>
           ${d.exercises.map((ex,ei)=>cardHTML(block.id, d.id, ei, ex)).join('')}
           <button class="finishbtn" data-role="finish" data-b="${block.id}" data-d="${d.id}" onclick="finishWorkout('${block.id}','${d.id}')">✅ Concludi allenamento ${d.id}</button>
         </div>`).join('')}
+      <details class="note"><summary>Obiettivo del blocco</summary><p class="goal">${block.goal}</p></details>
     </div>`;
   acc.dataset.built = '1';
 }
@@ -1090,7 +1173,7 @@ function cardHTML(b, d, ei, ex){
     ${ex.note?`<div class="exnote">${ex.note}</div>`:''}
     <div class="cmp todayline" data-role="today" style="display:none"></div>
     <div class="cmp" data-role="prev" style="display:none"></div>
-    <div class="suggest" data-role="suggest"></div>
+    <div class="suggest" data-role="suggest" role="button" tabindex="0" onclick="applySuggest(${a})"></div>
     ${inputs}
     <div class="steprow">${steps}</div>
     ${rirRow}
@@ -1154,13 +1237,13 @@ function renderCard(b, d, ei){
   todayEl.style.display = today ? '' : 'none';
 
   const prevEl = card.querySelector('[data-role="prev"]');
-  prevEl.innerHTML = prev ? `Scorsa (${prevWhere}${dmOf(prev.iso)}): ${prev.sets.map(setTxt).join(' · ')}` : '';
+  prevEl.innerHTML = prev ? `Scorsa ${prevWhere ? prevWhere.replace(/, $/,'') + ' ' : ''}${dmOf(prev.iso)}: ${compactSets(prev.sets)}` : '';
   prevEl.style.display = prev ? '' : 'none';
 
   // Suggerimento: guarda l'ultima seduta completa (oggi se finita, altrimenti la precedente)
   const sug = card.querySelector('[data-role="suggest"]');
   const base = (today && done >= nSets) ? today : (!today ? prev : null);
-  let sugTxt = '';
+  let sugTxt = '', sugFill = null;
   if(base && base.sets.length >= nSets){
     const work = base.sets.slice(0, nSets);
     const when = base === today ? 'la prossima volta' : 'oggi';
@@ -1168,6 +1251,7 @@ function renderCard(b, d, ei){
       const tgt = parseTargetSecs(ex.t);
       if(tgt && work.every(s=>s.s !== null && s.s >= tgt)){
         sugTxt = `💡 Tenuta raggiunta in tutte le serie: ${when} prova <b>${fmtSecs(Math.max(...work.map(s=>s.s)) + 5)}</b>`;
+        sugFill = {s: Math.max(...work.map(s=>s.s)) + 5};
       }
     } else {
       const target = parseTargetReps(ex.t);
@@ -1180,10 +1264,13 @@ function renderCard(b, d, ei){
         const w1 = Math.max(...work.map(s=>s.w || 0));
         const w2 = kind === 'super' ? Math.max(...work.map(s=>s.w2 || 0)) : 0;
         if(tooHard){
+          sugFill = kind === 'super' ? {w:w1, w2:w2} : {w:w1};
           sugTxt = `💡 Reps fatte ma con meno margine del previsto (RIR obiettivo ${rr[0]===rr[1]?rr[0]:rr[0]+'-'+rr[1]}): ${when} <b>mantieni il carico</b>`;
         } else if(kind === 'super' && (w1 > 0 || w2 > 0)){
           sugTxt = `💡 Tutte le reps fatte: ${when} prova <b>① ${fmtKg(w1+step)} kg · ② ${fmtKg(w2+step)} kg</b>`;
+          sugFill = {w:w1+step, w2:w2+step};
         } else if(w1 > 0){
+          sugFill = {w:w1+step};
           sugTxt = base === today
             ? `💡 Tutte le reps fatte${easy ? ' e con margine (RIR 3+)' : ''}: la prossima volta prova <b>${fmtKg(w1+step)} kg</b>`
             : `💡 L'ultima volta hai fatto tutte le reps${easy ? ' con margine (RIR 3+)' : ''}: oggi prova <b>${fmtKg(w1+step)} kg</b>`;
@@ -1191,8 +1278,9 @@ function renderCard(b, d, ei){
       }
     }
   }
-  sug.innerHTML = sugTxt;
+  sug.innerHTML = sugTxt ? sugTxt + ' <span class="sugtap">· tocca per inserire</span>' : '';
   sug.classList.toggle('show', !!sugTxt);
+  sug.dataset.fill = sugFill ? JSON.stringify(sugFill) : '';
 
   // Precompila con l'ultima serie (solo campi vuoti e non in uso)
   // oggi: l'ultima serie fatta; altrimenti la PRIMA serie della volta scorsa (le ultime sono di solito le più stanche)
@@ -1243,6 +1331,16 @@ function switchDay(bi, di){
 }
 
 /* ============ REGISTRAZIONE ============ */
+/* tocco sul 💡: inserisce il peso (o i secondi) suggerito nelle caselle */
+function applySuggest(b, d, ei){
+  const card = cardEl(b, d, ei);
+  const sug = card.querySelector('[data-role="suggest"]');
+  if(!sug.dataset.fill) return;
+  const f = JSON.parse(sug.dataset.fill);
+  const set = (role, v, fmt)=>{ const inp = card.querySelector(`[data-role="${role}"]`); if(inp && v !== undefined){ inp.value = fmt ? fmt(v) : String(v); inp.classList.remove('bad'); } };
+  set('w', f.w, fmtKg); set('w2', f.w2, fmtKg); set('s', f.s);
+  flash(card, 'inserito ✓');
+}
 function stepVal(b, d, ei, role, delta){
   const inp = cardEl(b, d, ei).querySelector(`[data-role="${role}"]`);
   const cur = parseNum(inp.value);
@@ -1310,6 +1408,7 @@ function logExercise(b, d, ei, secsFromWatch){
   renderCard(b, d, ei);
   renderTodayKeep(card);
   flash(card, 'salvato ✓');
+  keepAwakeSession();
   startTimer(b, d, ei);   // parte subito il recupero
   showToast(msg, ()=>undoEntry(b, d, ei, entry.t));
   focusAfterLog(b, d, ei);
@@ -1599,6 +1698,20 @@ async function acquireWakeLock(){
     l.addEventListener('release', ()=>{ if(wakeLock === l) wakeLock = null; });
   }catch(e){ wakePending = false; wakeLock = null; }
 }
+/* Seduta in corso: dalla prima serie lo schermo resta acceso fino a "Concludi allenamento",
+   o dopo 20 minuti senza registrare nulla (per non scaricare la batteria se dimentichi di concludere). */
+let sessionActive = false, sessionIdle = null;
+function keepAwakeSession(){
+  sessionActive = true;
+  acquireWakeLock();
+  clearTimeout(sessionIdle);
+  sessionIdle = setTimeout(()=>{ sessionActive = false; if(!timer && !stopwatch) releaseWakeLock(); }, 20*60*1000);
+}
+function endAwakeSession(){
+  sessionActive = false;
+  clearTimeout(sessionIdle);
+  if(!timer && !stopwatch) releaseWakeLock();
+}
 function releaseWakeLock(){
   wantWake = false;
   clearTimeout(wakeHold);
@@ -1630,6 +1743,7 @@ function startTimer(b, d, ei){
   if(stopwatch && stopwatch.cardId !== cardId) saveRunningStopwatch();
   clearTimeout(hideBarTimeout);
   unlockAudio();
+  prepareBeep();
   acquireWakeLock();
   timer = { cardId, endAt: Date.now() + rest*1000, intervalId: setInterval(tickTimer, 250) };
   document.getElementById('tbName').textContent = `Recupero · ${exName(b, d, ei)}`;
@@ -1652,13 +1766,14 @@ function clearTimer(){
   timer = null;
 }
 function hideBar(){
+  setFocusRest('', false);
   document.getElementById('timerBar').classList.remove('show','done');
   document.body.classList.remove('has-timer');
 }
 function stopTimer(){
   clearTimer();
   clearTimeout(hideBarTimeout);
-  releaseWakeLock();
+  if(!sessionActive) releaseWakeLock();
   hideBar();
 }
 function tickTimer(){
@@ -1668,18 +1783,73 @@ function tickTimer(){
   if(remaining <= 0){
     clearTimer();
     tEl.textContent = 'VIA!';
+    setFocusRest('VIA!', true);
     document.getElementById('timerBar').classList.add('done');
     playBeep();
-    // schermo acceso ancora 2 minuti per preparare la serie successiva
-    clearTimeout(wakeHold);
-    wakeHold = setTimeout(()=>{ if(!timer) releaseWakeLock(); }, 120000);
+    // lo schermo resta acceso finché la seduta è in corso (vedi keepAwakeSession)
+    if(!sessionActive){ clearTimeout(wakeHold); wakeHold = setTimeout(()=>{ if(!timer && !sessionActive) releaseWakeLock(); }, 120000); }
     clearTimeout(hideBarTimeout);
     hideBarTimeout = setTimeout(()=>{ if(!timer) hideBar(); }, 6000);
     return;
   }
   tEl.textContent = formatMMSS(remaining);
+  setFocusRest('⏱ ' + formatMMSS(remaining), false);
+}
+function setFocusRest(txt, via){
+  const el = document.getElementById('focusRest');
+  if(!el) return;
+  el.textContent = txt;
+  el.classList.toggle('via', !!via);
+  el.classList.toggle('on', !!txt);
+  if(via){ clearTimeout(setFocusRest.t); setFocusRest.t = setTimeout(()=>{ if(!timer) setFocusRest('', false); }, 6000); }
+}
+/* Su iPhone il suono "Web Audio" segue il tasto silenzioso, mentre un elemento <audio> suona lo stesso.
+   Il beep viene quindi creato come piccolo file audio (3 bip a 880 Hz) e suonato con <audio>.
+   Si può disattivare in Impostazioni se interferisce con la musica. */
+function loudBeepOn(){ return settings.loudBeep !== false; }
+let beepEl = null, beepReady = false;
+function beepUrl(){
+  const rate = 22050, tone = 0.18, gap = 0.12, n = 3;
+  const total = Math.round(rate * (n * (tone + gap)));
+  const buf = new ArrayBuffer(44 + total * 2), v = new DataView(buf);
+  const w = (o, str)=>{ for(let i=0;i<str.length;i++) v.setUint8(o+i, str.charCodeAt(i)); };
+  w(0,'RIFF'); v.setUint32(4, 36 + total*2, true); w(8,'WAVE'); w(12,'fmt ');
+  v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,rate,true);
+  v.setUint32(28,rate*2,true); v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data'); v.setUint32(40,total*2,true);
+  for(let i=0;i<total;i++){
+    const t = i / rate, pos = t % (tone + gap);
+    let a = 0;
+    if(pos < tone){ const env = Math.min(1, pos/0.01, (tone-pos)/0.02); a = Math.sin(2*Math.PI*880*t) * 0.6 * env; }
+    v.setInt16(44 + i*2, Math.round(a * 32767), true);
+  }
+  return URL.createObjectURL(new Blob([buf], {type:'audio/wav'}));
+}
+/* da chiamare durante un tocco (Rec, recupero, prova suono): iPhone permette poi di suonarlo da solo a fine recupero */
+function prepareBeep(){
+  if(!loudBeepOn() || beepReady) return;
+  try{
+    if(!beepEl){ beepEl = new Audio(beepUrl()); beepEl.preload = 'auto'; }
+    beepEl.muted = true;
+    const pr = beepEl.play();
+    if(pr && pr.then) pr.then(()=>{ beepEl.pause(); beepEl.currentTime = 0; beepEl.muted = false; beepReady = true; }).catch(()=>{ beepEl.muted = false; });
+    else { beepEl.pause(); beepEl.muted = false; beepReady = true; }
+  }catch(e){}
 }
 function playBeep(){
+  if(loudBeepOn() && beepEl){
+    try{
+      beepEl.muted = false; beepEl.currentTime = 0;
+      const pr = beepEl.play();
+      if(pr && pr.catch) pr.catch(()=>webBeep());
+      try{ if(navigator.vibrate){ navigator.vibrate([200,100,200,100,200]); } }catch(e){}
+      return;
+    }catch(e){}
+  }
+  webBeep();
+}
+function testBeep(){ unlockAudio(); prepareBeep(); setTimeout(playBeep, 300); }
+function toggleLoudBeep(on){ settings.loudBeep = !!on; saveSettings(); if(on) prepareBeep(); }
+function webBeep(){
   try{
     unlockAudio();
     const ctx = audioCtx;
@@ -1754,8 +1924,16 @@ function renderToday(){
     <div class="t1">${t1}</div>
     <div class="t2">${block.title} — Giorno ${esc(day.label)}</div>
     <div class="t3">${t3}</div>
-    <button onclick="goToday(${bi},${sd.di})">Vai all'allenamento</button>`;
+    <div class="todaybtns">
+      <button class="tb-main" onclick="focusToday(${bi},${sd.di})">🎯 Allenati in focus</button>
+      <button class="tb-alt" onclick="goToday(${bi},${sd.di})">Apri la scheda</button>
+    </div>`;
   return { bi, di: sd.di };
+}
+function focusToday(bi, di){
+  openBlock(bi);
+  switchDay(bi, di);
+  openFocus(PLAN[bi].id, PLAN[bi].days[di].id);
 }
 function goToday(bi, di){
   openBlock(bi);
@@ -1788,7 +1966,8 @@ function finishWorkout(b, d){
   if(i >= 0){ openSummary(iso, [{b, d}], 'remove'); return; }     // già concluso: mostra il riepilogo
   list.push({iso, b, d, t: Date.now()});
   if(stopwatch) saveRunningStopwatch();
-  if(timer) stopTimer(); else releaseWakeLock();
+  if(timer) stopTimer();
+  endAwakeSession();
   if(!saveWorkouts(list)) return;
   if(focusState) closeFocus();
   refreshWorkoutViews();
@@ -2018,6 +2197,7 @@ function showFocus(){
   focusDotsOnly.last = dots;
   if(idx >= n){
     document.getElementById('focusCount').textContent = 'Fine';
+    document.getElementById('focusNextInfo').innerHTML = '';
     const done = getWorkouts().some(w=>w.iso===todayISO() && w.b===b && w.d===d);
     stage.innerHTML = `<div class="fend">
       <div class="fend-t">💪 Esercizi completati</div>
@@ -2027,6 +2207,10 @@ function showFocus(){
     return;
   }
   document.getElementById('focusCount').textContent = `Esercizio ${idx+1} di ${n}`;
+  const nx = day.exercises[idx+1];
+  document.getElementById('focusNextInfo').innerHTML = nx
+    ? `Prossimo: <b>${esc(exName(b, d, idx+1))}</b> · ${nx.t} · ${nx.r}`
+    : `Ultimo esercizio: poi <b>Concludi allenamento</b>`;
   const card = cardEl(b, d, idx);
   const ph = document.createElement('div');
   ph.id = 'focusPh';
@@ -2591,6 +2775,7 @@ try{
   migrateLegacy();
   migrateToKeys();
   document.getElementById('startDate').value = settings.startDate || '';
+  document.getElementById('loudBeep').checked = loudBeepOn();
   const start = renderToday();
   openBlock(start.bi);
   switchDay(start.bi, start.di);
@@ -2610,7 +2795,7 @@ document.addEventListener('visibilitychange', ()=>{
   if(document.visibilityState !== 'visible') return;
   tickTimer();
   tickStopwatch();
-  if(timer || stopwatch) acquireWakeLock();
+  if(timer || stopwatch || sessionActive) acquireWakeLock();
   if(audioCtx && audioCtx.state !== 'running') audioCtx.resume().catch(()=>{});
   const openIdx = Array.from(accWrap.children).findIndex(a=>a.classList.contains('open'));
   if(openIdx >= 0) loadAllLogsForBlock(PLAN[openIdx].id);
