@@ -322,7 +322,7 @@
   #focusStage .extarget{font-size:17px;}
   #focusStage .setbadge{font-size:18px; padding:3px 10px;}
   #focusStage .cmp{font-size:16px;}
-  #focusStage .exrow input{height:68px; font-size:26px;}
+  #focusStage .exrow input{height:68px; font-size:24px; padding:6px 2px; letter-spacing:-0.5px;}
   #focusStage .logbtn{flex-basis:68px; width:68px; height:68px; font-size:20px;}
   #focusStage .logspacer{flex-basis:68px; width:68px;}
   #focusStage .steprow button{height:52px; font-size:16px;}
@@ -777,6 +777,37 @@ const PLAN = [
   }
 ];
 
+/* ============ CODICI FISSI DEGLI ESERCIZI ============ */
+/* Lo stesso esercizio ha lo stesso codice in tutti i blocchi, anche se il nome nel piano è scritto
+   in modo leggermente diverso. I dati sono salvati per codice, non per posizione nella lista. */
+const EX_KEYS = {
+  'leg press':'legpress', 'leg press piedi alti':'legpress_alti',
+  'chest press a macchina':'chestpress', 'chest press macchina':'chestpress',
+  'chest press panca inclinata (macchina)':'chestpress_incl',
+  'chest press manubri':'chestpress_manubri', 'chest press manubri inclinata':'chestpress_manubri_incl',
+  'lat machine presa larga':'lat_larga', 'lat machine presa stretta':'lat_stretta', 'lat machine presa neutra':'lat_neutra',
+  'leg curl sdraiato':'legcurl', 'leg curl':'legcurl',
+  'alzate laterali (leggeri)':'alzate', 'alzate laterali':'alzate',
+  'plank':'plank', 'plank + side plank':'plank_side', 'crunch a cavo':'crunch', 'circuito core':'core_circ',
+  'squat a macchina / hack squat':'squat_mac', 'squat a macchina':'squat_mac',
+  'pulley basso presa neutra':'pulley', 'pulley basso':'pulley',
+  'shoulder press macchina':'shoulderpress', 'leg extension':'legext',
+  'curl bicipiti manubri':'curl', 'curl bicipiti':'curl',
+  'push-down tricipiti':'pushdown', 'push-down':'pushdown',
+  'curl + push-down (superset)':'curl_pushdown', 'curl bicipiti + push-down':'curl_pushdown', 'curl + push-down':'curl_pushdown',
+  'stacco rumeno manubri':'stacco_manubri', 'stacco rumeno bilanciere':'stacco_bil',
+  'affondi alla spalliera / step-up':'affondi', 'affondi alla spalliera':'affondi', 'affondi bulgari':'bulgari',
+  'face pull':'facepull', 'face pull + extrarotazioni':'facepull_extra',
+  'croci a cavo basse':'croci', 'croci a cavo':'croci',
+  'polpacci in piedi':'polpacci', 'polpacci':'polpacci',
+  'rematore manubrio panca':'rematore_manubrio', 'rematore a cavo seduto':'rematore_cavo', 'rematore a cavo':'rematore_cavo',
+};
+PLAN.forEach(bl=> bl.days.forEach(dd=> dd.exercises.forEach(ex=>{
+  const n = ex.n.toLowerCase().trim();
+  // ogni slot "Esercizio di specializzazione" è un esercizio a sé (codice per giorno)
+  ex.k = /specializzazione/.test(n) ? `spec_${bl.id}_${dd.id}` : (EX_KEYS[n] || n.replace(/[^a-z0-9]+/g,'_'));
+})));
+
 /* ============ UTILITÀ ============ */
 const accWrap = document.getElementById('accWrap');
 const SHOULDER_RE = /chest press|shoulder press|croci|alzate/i;
@@ -851,14 +882,57 @@ if(!settings.names || typeof settings.names !== 'object') settings.names = {};
 function saveSettings(){ return lsSet('settings', settings); }
 
 function getDayLog(b, d){ return lsGet(`log:${b}_${d}`, {}); }
-function getEntries(b, d, ei){ const l = getDayLog(b, d)[ei]; return Array.isArray(l) ? l.filter(e=>e && typeof e === 'object') : []; }
+function getEntries(b, d, ei){ const l = getDayLog(b, d)[exKey(b, d, ei)]; return Array.isArray(l) ? l.filter(e=>e && typeof e === 'object') : []; }
 function setEntries(b, d, ei, entries){
   const log = getDayLog(b, d);
-  log[ei] = entries;
+  log[exKey(b, d, ei)] = entries;
   return lsSet(`log:${b}_${d}`, log);
 }
 function exDef(b, d, ei){ return PLAN.find(x=>x.id===b).days.find(x=>x.id===d).exercises[ei]; }
-function exName(b, d, ei){ return settings.names[`${b}_${d}_${ei}`] || exDef(b, d, ei).n; }
+function exKey(b, d, ei){ return exDef(b, d, ei).k; }
+function nameKey(b, d, ei){ return `${b}_${d}_${exKey(b, d, ei)}`; }
+function exName(b, d, ei){ return settings.names[nameKey(b, d, ei)] || exDef(b, d, ei).n; }
+
+/* Conversione una tantum (ripetuta a ogni avvio, ma non fa nulla se è già fatta):
+   i dati salvati per posizione (0,1,2…) passano al codice dell'esercizio.
+   Se per errore esistono entrambi (es. backup vecchio importato), le serie vengono unite senza doppioni. */
+function migrateToKeys(){
+  PLAN.forEach(bl=> bl.days.forEach(dd=>{
+    const lk = `log:${bl.id}_${dd.id}`;
+    const raw = localStorage.getItem(lk);
+    if(!raw) return;
+    const log = lsGet(lk, null);
+    if(!log) return;
+    let changed = false;
+    dd.exercises.forEach((ex, ei)=>{
+      const old = log[String(ei)];
+      if(old === undefined) return;
+      const cur = Array.isArray(log[ex.k]) ? log[ex.k] : [];
+      // conteggio per copie: due serie identiche nello stesso giorno (es. 40×12 e 40×12) restano due
+      const have = {};
+      cur.forEach(e=>{ const j = JSON.stringify(e); have[j] = (have[j] || 0) + 1; });
+      (Array.isArray(old) ? old : []).forEach(e=>{
+        const j = JSON.stringify(e);
+        if(have[j] > 0) have[j]--;          // già presente (stessa copia): non duplicare
+        else cur.push(e);
+      });
+      log[ex.k] = cur;
+      delete log[String(ei)];
+      changed = true;
+    });
+    if(changed) lsSet(lk, log);
+    // nomi personalizzati: da "b6_A_3" a "b6_A_spec_b6_A"
+    dd.exercises.forEach((ex, ei)=>{
+      const oldN = `${bl.id}_${dd.id}_${ei}`, newN = `${bl.id}_${dd.id}_${ex.k}`;
+      if(settings.names[oldN] !== undefined){
+        if(settings.names[newN] === undefined) settings.names[newN] = settings.names[oldN];
+        delete settings.names[oldN];
+        settings._namesMigrated = true;
+      }
+    });
+  }));
+  if(settings._namesMigrated){ delete settings._namesMigrated; saveSettings(); }
+}
 
 /* Registrazioni vecchie senza anno: la data completa viene fissata una volta sola */
 function migrateLegacy(){
@@ -890,12 +964,12 @@ function sessionsOf(entries){
 }
 
 function lastSessionElsewhere(b, d, ei){
-  const base = exDef(b, d, ei).n.toLowerCase().trim();
+  const base = exKey(b, d, ei);
   const tIso = todayISO();
   let best = null;
   PLAN.forEach(bl=> bl.days.forEach(dd=> dd.exercises.forEach((ex, j)=>{
     if(bl.id===b && dd.id===d && j===ei) return;
-    if(ex.n.toLowerCase().trim() !== base) return;
+    if(ex.k !== base) return;
     const ss = sessionsOf(getEntries(bl.id, dd.id, j)).filter(s=>s.iso !== tIso);
     const last = ss[ss.length-1];
     if(last && (!best || last.iso > best.s.iso)) best = {s:last, where:`B${bl.id.slice(1)}·${dd.id}`};
@@ -1100,7 +1174,9 @@ function renderCard(b, d, ei){
       const repsOk = target && work.every(s=>s.r !== null && s.r >= target && (kind !== 'super' || (s.r2 !== null && s.r2 >= target)));
       if(repsOk){
         const rr = blockRir(b);
-        const tooHard = rr && work.some(s=>s.rir !== null && s.rir < rr[0]);
+        const RIR_VAL = {1:0.5, 2:2, 3:3};          // "0-1" vale 0,5: sotto l'obiettivo anche quando è 1-2
+        const tooHard = rr && work.some(s=>s.rir !== null && RIR_VAL[s.rir] !== undefined && RIR_VAL[s.rir] < rr[0]);
+        const easy = rr && rr[1] < 3 && work.length && work.every(s=>s.rir === 3);
         const w1 = Math.max(...work.map(s=>s.w || 0));
         const w2 = kind === 'super' ? Math.max(...work.map(s=>s.w2 || 0)) : 0;
         if(tooHard){
@@ -1109,8 +1185,8 @@ function renderCard(b, d, ei){
           sugTxt = `💡 Tutte le reps fatte: ${when} prova <b>① ${fmtKg(w1+step)} kg · ② ${fmtKg(w2+step)} kg</b>`;
         } else if(w1 > 0){
           sugTxt = base === today
-            ? `💡 Tutte le reps fatte: la prossima volta prova <b>${fmtKg(w1+step)} kg</b>`
-            : `💡 L'ultima volta hai fatto tutte le reps: oggi prova <b>${fmtKg(w1+step)} kg</b>`;
+            ? `💡 Tutte le reps fatte${easy ? ' e con margine (RIR 3+)' : ''}: la prossima volta prova <b>${fmtKg(w1+step)} kg</b>`
+            : `💡 L'ultima volta hai fatto tutte le reps${easy ? ' con margine (RIR 3+)' : ''}: oggi prova <b>${fmtKg(w1+step)} kg</b>`;
         }
       }
     }
@@ -1119,7 +1195,8 @@ function renderCard(b, d, ei){
   sug.classList.toggle('show', !!sugTxt);
 
   // Precompila con l'ultima serie (solo campi vuoti e non in uso)
-  const lastSet = today ? today.sets[today.sets.length-1] : (prev ? prev.sets[prev.sets.length-1] : null);
+  // oggi: l'ultima serie fatta; altrimenti la PRIMA serie della volta scorsa (le ultime sono di solito le più stanche)
+  const lastSet = today ? today.sets[today.sets.length-1] : (prev ? prev.sets[0] : null);
   const fill = (role, v, fmt)=>{
     const inp = card.querySelector(`[data-role="${role}"]`);
     if(inp && v !== null && v !== undefined && !isNaN(v) && inp.value === '' && document.activeElement !== inp) inp.value = fmt ? fmt(v) : String(v);
@@ -1240,6 +1317,24 @@ function logExercise(b, d, ei, secsFromWatch){
 
 /* ============ CRONOMETRO (esercizi a tempo) ============ */
 let stopwatch = null;   // {cardId, b, d, ei, start, intervalId}
+/* Se il cronometro sta correndo e fai altro (Rec o recupero su un altro esercizio, Concludi),
+   i secondi vengono salvati come serie invece di andare persi. */
+function saveRunningStopwatch(){
+  if(!stopwatch) return false;
+  const {b, d, ei} = stopwatch;
+  const sec = Math.floor((Date.now() - stopwatch.start) / 1000);
+  stopStopwatch();
+  if(sec < 1) return false;
+  const entries = getEntries(b, d, ei);
+  const entry = {iso: todayISO(), t: Date.now(), s: sec};
+  entries.push(entry);
+  if(!setEntries(b, d, ei, entries)) return false;
+  renderCard(b, d, ei);
+  const card = cardEl(b, d, ei);
+  if(card){ const sIn = card.querySelector('[data-role="s"]'); if(sIn) sIn.value = String(sec); flash(card, 'salvato ✓'); }
+  showToast(`${exName(b, d, ei)}: salvati ${fmtSecs(sec)} (cronometro fermato)`, ()=>undoEntry(b, d, ei, entry.t));
+  return true;
+}
 function toggleStopwatch(b, d, ei){
   const cardId = `ex-${b}-${d}-${ei}`;
   if(stopwatch && stopwatch.cardId === cardId){
@@ -1249,11 +1344,11 @@ function toggleStopwatch(b, d, ei){
     logExercise(b, d, ei, sec);        // Stop = salva la serie e parte il recupero
     return;
   }
-  if(stopwatch) stopStopwatch();
+  if(stopwatch) saveRunningStopwatch();
   if(timer) stopTimer();
   unlockAudio();
   acquireWakeLock();
-  stopwatch = { cardId, start: Date.now(), intervalId: setInterval(tickStopwatch, 250) };
+  stopwatch = { cardId, b, d, ei, start: Date.now(), intervalId: setInterval(tickStopwatch, 250) };
   const card = cardEl(b, d, ei);
   const btn = card.querySelector('[data-role="sw"]');
   btn.classList.add('running');
@@ -1281,11 +1376,16 @@ function stopStopwatch(){
 }
 
 function undoEntry(b, d, ei, t){
-  if(focusState){ clearTimeout(focusState.adv); }
+  let backToEi = false;
+  if(focusState){
+    clearTimeout(focusState.adv);
+    if(focusState.b === b && focusState.d === d && focusState.idx === ei + 1) backToEi = true;
+  }
   const entries = getEntries(b, d, ei);
   const i = entries.findIndex(e=>e.t === t);
   if(i >= 0){ entries.splice(i, 1); setEntries(b, d, ei, entries); }
   if(timer && timer.cardId === `ex-${b}-${d}-${ei}`) stopTimer();
+  if(backToEi){ focusState.idx = ei; showFocus(); }
   renderCard(b, d, ei);
   renderTodayKeep(cardEl(b, d, ei));
 }
@@ -1294,7 +1394,7 @@ function deleteEntry(b, d, ei, idx){
   const entries = getEntries(b, d, ei);
   const e = entries[idx];
   if(!e) return;
-  if(!confirm(`Eliminare la serie del ${dmOf(entryIso(e))} — ${fmtKg(e.w)} kg × ${parseInt(e.r,10)}?`)) return;
+  if(!confirm(`Eliminare la serie del ${dmOf(entryIso(e))} — ${setPlain(e)}?`)) return;
   entries.splice(idx, 1);
   setEntries(b, d, ei, entries);
   renderCard(b, d, ei);
@@ -1306,13 +1406,21 @@ function renameEx(b, d, ei){
   const cur = exName(b, d, ei);
   const nv = prompt('Nome esercizio (lascia vuoto per il nome originale):', cur);
   if(nv === null) return;
-  const key = `${b}_${d}_${ei}`;
+  const key = nameKey(b, d, ei);
   const clean = nv.trim().slice(0, 60);
   if(clean === '' || clean === exDef(b, d, ei).n) delete settings.names[key];
   else settings.names[key] = clean;
   saveSettings();
   cardEl(b, d, ei).querySelector('[data-role="name"]').textContent = exName(b, d, ei);
   renderVolume();
+}
+
+/* testo semplice di una serie (per le conferme) */
+function setPlain(e){
+  if(e.s !== undefined && e.s !== null && e.s !== '') return fmtSecs(Number(e.s));
+  let t = `${fmtKg(e.w)} kg × ${parseInt(e.r,10)}`;
+  if(e.w2 !== undefined && e.w2 !== null && e.w2 !== '') t += ` + ${fmtKg(e.w2)} kg × ${parseInt(e.r2,10)}`;
+  return t;
 }
 
 /* ============ STORICO + GRAFICO ============ */
@@ -1403,16 +1511,21 @@ function showToast(msg, onUndo, isErr){
   t.classList.toggle('err', !!isErr);
   t.classList.add('show');
   clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(hideToast, isErr ? 8000 : 6000);
+  toastTimeout = setTimeout(hideToastWhenFree, isErr ? 8000 : 6000);
 }
 function hideToast(){ document.getElementById('toast').classList.remove('show'); }
+/* se scade mentre stai scrivendo, aspetta che chiudi la tastiera così hai ancora qualche secondo per "Annulla" */
+function hideToastWhenFree(){
+  if(document.body.classList.contains('typing')){ clearTimeout(toastTimeout); toastTimeout = setTimeout(hideToastWhenFree, 3000); return; }
+  hideToast();
+}
 
 /* Mentre scrivi nei campi, barra timer e toast spariscono (sono fissi: non spostano la pagina) */
 /* Mentre scrivi: l'avviso in basso si chiude e la barra timer si nasconde.
    Quando smetti, la barra ricompare con un attimo di ritardo, così non "ruba" il tocco sul pulsante che stai premendo. */
 let typingOff = null;
 document.addEventListener('focusin', e=>{
-  if(e.target.matches && e.target.matches('input')){ clearTimeout(typingOff); document.body.classList.add('typing'); hideToast(); }
+  if(e.target.matches && e.target.matches('input')){ clearTimeout(typingOff); document.body.classList.add('typing'); }
 });
 document.addEventListener('focusout', ()=>{
   clearTimeout(typingOff);
@@ -1514,7 +1627,7 @@ function startTimer(b, d, ei){
   const cardId = `ex-${b}-${d}-${ei}`;
   const rest = parseInt(cardEl(b, d, ei).dataset.rest, 10);
   if(timer) clearTimer();
-  if(stopwatch && stopwatch.cardId !== cardId) stopStopwatch();
+  if(stopwatch && stopwatch.cardId !== cardId) saveRunningStopwatch();
   clearTimeout(hideBarTimeout);
   unlockAudio();
   acquireWakeLock();
@@ -1674,7 +1787,7 @@ function finishWorkout(b, d){
   const i = list.findIndex(w=>w.iso===iso && w.b===b && w.d===d);
   if(i >= 0){ openSummary(iso, [{b, d}], 'remove'); return; }     // già concluso: mostra il riepilogo
   list.push({iso, b, d, t: Date.now()});
-  if(stopwatch) stopStopwatch();
+  if(stopwatch) saveRunningStopwatch();
   if(timer) stopTimer(); else releaseWakeLock();
   if(!saveWorkouts(list)) return;
   if(focusState) closeFocus();
@@ -1749,10 +1862,10 @@ function tonnage(e){ return (Number(e.w)||0)*(Number(e.r)||0) + (Number(e.w2)||0
 function fmtInt(n){ return Math.round(n).toLocaleString('it-IT'); }
 /* Tutte le serie dello stesso esercizio (stesso nome nel piano) in qualunque blocco, prima di una data */
 function historyBefore(b, d, ei, iso){
-  const base = exDef(b, d, ei).n.toLowerCase().trim();
+  const base = exKey(b, d, ei);
   const out = [];
   PLAN.forEach(bl=> bl.days.forEach(dd=> dd.exercises.forEach((ex, j)=>{
-    if(ex.n.toLowerCase().trim() !== base) return;
+    if(ex.k !== base) return;
     getEntries(bl.id, dd.id, j).forEach(e=>{ if(entryIso(e) < iso) out.push(e); });
   })));
   return out;
@@ -1902,6 +2015,7 @@ function showFocus(){
     return `<span class="fdot${ei===idx?' cur':''}${dn>=ns?' ok':dn>0?' part':''}"></span>`;
   }).join('');
   document.getElementById('focusDots').innerHTML = dots;
+  focusDotsOnly.last = dots;
   if(idx >= n){
     document.getElementById('focusCount').textContent = 'Fine';
     const done = getWorkouts().some(w=>w.iso===todayISO() && w.b===b && w.d===d);
@@ -1920,6 +2034,15 @@ function showFocus(){
   stage.appendChild(card);
   renderCard(b, d, idx);
   document.getElementById('focus').scrollTop = 0;
+}
+function focusDotsOnly(){
+  if(!focusState) return;
+  const {b, d, idx} = focusState;
+  const day = PLAN.find(x=>x.id===b).days.find(x=>x.id===d);
+  document.getElementById('focusDots').innerHTML = day.exercises.map((ex, ei)=>{
+    const dn = doneToday(b, d, ei), ns = parseSets(ex.t);
+    return `<span class="fdot${ei===idx?' cur':''}${dn>=ns?' ok':dn>0?' part':''}"></span>`;
+  }).join('');
 }
 function focusMove(delta){
   if(!focusState) return;
@@ -2054,7 +2177,7 @@ function volumeFor(offset){
   PLAN.forEach(bl=> bl.days.forEach(dd=>{
     const log = getDayLog(bl.id, dd.id);
     dd.exercises.forEach((ex, ei)=>{
-      const list = Array.isArray(log[ei]) ? log[ei] : [];
+      const list = Array.isArray(log[ex.k]) ? log[ex.k] : [];
       const n = list.filter(e=>{ if(!e) return false; const iso = entryIso(e); return iso >= a && iso <= z; }).length;
       if(!n) return;
       sets += n;
@@ -2466,6 +2589,7 @@ function renderTestHistory(){
 /* ============ AVVIO ============ */
 try{
   migrateLegacy();
+  migrateToKeys();
   document.getElementById('startDate').value = settings.startDate || '';
   const start = renderToday();
   openBlock(start.bi);
@@ -2493,7 +2617,7 @@ document.addEventListener('visibilitychange', ()=>{
   renderTodayKeep(document.activeElement && document.activeElement.closest ? document.activeElement.closest('.exlog') : null);
   renderCalendar();
   renderVolume();
-  if(focusState) showFocus();
+  if(focusState) focusDotsOnly();
 });
 </script>
 
