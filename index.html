@@ -115,6 +115,11 @@
   .exright{display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex:0 0 auto;}
   .extarget{font-family:var(--mono); font-size:14px; color:var(--accent2); white-space:nowrap;}
   .exnote{font-size:14px; color:var(--warn); margin-top:2px;}
+  .altrow{display:flex; flex-wrap:wrap; gap:6px; margin:6px 0 2px;}
+  .altrow:empty{display:none;}
+  .altchip{min-height:36px; padding:4px 12px; border-radius:18px; border:1.5px solid var(--line); background:var(--bg); color:var(--mute);
+    font:600 14px var(--body); cursor:pointer; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; touch-action:manipulation; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .altchip.on{border-color:var(--accent); color:var(--text); background:rgba(255,106,43,.16);}
   .donemark{display:none; color:var(--accent2); font-weight:700; margin-right:6px;}
   .renbtn{background:none; border:none; color:var(--mute); font-size:17px; width:44px; height:40px; margin:-8px 0 -8px -4px; cursor:pointer; vertical-align:middle;}
   .setbadge{font-family:var(--mono); font-size:14px; font-weight:700; border:1.5px solid var(--line); border-radius:6px; padding:2px 8px; color:var(--mute);}
@@ -942,6 +947,7 @@ function dmOf(iso){ if(!ISO_RE.test(iso)) return '—'; const [y,m,d] = iso.spli
 /* ============ DATI ============ */
 let settings = lsGet('settings', {});
 if(!settings.names || typeof settings.names !== 'object') settings.names = {};
+if(!settings.sep || typeof settings.sep !== 'object') settings.sep = {};   // esercizi sostituiti: storico separato
 function saveSettings(){ return lsSet('settings', settings); }
 
 function getDayLog(b, d){ return lsGet(`log:${b}_${d}`, {}); }
@@ -952,8 +958,26 @@ function setEntries(b, d, ei, entries){
   return lsSet(`log:${b}_${d}`, log);
 }
 function exDef(b, d, ei){ return PLAN.find(x=>x.id===b).days.find(x=>x.id===d).exercises[ei]; }
-function exKey(b, d, ei){ return exDef(b, d, ei).k; }
-function nameKey(b, d, ei){ return `${b}_${d}_${exKey(b, d, ei)}`; }
+/* Codice dello storico. Normalmente è quello fisso del piano; se l'esercizio è stato
+   sostituito con un altro (rinominato e segnato come "diverso") il codice viene dal nuovo nome:
+   così ha uno storico tutto suo, condiviso con gli altri giorni dove usi lo stesso nome. */
+function keyForName(name){
+  const n = String(name).toLowerCase().trim().replace(/\s+/g, ' ');
+  if(EX_KEYS[n]) return EX_KEYS[n];
+  for(const bl of PLAN) for(const dd of bl.days) for(const ex of dd.exercises){
+    if(!/specializzazione/i.test(ex.n) && ex.n.toLowerCase().trim() === n) return ex.k;
+  }
+  const slug = n.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+  return 'x_' + (slug || 'esercizio');
+}
+function nameKey(b, d, ei){ return `${b}_${d}_${exDef(b, d, ei).k}`; }
+function exKey(b, d, ei){
+  const ex = exDef(b, d, ei), nk = `${b}_${d}_${ex.k}`;
+  if(!(settings.sep[nk] && settings.names[nk])) return ex.k;
+  const k = keyForName(settings.names[nk]);
+  const day = PLAN.find(x=>x.id===b).days.find(x=>x.id===d);
+  return day.exercises.some((o, j)=> j !== ei && o.k === k) ? ex.k : k;
+}
 function exName(b, d, ei){ return settings.names[nameKey(b, d, ei)] || exDef(b, d, ei).n; }
 
 /* Conversione una tantum (ripetuta a ogni avvio, ma non fa nulla se è già fatta):
@@ -1030,13 +1054,14 @@ function lastSessionElsewhere(b, d, ei){
   const base = exKey(b, d, ei);
   const tIso = todayISO();
   let best = null;
-  PLAN.forEach(bl=> bl.days.forEach(dd=> dd.exercises.forEach((ex, j)=>{
-    if(bl.id===b && dd.id===d && j===ei) return;
-    if(ex.k !== base) return;
-    const ss = sessionsOf(getEntries(bl.id, dd.id, j)).filter(s=>s.iso !== tIso);
+  PLAN.forEach(bl=> bl.days.forEach(dd=>{
+    if(bl.id===b && dd.id===d) return;
+    const list = getDayLog(bl.id, dd.id)[base];
+    if(!Array.isArray(list)) return;
+    const ss = sessionsOf(list.filter(e=>e && typeof e === 'object')).filter(s=>s.iso !== tIso);
     const last = ss[ss.length-1];
     if(last && (!best || last.iso > best.s.iso)) best = {s:last, where:`B${bl.id.slice(1)}·${dd.id}`};
-  })));
+  }));
   return best;
 }
 
@@ -1171,6 +1196,7 @@ function cardHTML(b, d, ei, ex){
       </span>
     </div>
     ${ex.note?`<div class="exnote">${ex.note}</div>`:''}
+    <div class="altrow" data-role="alts" role="group" aria-label="Scegli l'esercizio"></div>
     <div class="cmp todayline" data-role="today" style="display:none"></div>
     <div class="cmp" data-role="prev" style="display:none"></div>
     <div class="suggest" data-role="suggest" role="button" tabindex="0" onclick="applySuggest(${a})"></div>
@@ -1212,6 +1238,7 @@ function cardEl(b, d, ei){ return document.getElementById(`ex-${b}-${d}-${ei}`);
 function renderCard(b, d, ei){
   const card = cardEl(b, d, ei);
   if(!card) return;
+  renderAlts(b, d, ei);
   const ex = exDef(b, d, ei);
   const kind = exKind(ex);
   const nSets = parseSets(ex.t);
@@ -1501,17 +1528,222 @@ function deleteEntry(b, d, ei, idx){
   renderTodayKeep(cardEl(b, d, ei));
 }
 
-function renameEx(b, d, ei){
-  const cur = exName(b, d, ei);
-  const nv = prompt('Nome esercizio (lascia vuoto per il nome originale):', cur);
-  if(nv === null) return;
-  const key = nameKey(b, d, ei);
-  const clean = nv.trim().slice(0, 60);
-  if(clean === '' || clean === exDef(b, d, ei).n) delete settings.names[key];
-  else settings.names[key] = clean;
+/* "12/10" o "12/10/2026" -> ISO; senza anno: l'ultima data così non nel futuro */
+function parseDayInput(txt){
+  const m = String(txt).trim().match(/^(\d{1,2})[\/.\-](\d{1,2})(?:[\/.\-](\d{2}|\d{4}))?$/);
+  if(!m) return null;
+  const dd = +m[1], mm = +m[2], t = todayISO();
+  let y = m[3] ? (m[3].length === 2 ? 2000 + +m[3] : +m[3]) : +t.slice(0, 4);
+  const mk = yy => { const dt = new Date(yy, mm - 1, dd, 12); return (dt.getMonth() === mm - 1 && dt.getDate() === dd) ? isoOf(dt) : null; };
+  let iso = mk(y);
+  if(!iso) return null;
+  if(!m[3] && iso > t) iso = mk(y - 1);
+  return iso;
+}
+/* sposta nello stesso giorno del piano le serie da un codice a un altro (da una data in poi) */
+function nameForKey(k){
+  if(settings.keyNames && settings.keyNames[k]) return settings.keyNames[k];
+  for(const bl of PLAN) for(const dd of bl.days) for(const ex of dd.exercises) if(ex.k === k) return ex.n;
+  const hit = Object.values(settings.names).find(v=> keyForName(v) === k);
+  return hit || k.replace(/^x_/, '').replace(/_/g, ' ');
+}
+function restingLists(b, d){
+  const day = PLAN.find(x=>x.id===b).days.find(x=>x.id===d);
+  const used = new Set(day.exercises.map((ex, j)=> exKey(b, d, j)));
+  const log = getDayLog(b, d);
+  return Object.keys(log).filter(k=> !used.has(k) && !/^\d+$/.test(k) && Array.isArray(log[k]) && log[k].length)
+    .map(k=>({k, name: nameForKey(k), list: log[k].filter(e=>e && typeof e === 'object')}));
+}
+function moveEntries(b, d, fromKey, toKey, fromIso){
+  if(fromKey === toKey) return 0;
+  const log = getDayLog(b, d);
+  const src = Array.isArray(log[fromKey]) ? log[fromKey] : [];
+  const keep = [], mv = [];
+  src.forEach(e=> (e && entryIso(e) >= fromIso ? mv : keep).push(e));
+  if(!mv.length) return 0;
+  log[fromKey] = keep;
+  log[toKey] = (Array.isArray(log[toKey]) ? log[toKey] : []).concat(mv);
+  if(!keep.length) delete log[fromKey];
+  return lsSet(`log:${b}_${d}`, log) ? mv.length : 0;
+}
+
+/* ============ ESERCIZI ALTERNATIVI ============
+   Ogni esercizio del piano può avere delle alternative (es. Leg press ↔ Hack squat).
+   Il pulsante scelto decide quale storico si usa; cambiare scelta non sposta nessuna serie. */
+if(!settings.alts || typeof settings.alts !== 'object') settings.alts = {};
+if(!settings.origLabel || typeof settings.origLabel !== 'object') settings.origLabel = {};
+// chi aveva già separato un esercizio con la v14 lo ritrova come alternativa
+Object.keys(settings.sep).forEach(k=>{
+  const n = settings.names[k];
+  if(!n) return;
+  if(!Array.isArray(settings.alts[k])) settings.alts[k] = [];
+  if(!settings.alts[k].includes(n)){ settings.alts[k].push(n); settings._altsMig = true; }
+});
+if(settings._altsMig){ delete settings._altsMig; saveSettings(); }
+function altsOf(nk){
+  if(!Array.isArray(settings.alts[nk])) settings.alts[nk] = [];
+  return settings.alts[nk];
+}
+function origLabelOf(b, d, ei){
+  const nk = nameKey(b, d, ei);
+  return settings.origLabel[nk] || (!settings.sep[nk] && settings.names[nk]) || exDef(b, d, ei).n;
+}
+function renderAlts(b, d, ei){
+  const card = cardEl(b, d, ei);
+  const box = card && card.querySelector('[data-role="alts"]');
+  if(!box) return;
+  const nk = nameKey(b, d, ei), al = (settings.alts[nk] || []);
+  if(!al.length){ box.innerHTML = ''; return; }
+  const active = settings.sep[nk] ? settings.names[nk] : null;
+  const chip = (i, label, on)=>`<button class="altchip${on?' on':''}" data-alt="${i}" aria-pressed="${on}" title="Tieni premuto per togliere">${esc(label)}</button>`;
+  box.innerHTML = chip(-1, origLabelOf(b, d, ei), active === null) + al.map((n, i)=> chip(i, n, n === active)).join('');
+  box.dataset.a = `${b}|${d}|${ei}`;
+}
+function pickAlt(b, d, ei, i){
+  const nk = nameKey(b, d, ei), al = altsOf(nk);
+  const prevName = settings.names[nk], prevSep = settings.sep[nk], prevOrig = settings.origLabel[nk];
+  if(i < 0){
+    if(!settings.sep[nk]) return;
+    delete settings.sep[nk];
+    if(settings.origLabel[nk]) settings.names[nk] = settings.origLabel[nk]; else delete settings.names[nk];
+  } else {
+    const n = al[i];
+    if(n === undefined || (settings.sep[nk] && settings.names[nk] === n)) return;
+    const k = keyForName(n);
+    const day = PLAN.find(x=>x.id===b).days.find(x=>x.id===d);
+    const clash = day.exercises.findIndex((o, j)=> j !== ei && exKey(b, d, j) === k);
+    if(clash >= 0){ alert(`"${n}" è già un altro esercizio di questo giorno ("${exName(b, d, clash)}").`); return; }
+    if(!settings.sep[nk] && settings.names[nk]) settings.origLabel[nk] = settings.names[nk];
+    settings.names[nk] = n;
+    settings.sep[nk] = true;
+  }
+  if(!saveSettings()){
+    if(prevName === undefined) delete settings.names[nk]; else settings.names[nk] = prevName;
+    if(prevSep) settings.sep[nk] = true; else delete settings.sep[nk];
+    if(prevOrig === undefined) delete settings.origLabel[nk]; else settings.origLabel[nk] = prevOrig;
+    return;
+  }
+  refreshExercise(b, d, ei);
+  showToast(`Ora: ${exName(b, d, ei)}`);
+}
+function removeAlt(b, d, ei, i){
+  const nk = nameKey(b, d, ei), al = altsOf(nk), n = al[i];
+  if(n === undefined) return;
+  if(!confirm(`Togliere "${n}" dalle alternative?\nLe sue serie restano salvate (backup ed Excel) e tornano se lo aggiungi di nuovo.`)) return;
+  if(settings.sep[nk] && settings.names[nk] === n){
+    delete settings.sep[nk];
+    if(settings.origLabel[nk]) settings.names[nk] = settings.origLabel[nk]; else delete settings.names[nk];
+  }
+  al.splice(i, 1);
+  if(!al.length) delete settings.alts[nk];
   saveSettings();
-  cardEl(b, d, ei).querySelector('[data-role="name"]').textContent = exName(b, d, ei);
+  refreshExercise(b, d, ei);
+}
+function refreshExercise(b, d, ei){
+  const card = cardEl(b, d, ei);
+  if(!card) return;
+  card.querySelector('[data-role="name"]').textContent = exName(b, d, ei);
+  ['w','rp','w2','rp2','s'].forEach(r=>{ const inp = card.querySelector(`[data-role="${r}"]`); if(inp) inp.value = ''; });
+  renderCard(b, d, ei);
+  renderHist(b, d, ei);
   renderVolume();
+}
+/* tocco = scegli; pressione lunga (0,6 s) = togli */
+(function(){
+  let t = null, fired = false, startXY = null;
+  const target = e => e.target.closest && e.target.closest('.altchip');
+  const args = el => { const box = el.parentElement; const [b, d, ei] = box.dataset.a.split('|'); return [b, d, +ei, +el.dataset.alt]; };
+  document.addEventListener('pointerdown', e=>{
+    const el = target(e); if(!el) return;
+    fired = false; startXY = [e.clientX, e.clientY];
+    clearTimeout(t);
+    if(+el.dataset.alt < 0) return;
+    t = setTimeout(()=>{ fired = true; const a = args(el); removeAlt(...a); }, 600);
+  });
+  const cancel = ()=>{ clearTimeout(t); t = null; };
+  document.addEventListener('pointerup', cancel);
+  document.addEventListener('pointercancel', cancel);
+  document.addEventListener('pointermove', e=>{ if(startXY && t && Math.hypot(e.clientX-startXY[0], e.clientY-startXY[1]) > 10) cancel(); });
+  document.addEventListener('contextmenu', e=>{ if(target(e)) e.preventDefault(); });
+  document.addEventListener('click', e=>{
+    const el = target(e); if(!el) return;
+    if(fired){ fired = false; return; }
+    const a = args(el); pickAlt(...a);
+  });
+})();
+
+function renameEx(b, d, ei){
+  const ex = exDef(b, d, ei), key = nameKey(b, d, ei);
+  const wasSep = !!settings.sep[key], oldName = settings.names[key], oldKey = exKey(b, d, ei);
+  const origLbl = origLabelOf(b, d, ei);
+  const nv = prompt(wasSep ? `Nome dell'esercizio (lascia vuoto per tornare a "${origLbl}"):` : 'Nome esercizio (lascia vuoto per il nome originale):', exName(b, d, ei));
+  if(nv === null) return;
+  const clean = nv.trim().slice(0, 60);
+  const al = altsOf(key);
+  // un nome già tra i pulsanti: lo scelgo e basta
+  const ai = al.indexOf(clean);
+  if(ai >= 0){ if(!(wasSep && clean === oldName)) pickAlt(b, d, ei, ai); return; }
+  let mode;   // orig | reset | label | newAlt | fixAlt | replace
+  if(wasSep){
+    if(clean === '' || clean === ex.n || clean === origLbl) mode = 'orig';
+    else mode = confirm(`"${clean}" è un esercizio NUOVO da aggiungere ai pulsanti?\n\nOK = sì, nuova alternativa con storico suo\nAnnulla = no, correggo il nome di "${oldName}"`) ? 'newAlt' : 'fixAlt';
+  } else {
+    if(clean === '' || clean === ex.n) mode = 'reset';
+    else if(clean === origLbl) return;
+    else mode = confirm(`"${clean}" è un esercizio DIVERSO da quello del piano ("${ex.n}")?\n\nOK = sì, ha uno storico tutto suo\nAnnulla = no, ho solo corretto il nome`) ? 'replace' : 'label';
+  }
+  const custom = mode === 'newAlt' || mode === 'fixAlt' || mode === 'replace';
+  const newKey = custom ? keyForName(clean) : ex.k;
+  // due esercizi dello stesso giorno non possono condividere lo stesso storico
+  if(custom){
+    const day = PLAN.find(x=>x.id===b).days.find(x=>x.id===d);
+    const clash = day.exercises.findIndex((o, j)=> j !== ei && exKey(b, d, j) === newKey);
+    if(clash >= 0){ alert(`"${clean}" è già un altro esercizio di questo giorno ("${exName(b, d, clash)}"). Scegli un nome diverso.`); return; }
+  }
+  let fromIso = null;
+  if(mode === 'fixAlt' && newKey !== oldKey) fromIso = '0000-00-00';   // correzione: le serie seguono l'alternativa
+  if(mode === 'replace' && newKey !== oldKey){
+    while(fromIso === null){
+      const ans = prompt(`Da che giorno fai "${clean}" al posto di "${origLbl}"?\nLe serie da quel giorno in poi passano al nuovo esercizio.\nScrivi gg/mm (es. 12/10). Vuoto = da oggi.`, '');
+      if(ans === null) return;                         // annulla: non cambia niente
+      if(ans.trim() === ''){ fromIso = todayISO(); break; }
+      fromIso = parseDayInput(ans);
+      if(fromIso === null) alert('Data non valida. Scrivi giorno/mese, es. 12/10.');
+    }
+  }
+  // prima sposto le serie, poi salvo il nome: se lo spostamento non riesce non cambia niente
+  let moved = 0;
+  if(fromIso !== null){
+    moved = moveEntries(b, d, oldKey, newKey, fromIso);
+    const left = getDayLog(b, d)[oldKey];
+    if(!moved && Array.isArray(left) && left.some(e=>e && entryIso(e) >= fromIso)){
+      showToast('⚠️ Spostamento non riuscito (memoria piena?). Nessuna modifica.', null, true); return;
+    }
+  }
+  if(!settings.keyNames || typeof settings.keyNames !== 'object') settings.keyNames = {};
+  let msg = '';
+  if(mode === 'orig'){
+    delete settings.sep[key];
+    if(settings.origLabel[key]) settings.names[key] = settings.origLabel[key]; else delete settings.names[key];
+    msg = `Ora: ${exName(b, d, ei)}`;
+  } else if(mode === 'reset'){
+    delete settings.names[key]; delete settings.sep[key]; delete settings.origLabel[key];
+  } else if(mode === 'label'){
+    settings.names[key] = clean; settings.origLabel[key] = clean;
+  } else {
+    if(mode === 'replace' && oldName !== undefined && oldName !== ex.n) settings.origLabel[key] = oldName;
+    if(mode === 'fixAlt'){ const i = al.indexOf(oldName); if(i >= 0) al[i] = clean; else al.push(clean); }
+    else al.push(clean);
+    settings.names[key] = clean;
+    settings.sep[key] = true;
+    if(/^x_/.test(newKey)) settings.keyNames[newKey] = clean;
+    if(mode === 'newAlt') msg = `"${clean}" aggiunto. Tocca i pulsanti per cambiare esercizio`;
+    else if(mode === 'fixAlt') msg = `Nome corretto: "${clean}"`;
+    else msg = (moved ? `${moved} ${moved === 1 ? 'serie spostata' : 'serie spostate'} su "${clean}" (dal ${dmOf(fromIso)})` : `"${clean}" ha ora uno storico separato`) + '. Tocca i pulsanti per cambiare esercizio';
+  }
+  saveSettings();
+  refreshExercise(b, d, ei);
+  if(msg) showToast(msg);
 }
 
 /* testo semplice di una serie (per le conferme) */
@@ -2043,10 +2275,10 @@ function fmtInt(n){ return Math.round(n).toLocaleString('it-IT'); }
 function historyBefore(b, d, ei, iso){
   const base = exKey(b, d, ei);
   const out = [];
-  PLAN.forEach(bl=> bl.days.forEach(dd=> dd.exercises.forEach((ex, j)=>{
-    if(ex.k !== base) return;
-    getEntries(bl.id, dd.id, j).forEach(e=>{ if(entryIso(e) < iso) out.push(e); });
-  })));
+  PLAN.forEach(bl=> bl.days.forEach(dd=>{
+    const list = getDayLog(bl.id, dd.id)[base];
+    if(Array.isArray(list)) list.forEach(e=>{ if(e && typeof e === 'object' && entryIso(e) < iso) out.push(e); });
+  }));
   return out;
 }
 function recordsFor(b, d, ei, iso, todaySets){
@@ -2361,11 +2593,18 @@ function volumeFor(offset){
   PLAN.forEach(bl=> bl.days.forEach(dd=>{
     const log = getDayLog(bl.id, dd.id);
     dd.exercises.forEach((ex, ei)=>{
-      const list = Array.isArray(log[ex.k]) ? log[ex.k] : [];
+      const ek = exKey(bl.id, dd.id, ei);
+      const list = Array.isArray(log[ek]) ? log[ek] : [];
       const n = list.filter(e=>{ if(!e) return false; const iso = entryIso(e); return iso >= a && iso <= z; }).length;
       if(!n) return;
       sets += n;
       musclesOf(exName(bl.id, dd.id, ei)).forEach(m=>{ tot[m] = (tot[m] || 0) + n; });
+    });
+    restingLists(bl.id, dd.id).forEach(o=>{
+      const n = o.list.filter(e=>{ const iso = entryIso(e); return iso >= a && iso <= z; }).length;
+      if(!n) return;
+      sets += n;
+      musclesOf(o.name).forEach(m=>{ tot[m] = (tot[m] || 0) + n; });
     });
   }));
   return {from, to, tot, sets};
@@ -2526,6 +2765,15 @@ function buildWorkbook(){
       const iso = entryIso(e);
       byDay[iso] = (byDay[iso] || 0) + 1;
       setRows.push({iso, bi, di: bl.days.indexOf(dd), ei, n: byDay[iso], b: bl.id, d: dd.id, name, kind, muscles, e});
+    });
+  })));
+  PLAN.forEach((bl, bi)=> bl.days.forEach(dd=> restingLists(bl.id, dd.id).forEach((o, oi)=>{
+    const byDay = {}, muscles = musclesOf(o.name).join(', ');
+    const kind = o.list.some(e=>e.s !== undefined) ? 'timed' : o.list.some(e=>e.w2 !== undefined) ? 'super' : 'normal';
+    o.list.forEach(e=>{
+      const iso = entryIso(e);
+      byDay[iso] = (byDay[iso] || 0) + 1;
+      setRows.push({iso, bi, di: bl.days.indexOf(dd), ei: 100 + oi, n: byDay[iso], b: bl.id, d: dd.id, name: o.name, kind, muscles, e});
     });
   })));
   setRows.sort((a,b)=> a.iso < b.iso ? -1 : a.iso > b.iso ? 1 : (a.bi-b.bi) || (a.di-b.di) || (a.ei-b.ei) || (a.n-b.n));
