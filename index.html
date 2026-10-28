@@ -77,6 +77,8 @@
   .today .t1{font-family:var(--mono); font-size:13px; color:var(--accent); text-transform:uppercase; letter-spacing:.08em;}
   .today .t2{font-family:var(--disp); font-size:26px; text-transform:uppercase; line-height:1.15; margin:4px 0 2px;}
   .today .t3{font-size:15px; color:var(--mute);}
+  .today .calnote{margin-top:4px; color:var(--warn);}
+  .today .calnote .linkbtn{padding:4px 0;}
   .today > button{margin-top:12px; width:100%; min-height:52px; background:var(--accent); color:var(--bg); border:none; border-radius:8px;
     font-family:var(--mono); font-size:16px; font-weight:700; text-transform:uppercase; cursor:pointer;}
   .linkbtn{background:none; border:none; color:var(--accent2); font-size:15px; text-decoration:underline; padding:10px 0; cursor:pointer;}
@@ -376,6 +378,8 @@
   .rirtag{white-space:nowrap;}
   .todaybtns .tb-main{flex:1.4 1 0; background:var(--accent); color:var(--bg); border:none;}
   .todaybtns .tb-alt{flex:1 1 0; background:transparent; color:var(--text); border:1.5px solid var(--line);}
+  .todaybtns button{min-width:0; overflow:hidden; text-overflow:ellipsis;}
+  @media (max-width:380px){ .todaybtns button{font-size:13px; padding:0 4px;} .todaybtns{gap:6px;} }
   #planSection > h2{margin-bottom:0;}
   .focusbtn{min-height:44px !important; margin:0 0 10px !important; font-size:14px !important;}
   .day-tabs{margin:6px 0 10px;}
@@ -2122,6 +2126,21 @@ function currentBlockIndex(){
   if(months < 0) months = 0;
   return { bi: Math.min(5, Math.floor(months/2)), month: months+1 };
 }
+/* Blocco dell'ultimo allenamento fatto (ultima serie registrata o ultimo "Concludi allenamento").
+   Comanda lui: se inizi un blocco prima o dopo il calendario, l'app continua da lì. */
+function lastActiveBlock(){
+  let best = null;
+  const consider = (iso, t, bi)=>{
+    if(!ISO_RE.test(iso)) return;
+    const tt = Number(t) || 0;
+    if(!best || iso > best.iso || (iso === best.iso && tt > best.t) || (iso === best.iso && tt === best.t && bi > best.bi)) best = {iso, t: tt, bi};
+  };
+  PLAN.forEach((bl, bi)=> bl.days.forEach(dd=>{
+    Object.values(getDayLog(bl.id, dd.id)).forEach(list=> Array.isArray(list) && list.forEach(e=> e && typeof e === 'object' && consider(entryIso(e), e.t, bi)));
+  }));
+  getWorkouts().forEach(w=>{ const bi = PLAN.findIndex(x=>x.id===w.b); if(bi >= 0) consider(w.iso, w.t, bi); });
+  return best;
+}
 function suggestedDay(bi){
   const block = PLAN[bi];
   let bestIdx = -1, bestIso = '';
@@ -2140,22 +2159,28 @@ function suggestedDay(bi){
 function renderToday(){
   const box = document.getElementById('todayBox');
   const cur = currentBlockIndex();
-  const bi = cur ? cur.bi : 0;
+  const act = lastActiveBlock();
+  const bi = act ? act.bi : (cur ? cur.bi : 0);
   const block = PLAN[bi];
   const sd = suggestedDay(bi);
   const day = block.days[sd.di];
-  let t1, t3;
+  let t1, t3, note = '';
   if(cur){
-    t1 = cur.month > 12 ? 'Programma concluso · ultimo blocco' : `Mese ${cur.month} di 12 · Blocco ${bi+1}`;
+    t1 = cur.month > 12 ? `Oltre i 12 mesi · Blocco ${bi+1}` : `Mese ${cur.month} di 12 · Blocco ${bi+1}`;
     t3 = sd.reason;
+    // il calendario è più avanti dell'ultimo blocco usato: solo un promemoria
+    if(act && cur.bi > act.bi){
+      const nb = PLAN[cur.bi], nd = suggestedDay(cur.bi).di;
+      note = `<div class="t3 calnote">📅 ${cur.month > 12 ? 'Secondo il calendario saresti già al' : 'Secondo il calendario è ora del'} blocco ${cur.bi+1} · ${esc(nb.title)} <button class="linkbtn" onclick="goToday(${cur.bi},${nd})">Inizia blocco ${cur.bi+1}</button></div>`;
+    }
   } else {
-    t1 = 'Blocco 1 (data di inizio non impostata)';
+    t1 = `Blocco ${bi+1} (data di inizio non impostata)`;
     t3 = `${sd.reason} · <button class="linkbtn" onclick="openSettings()">imposta la data di inizio</button>`;
   }
   box.innerHTML = `
     <div class="t1">${t1}</div>
     <div class="t2">${block.title} — Giorno ${esc(day.label)}</div>
-    <div class="t3">${t3}</div>
+    <div class="t3">${t3}</div>${note}
     <div class="todaybtns">
       <button class="tb-main" onclick="focusToday(${bi},${sd.di})">🎯 Allenati in focus</button>
       <button class="tb-alt" onclick="goToday(${bi},${sd.di})">Apri la scheda</button>
