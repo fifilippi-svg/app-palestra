@@ -16,7 +16,7 @@
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   /* Spazio in fondo SEMPRE uguale: la pagina non cambia altezza quando compare il timer (evita salti) */
   body{margin:0; background:var(--bg); color:var(--text); font-family:var(--body); font-size:17px; line-height:1.5;
-    padding-bottom:calc(140px + env(safe-area-inset-bottom));}
+    padding-bottom:calc(190px + env(safe-area-inset-bottom));}
   button{font:inherit;}
 
   header{padding:calc(18px + env(safe-area-inset-top)) 18px 14px; border-bottom:1px solid var(--line); background:linear-gradient(180deg,#14181A 0%,var(--bg) 100%);}
@@ -379,6 +379,48 @@
   .todaybtns .tb-main{flex:1.4 1 0; background:var(--accent); color:var(--bg); border:none;}
   .todaybtns .tb-alt{flex:1 1 0; background:transparent; color:var(--text); border:1.5px solid var(--line);}
   .todaybtns button{min-width:0; overflow:hidden; text-overflow:ellipsis;}
+  /* anteprima della seduta */
+  .tprev{margin-top:12px; border-top:1px solid var(--line); padding-top:8px;}
+  .tprev summary{font-family:var(--mono); font-size:13px; color:var(--mute); cursor:pointer; list-style:none; text-transform:uppercase; letter-spacing:.06em;}
+  .tprev summary::-webkit-details-marker{display:none;}
+  .tprev summary::after{content:' ▾';}
+  .tprev[open] summary::after{content:' ▴';}
+  .tprev ol{margin:6px 0 0; padding:0; list-style:none; counter-reset:pv;}
+  .tprev li{display:flex; justify-content:space-between; gap:10px; padding:5px 0; border-bottom:1px dashed var(--line); font-size:15px;}
+  .tprev li:last-child{border-bottom:none;}
+  .tprev li .pn{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .tprev li .pv{font-family:var(--mono); font-size:13.5px; color:var(--mute); white-space:nowrap;}
+  .tprev li .pv b{color:var(--text);}
+  .tprev li .up{color:var(--accent2);}
+  .tprev li.ok .pn{color:var(--accent2);}
+  /* scheda completata: una riga sola (tocca per riaprirla) */
+  #accWrap .exlog.done:not(.expanded) > :not(.exhead):not([data-role="today"]){display:none !important;}
+  #accWrap .exlog.done:not(.expanded){padding-top:8px; padding-bottom:8px; cursor:pointer;}
+  #accWrap .exlog.done:not(.expanded) .exname{font-size:16px;}
+  #accWrap .exlog.done:not(.expanded) .renbtn{display:none;}
+  #accWrap .exlog.done:not(.expanded) [data-role="today"]{font-size:13px; margin-top:2px;}
+  #accWrap .exlog.done .exhead{cursor:pointer;}
+  .warm{font-size:14px; color:var(--warn); margin-top:4px;}
+  /* note della seduta */
+  .snote{width:100%; box-sizing:border-box; min-height:70px; margin-top:10px; background:var(--bg); color:var(--text); border:1.5px solid var(--line); border-radius:8px; padding:10px; font:16px var(--body); resize:vertical;}
+  .snote-l{display:block; margin-top:12px; font-size:14px; color:var(--mute);}
+  /* menu in basso */
+  #bottomNav{position:fixed; left:0; right:0; bottom:0; z-index:40; display:flex; background:#0B0E0F; border-top:1px solid var(--line);
+    padding:0 0 env(safe-area-inset-bottom);}
+  #bottomNav button{flex:1 1 0; min-width:0; background:none; border:none; color:var(--mute); font:600 12px var(--body); padding:7px 2px 6px; display:flex; flex-direction:column; align-items:center; gap:1px; cursor:pointer;}
+  #bottomNav button .ic{font-size:21px; line-height:1.1;}
+  #bottomNav button.on{color:var(--accent);}
+  body.typing #bottomNav, body.focus-open #bottomNav, body.sheet-open #bottomNav{display:none;}
+  body:not(.focus-open) #timerBar{bottom:calc(56px + env(safe-area-inset-bottom)); padding-bottom:10px;}
+  body.typing #timerBar, body.sheet-open #timerBar{bottom:0;}
+  #toast{bottom:calc(72px + env(safe-area-inset-bottom));}
+  body.has-timer #toast{bottom:calc(150px + env(safe-area-inset-bottom));}
+  body.focus-open #toast{bottom:calc(16px + env(safe-area-inset-bottom));}
+  body.focus-open.has-timer #toast{bottom:calc(100px + env(safe-area-inset-bottom));}
+  .bkline{margin-top:6px; color:var(--warn);}
+  .bkline .linkbtn{padding:4px 0;}
+  .trend{font-size:15px; color:var(--mute);}
+  .trend b{color:var(--text);}
   @media (max-width:380px){ .todaybtns button{font-size:13px; padding:0 4px;} .todaybtns{gap:6px;} }
   #planSection > h2{margin-bottom:0;}
   .focusbtn{min-height:44px !important; margin:0 0 10px !important; font-size:14px !important;}
@@ -449,7 +491,7 @@
   </details>
 </header>
 
-<section>
+<section id="todaySection">
   <div class="today" id="todayBox"></div>
 </section>
 
@@ -462,7 +504,7 @@
   </details>
 </section>
 
-<section>
+<section id="bwSection">
   <h2><span class="n">02</span>Peso corporeo</h2>
   <div class="bwrow">
     <input type="text" id="bwInput" inputmode="decimal" autocomplete="off" enterkeyhint="done" placeholder="peso di oggi (kg)" aria-label="Peso di oggi in kg">
@@ -483,9 +525,23 @@
   </details>
 </section>
 
-<section>
+<section id="calSection">
+  <h2><span class="n">03</span>Calendario allenamenti</h2>
+  <div class="cal">
+    <div class="cal-head">
+      <button class="cal-nav" aria-label="Mese precedente" onclick="calMove(-1)">‹</button>
+      <div class="cal-title" id="calTitle"></div>
+      <button class="cal-nav" aria-label="Mese successivo" onclick="calMove(1)">›</button>
+    </div>
+    <div class="cal-grid cal-dow" aria-hidden="true"><span>Lu</span><span>Ma</span><span>Me</span><span>Gi</span><span>Ve</span><span>Sa</span><span>Do</span></div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-foot" id="calFoot"></div>
+  </div>
+</section>
+
+<section id="moreSection">
   <details class="fold">
-    <summary><span><span class="n">03</span>Test dei massimali</span><span class="chev">›</span></summary>
+    <summary><span><span class="n">04</span>Test dei massimali</span><span class="chev">›</span></summary>
     <details class="note">
       <summary>Perché 3RM e non 1RM</summary>
       <div class="callout">
@@ -513,7 +569,7 @@
 
 <section>
   <details class="fold">
-    <summary><span><span class="n">04</span>Info programma</span><span class="chev">›</span></summary>
+    <summary><span><span class="n">05</span>Info programma</span><span class="chev">›</span></summary>
 
     <details class="sub">
       <summary>Nota sulla spalla sinistra<span class="chev">›</span></summary>
@@ -586,7 +642,7 @@
 
 <section>
   <details class="fold" id="setFold">
-    <summary><span><span class="n">05</span>Impostazioni e backup</span><span class="chev">›</span></summary>
+    <summary><span><span class="n">06</span>Impostazioni e backup</span><span class="chev">›</span></summary>
     <div class="setbox">
       <label for="startDate">Data di inizio del programma</label>
       <input type="date" id="startDate" onchange="saveStartDate(this.value)">
@@ -597,6 +653,11 @@
       <label class="chk"><input type="checkbox" id="loudBeep" onchange="toggleLoudBeep(this.checked)"> 🔔 Beep anche con iPhone in silenzioso</label>
       <div class="btnrow"><button class="btn-b" onclick="testBeep()">Prova il suono</button></div>
       <div class="info">Se il beep abbassa o ferma la musica che stai ascoltando, disattiva questa opzione: tornerà il beep normale, che però col silenzioso non si sente.</div>
+    </div>
+    <div class="setbox">
+      <label for="warmInput">Serie di avvicinamento (primo esercizio)</label>
+      <input type="text" id="warmInput" autocomplete="off" placeholder="50×8, 75×3" onchange="saveWarmup(this.value)" aria-label="Serie di avvicinamento: percentuale del peso di lavoro per ripetizioni">
+      <div class="info">Percentuale del peso di lavoro × ripetizioni, separate da virgola. Lascia vuoto per non mostrarle.</div>
     </div>
     <div class="setbox">
       <label>Backup dei dati (solo su questo telefono)</label>
@@ -617,19 +678,6 @@
   </details>
 </section>
 
-<section id="calSection">
-  <h2><span class="n">06</span>Calendario allenamenti</h2>
-  <div class="cal">
-    <div class="cal-head">
-      <button class="cal-nav" aria-label="Mese precedente" onclick="calMove(-1)">‹</button>
-      <div class="cal-title" id="calTitle"></div>
-      <button class="cal-nav" aria-label="Mese successivo" onclick="calMove(1)">›</button>
-    </div>
-    <div class="cal-grid cal-dow" aria-hidden="true"><span>Lu</span><span>Ma</span><span>Me</span><span>Gi</span><span>Ve</span><span>Sa</span><span>Do</span></div>
-    <div class="cal-grid" id="calGrid"></div>
-    <div class="cal-foot" id="calFoot"></div>
-  </div>
-</section>
 
 <section>
   <details class="fold" id="volFold">
@@ -646,6 +694,13 @@
     </details>
   </details>
 </section>
+
+<nav id="bottomNav" aria-label="Sezioni">
+  <button data-go="todaySection" onclick="navGo('todaySection')"><span class="ic">🏋️</span>Allenati</button>
+  <button data-go="bwSection" onclick="navGo('bwSection')"><span class="ic">⚖️</span>Peso</button>
+  <button data-go="calSection" onclick="navGo('calSection')"><span class="ic">📅</span>Calendario</button>
+  <button data-go="moreSection" onclick="navGo('moreSection')"><span class="ic">☰</span>Altro</button>
+</nav>
 
 <footer>
   <div class="by">by Filippo Filippi</div>
@@ -1305,6 +1360,7 @@ function cardHTML(b, d, ei, ex){
     <div class="cmp todayline" data-role="today" style="display:none"></div>
     <div class="cmp" data-role="prev" style="display:none"></div>
     <div class="suggest" data-role="suggest" role="button" tabindex="0" onclick="applySuggest(${a})"></div>
+    <div class="warm" data-role="warm" style="display:none"></div>
     ${inputs}
     <div class="steprow">${steps}</div>
     ${rirRow}
@@ -1445,9 +1501,50 @@ function renderCard(b, d, ei){
     }
   }
 
+  // serie di avvicinamento: solo sul primo multiarticolare del giorno, prima della prima serie
+  const warmEl = card.querySelector('[data-role="warm"]');
+  if(warmEl){
+    const W = sugFill && sugFill.w ? sugFill.w : (lastSet && lastSet.w ? lastSet.w : 0);
+    const plan = warmupPlan();
+    const show = !today && kind === 'normal' && W > 0 && plan.length && firstCompound(b, d) === ei;
+    if(show){
+      const st = stepFor(ex.n);
+      const items = plan.map(([pc, rp])=>({w: Math.max(st, Math.round(W * pc / 100 / st) * st), r: rp})).filter(x=> x.w < W);
+      warmEl.innerHTML = items.length ? `🔥 Avvicinamento: ${items.map(x=>`<b>${fmtKg(x.w)} kg × ${x.r}</b>`).join(' · ')}` : '';
+      warmEl.style.display = items.length ? '' : 'none';
+    } else { warmEl.innerHTML = ''; warmEl.style.display = 'none'; }
+  }
+  // completata: la scheda torna chiusa (si riapre toccandola)
+  if(done < nSets) card.classList.remove('expanded');
+
   const histEl = card.querySelector('[data-role="hist"]');
   if(histEl.classList.contains('show')) renderHist(b, d, ei);
 }
+
+/* ============ SERIE DI AVVICINAMENTO ============ */
+const COMPOUND_RE = /press|squat|stacco|lat machine|pulley|rematore|affondi|bulgari|hack/i;
+function firstCompound(b, d){
+  const day = PLAN.find(x=>x.id===b).days.find(x=>x.id===d);
+  return day.exercises.findIndex((ex, j)=> exKind(ex) === 'normal' && COMPOUND_RE.test(exName(b, d, j)));
+}
+function warmupPlan(){
+  const raw = settings.warmup === undefined ? '50×8, 75×3' : String(settings.warmup);
+  return raw.split(',').map(x=>x.trim().match(/^(\d{1,2})\s*%?\s*[×x*]\s*(\d{1,2})$/i)).filter(Boolean)
+    .map(m=>[+m[1], +m[2]]).filter(([pc, rp])=> pc >= 20 && pc <= 95 && rp >= 1 && rp <= 20).slice(0, 4);
+}
+function saveWarmup(v){
+  settings.warmup = String(v || '').trim();
+  saveSettings();
+  document.getElementById('warmInput').value = settings.warmup;
+  PLAN.forEach((bl, i)=>{ const acc = accWrap.children[i]; if(acc && acc.dataset.built) loadAllLogsForBlock(bl.id); });
+}
+/* tocco sulla riga di una scheda completata: la apre o la richiude */
+document.addEventListener('click', e=>{
+  const head = e.target.closest && e.target.closest('#accWrap .exlog.done .exhead, #accWrap .exlog.done:not(.expanded)');
+  if(!head || (e.target.closest('button, input, select, a'))) return;
+  const card = e.target.closest('.exlog');
+  if(card) card.classList.toggle('expanded');
+});
 
 function loadAllLogsForBlock(blockId){
   const block = PLAN.find(b=>b.id===blockId);
@@ -1954,10 +2051,11 @@ function chartTap(id, i){
 
 /* ============ TOAST ============ */
 let toastTimeout = null;
-function showToast(msg, onUndo, isErr){
+function showToast(msg, onUndo, isErr, btnLabel){
   const t = document.getElementById('toast');
   document.getElementById('toastMsg').textContent = msg;
   const btn = document.getElementById('toastBtn');
+  btn.textContent = btnLabel || 'Annulla';
   btn.style.display = onUndo ? '' : 'none';
   btn.onclick = onUndo ? ()=>{ hideToast(); onUndo(); } : null;
   t.classList.toggle('err', !!isErr);
@@ -1977,7 +2075,7 @@ function hideToastWhenFree(){
    Quando smetti, la barra ricompare con un attimo di ritardo, così non "ruba" il tocco sul pulsante che stai premendo. */
 let typingOff = null;
 document.addEventListener('focusin', e=>{
-  if(e.target.matches && e.target.matches('input')){ clearTimeout(typingOff); document.body.classList.add('typing'); }
+  if(e.target.matches && e.target.matches('input, textarea')){ clearTimeout(typingOff); document.body.classList.add('typing'); }
 });
 document.addEventListener('focusout', ()=>{
   clearTimeout(typingOff);
@@ -2302,6 +2400,7 @@ function renderToday(){
     t1 = act ? `Blocco ${bi+1}${wkTxt}` : `Blocco ${bi+1} (data di inizio non impostata)`;
     t3 = `${sd.reason} · <button class="linkbtn" onclick="openSettings()">imposta la data di inizio</button>`;
   }
+  note += backupNote();
   box.innerHTML = `
     <div class="t1">${t1}</div>
     <div class="t2">${block.title} — Giorno ${esc(day.label)}</div>
@@ -2309,8 +2408,41 @@ function renderToday(){
     <div class="todaybtns">
       <button class="tb-main" onclick="focusToday(${bi},${sd.di})">🎯 Allenati in focus</button>
       <button class="tb-alt" onclick="goToday(${bi},${sd.di})">Apri la scheda</button>
-    </div>`;
+    </div>
+    ${previewHTML(bi, sd.di)}`;
+  const det = box.querySelector('.tprev');
+  if(det) det.querySelector('summary').addEventListener('click', ()=> setTimeout(()=>{ try{ localStorage.setItem('ui:prevOpen', det.open ? '1' : '0'); }catch(e){} }, 0));
   return { bi, di: sd.di };
+}
+/* Anteprima: esercizi della seduta proposta con serie e peso da usare */
+function previewHTML(bi, di){
+  const b = PLAN[bi].id, dd = PLAN[bi].days[di], d = dd.id;
+  // aperta prima di iniziare; chiusa quando hai già registrato qualcosa oggi in questo giorno
+  const log = getDayLog(b, d), tIso = todayISO();
+  const entriesOf = ei=>{ const l = log[exKey(b, d, ei)]; return Array.isArray(l) ? l.filter(e=>e && typeof e === 'object') : []; };
+  const doneOf = ei=> entriesOf(ei).filter(e=>entryIso(e) === tIso).length;
+  const started = dd.exercises.some((ex, ei)=> doneOf(ei) > 0);
+  let pref = null;
+  try{ pref = localStorage.getItem('ui:prevOpen'); }catch(e){}
+  const open = started ? pref === '1' : pref !== '0';
+  const rows = dd.exercises.map((ex, ei)=>{
+    const kind = exKind(ex), n = targetSets(b, ex), dn = doneOf(ei);
+    const card = cardEl(b, d, ei);
+    let fill = null;
+    try{ const f = card && card.querySelector('[data-role="suggest"]').dataset.fill; fill = f ? JSON.parse(f) : null; }catch(e){}
+    const ss = sessionsOf(entriesOf(ei)).filter(x=>x.iso !== tIso);
+    const last = ss.length ? ss[ss.length-1].sets[0] : null;
+    let val = '';
+    if(kind === 'timed'){ const sv = Number(fill && fill.s ? fill.s : (last && last.s ? last.s : 0)); val = sv > 0 ? `${Math.round(sv)}"` : ''; }
+    else {
+      const w = Number(fill && fill.w ? fill.w : (last && last.w ? last.w : 0)) || null;
+      const up = fill && fill.w && last && last.w && Number(fill.w) > Number(last.w);
+      if(w) val = `<b>${fmtKg(w)} kg</b>${up ? ' <span class="up">↑</span>' : ''}`;
+    }
+    const tg = targetLabel(b, ex).replace(/\/lato/, '');
+    return `<li class="${dn >= n ? 'ok' : ''}"><span class="pn">${dn >= n ? '✓ ' : ''}${esc(exName(b, d, ei))}</span><span class="pv">${esc(tg)}${val ? ' · ' + val : ''}</span></li>`;
+  }).join('');
+  return `<details class="tprev"${open ? ' open' : ''}><summary>Esercizi di oggi (${dd.exercises.length})</summary><ol>${rows}</ol></details>`;
 }
 function focusToday(bi, di){
   openBlock(bi);
@@ -2515,6 +2647,8 @@ function openSummary(iso, list, mode){
       <div class="shead">✅ Allenamento ${d} <small>${esc(S.block.title)} · ${dmOf(iso)}</small></div>
       ${stats}${empty}${cmp}${recs}
       ${S.rows.length ? `<details class="note"><summary>Dettaglio serie</summary>${S.rows.join('')}</details>` : ''}
+      <label class="snote-l" for="note-${iso}-${b}-${d}">Note della seduta</label>
+      <textarea class="snote" id="note-${iso}-${b}-${d}" data-k="${iso}|${b}|${d}" placeholder="Sonno, energia, sensazioni, dolori…" oninput="saveNote('${iso}','${b}','${d}', this.value)">${esc(workoutNote(iso, b, d))}</textarea>
       <div class="sbtns">${btn}</div>
     </div>`;
   }).join('');
@@ -2523,7 +2657,38 @@ function openSummary(iso, list, mode){
   document.body.classList.add('sheet-open');
   lockScroll();
 }
+function workoutNote(iso, b, d){
+  const w = getWorkouts().find(x=>x.iso===iso && x.b===b && x.d===d);
+  return w && typeof w.note === 'string' ? w.note : '';
+}
+const noteTimers = {};
+function writeNote(iso, b, d, txt){
+  const list = getWorkouts();
+  const w = list.find(x=>x.iso===iso && x.b===b && x.d===d);
+  if(!w) return;
+  const t = String(txt).slice(0, 1000);
+  if((w.note || '') === (t.trim() ? t : '')) return;
+  if(t.trim()) w.note = t; else delete w.note;
+  saveWorkouts(list);
+}
+function saveNote(iso, b, d, txt){
+  const k = `${iso}|${b}|${d}`;
+  clearTimeout(noteTimers[k]);
+  noteTimers[k] = setTimeout(()=>{ delete noteTimers[k]; writeNote(iso, b, d, txt); }, 400);
+}
+/* salva subito le note in sospeso (chiusura del riepilogo, app in background) */
+function flushNotes(){
+  document.querySelectorAll('#sheetBody .snote').forEach(ta=>{
+    const [iso, b, d] = (ta.dataset.k || '').split('|');
+    const k = ta.dataset.k;
+    if(k && noteTimers[k]){ clearTimeout(noteTimers[k]); delete noteTimers[k]; writeNote(iso, b, d, ta.value); }
+  });
+}
+window.addEventListener('pagehide', flushNotes);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'hidden') flushNotes(); });
 function closeSummary(){
+  flushNotes();
+  renderCalendar();
   document.getElementById('sheet').classList.remove('show');
   document.body.classList.remove('sheet-open');
   unlockScroll();
@@ -2670,6 +2835,33 @@ function saveGoal(){
   saveSettings();
   renderWeight();
 }
+/* Andamento delle ultime 4 settimane (retta dei minimi quadrati) e data stimata per l'obiettivo.
+   È una stima al ritmo attuale, non una previsione. Servono almeno 4 pesate su 10 giorni. */
+function weightTrend(list){
+  const from = isoOf(new Date(Date.now() - 27*86400000));
+  const pts = list.filter(w=>w.iso >= from);
+  if(pts.length < 4 || isoDays(pts[0].iso, pts[pts.length-1].iso) < 10) return null;
+  const xs = pts.map(w=>isoDays(pts[0].iso, w.iso)), ys = pts.map(w=>Number(w.kg));
+  const n = xs.length, mx = xs.reduce((a,b)=>a+b,0)/n, my = ys.reduce((a,b)=>a+b,0)/n;
+  let num = 0, den = 0;
+  xs.forEach((x, i)=>{ num += (x-mx)*(ys[i]-my); den += (x-mx)*(x-mx); });
+  return den ? num/den : null;     // kg al giorno
+}
+function trendHTML(list, ref, gk, gd){
+  const sl = weightTrend(list);
+  if(sl === null) return '<br><span class="trend">Andamento: servono almeno 4 pesate in 10 giorni.</span>';
+  const wk = Math.round(sl*7*100)/100;
+  let txt = `Andamento ultime 4 settimane: <b>${wk > 0 ? '+' : ''}${fmtKg(wk)} kg/settimana</b>`;
+  if(ref > gk){
+    if(sl < -0.005){
+      const days = Math.ceil((ref - gk) / -sl);
+      const dt = new Date(); dt.setDate(dt.getDate() + days);
+      const iso = isoOf(dt);
+      txt += ` · a questo ritmo ${fmtKg(gk)} kg verso il <b>${dmOf(iso)}/${iso.slice(0,4)}</b> ${iso <= gd ? '✅ in tempo' : '⚠️ dopo la data obiettivo'}`;
+    } else txt += ' · peso stabile o in salita: a questo ritmo l\'obiettivo non si raggiunge';
+  }
+  return `<br><span class="trend">${txt}</span>`;
+}
 function renderWeight(){
   const list = getWeights();
   const gk = goalKg(), gd = goalDate();
@@ -2698,7 +2890,7 @@ function renderWeight(){
   else pace = `La data obiettivo è passata: mancano ${fmtKg(Math.round(toGo*10)/10)} kg.`;
   sumEl.innerHTML = `Ultima: <b>${fmtKg(last.kg)} kg</b> (${dmOf(last.iso)})` +
     (avg7 !== null && recent.length > 1 ? ` · media 7 giorni <b>${fmtKg(Math.round(avg7*10)/10)} kg</b>` : '') +
-    `<br>${pace}`;
+    `<br>${pace}` + trendHTML(list, ref, gk, gd);
   const pts = list.slice(-60).map(w=>({label: dmOf(w.iso), v: Number(w.kg)}));
   document.getElementById('bwChart').innerHTML = sparkline('Peso corporeo (kg)', pts, 'kg', {v: gk, label: `obiettivo ${fmtKg(gk)}`});
   document.getElementById('bwList').innerHTML = list.slice().reverse().map(w=>`
@@ -2792,6 +2984,19 @@ const XL = (()=>{
   const enc = new TextEncoder();
   const CRC = (()=>{ const t = new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
   function crc32(u8){ let c = 0xFFFFFFFF; for(let i=0;i<u8.length;i++) c = CRC[(c^u8[i])&0xFF]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+  /* deflate con l'API del browser (Safari 16.4+): file molto più piccolo. Se manca, si usa "store". */
+  async function deflateRaw(u8){
+    const cs = new CompressionStream('deflate-raw');
+    const out = new Response(new Blob([u8]).stream().pipeThrough(cs)).arrayBuffer();
+    return new Uint8Array(await out);
+  }
+  async function zipAsync(files){
+    if(typeof CompressionStream === 'undefined') return zip(files);
+    try{
+      const pre = await Promise.all(files.map(async f=>{ const data = enc.encode(f.data); return {name: f.name, data, comp: await deflateRaw(data)}; }));
+      return zip(pre);
+    }catch(e){ return zip(files); }
+  }
   /* zip senza compressione (metodo "store"): semplice e compatibile con Excel, Numbers, LibreOffice */
   function zip(files){
     const d = new Date();
@@ -2800,19 +3005,20 @@ const XL = (()=>{
     const parts = [], central = [];
     let offset = 0;
     files.forEach(f=>{
-      const name = enc.encode(f.name), data = enc.encode(f.data), crc = crc32(data);
+      const name = enc.encode(f.name), data = f.data instanceof Uint8Array ? f.data : enc.encode(f.data), crc = crc32(data);
+      const comp = f.comp || null, body = comp || data, method = comp ? 8 : 0;
       const lh = new DataView(new ArrayBuffer(30));
-      lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint16(8,0,true);
+      lh.setUint32(0,0x04034b50,true); lh.setUint16(4,20,true); lh.setUint16(6,0x0800,true); lh.setUint16(8,method,true);
       lh.setUint16(10,dosTime,true); lh.setUint16(12,dosDate,true); lh.setUint32(14,crc,true);
-      lh.setUint32(18,data.length,true); lh.setUint32(22,data.length,true); lh.setUint16(26,name.length,true); lh.setUint16(28,0,true);
-      parts.push(new Uint8Array(lh.buffer), name, data);
+      lh.setUint32(18,body.length,true); lh.setUint32(22,data.length,true); lh.setUint16(26,name.length,true); lh.setUint16(28,0,true);
+      parts.push(new Uint8Array(lh.buffer), name, body);
       const ch = new DataView(new ArrayBuffer(46));
-      ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint16(10,0,true);
+      ch.setUint32(0,0x02014b50,true); ch.setUint16(4,20,true); ch.setUint16(6,20,true); ch.setUint16(8,0x0800,true); ch.setUint16(10,method,true);
       ch.setUint16(12,dosTime,true); ch.setUint16(14,dosDate,true); ch.setUint32(16,crc,true);
-      ch.setUint32(20,data.length,true); ch.setUint32(24,data.length,true); ch.setUint16(28,name.length,true);
+      ch.setUint32(20,body.length,true); ch.setUint32(24,data.length,true); ch.setUint16(28,name.length,true);
       ch.setUint32(42,offset,true);
       central.push(new Uint8Array(ch.buffer), name);
-      offset += 30 + name.length + data.length;
+      offset += 30 + name.length + body.length;
     });
     const cdSize = central.reduce((s,a)=>s+a.length,0);
     const end = new DataView(new ArrayBuffer(22));
@@ -2864,7 +3070,9 @@ const XL = (()=>{
     return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">${freeze}${cols}<sheetData>${rows}</sheetData>${filter}</worksheet>`;
   }
-  function build(sheets){
+  function build(sheets){ return zip(files(sheets)); }
+  function buildCompressed(sheets){ return zipAsync(files(sheets)); }
+  function files(sheets){
     const files = [];
     files.push({name:'[Content_Types].xml', data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((s,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}</Types>`});
@@ -2881,13 +3089,18 @@ const XL = (()=>{
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((s,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')}<Relationship Id="rId${sheets.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`});
     files.push({name:'xl/styles.xml', data:STYLES});
     sheets.forEach((s,i)=>files.push({name:`xl/worksheets/sheet${i+1}.xml`, data:sheetXml(s)}));
-    return zip(files);
+    return files;
   }
   const serial = iso => { const [y,m,d] = iso.split('-').map(Number); return Math.round((Date.UTC(y,m-1,d) - Date.UTC(1899,11,30)) / 86400000); };
-  return {build, serial};
+  return {build, buildCompressed, serial};
 })();
 
+const _monCache = {};
 function mondayIso(iso){
+  if(_monCache[iso]) return _monCache[iso];
+  return (_monCache[iso] = mondayIsoCalc(iso));
+}
+function mondayIsoCalc(iso){
   const [y,m,d] = iso.split('-').map(Number);
   const dt = new Date(y, m-1, d, 12);
   dt.setDate(dt.getDate() - ((dt.getDay() + 6) % 7));
@@ -2899,7 +3112,8 @@ function testIso(t){
   return m ? `${m[3]}-${m[2]}-${m[1]}` : null;
 }
 
-function buildWorkbook(){
+function buildWorkbook(){ return XL.build(workbookSheets()); }
+function workbookSheets(){
   const H = s => ({v:s, s:1});
   const D = iso => ({v:XL.serial(iso), s:2});
   const R1 = v => Math.round(v*10)/10;
@@ -2950,29 +3164,34 @@ function buildWorkbook(){
 
   /* ---- Allenamenti conclusi ---- */
   const wk = getWorkouts().slice().sort((a,b)=> a.iso < b.iso ? -1 : a.iso > b.iso ? 1 : 0);
-  const allen = [['Data','Blocco','Nome blocco','Giorno','Serie','Volume (kg)'].map(H)];
+  const allen = [['Data','Blocco','Nome blocco','Giorno','Serie','Volume (kg)','Note'].map(H)];
+  const byWorkout = {};
+  setRows.forEach(r=>{ const k = `${r.iso}|${r.b}|${r.d}`; (byWorkout[k] = byWorkout[k] || []).push(r); });
   wk.forEach((w, i)=>{
     const row = i + 2;
-    const rows = setRows.filter(r=>r.iso===w.iso && r.b===w.b && r.d===w.d);
+    const rows = byWorkout[`${w.iso}|${w.b}|${w.d}`] || [];
     const vol = rows.reduce((s,r)=>s + (num(r.e.w)||0)*(num(r.e.r)||0) + (num(r.e.w2)||0)*(num(r.e.r2)||0), 0);
     allen.push([D(w.iso), w.b.toUpperCase(), PLAN.find(p=>p.id===w.b).title, w.d,
       {f:`COUNTIFS(Serie!$A$2:$A$${lastSet},A${row},Serie!$B$2:$B$${lastSet},B${row},Serie!$C$2:$C$${lastSet},D${row})`, v:rows.length},
-      {f:`SUMIFS(Serie!$M$2:$M$${lastSet},Serie!$A$2:$A$${lastSet},A${row},Serie!$B$2:$B$${lastSet},B${row},Serie!$C$2:$C$${lastSet},D${row})`, v:vol, s:4}]);
+      {f:`SUMIFS(Serie!$M$2:$M$${lastSet},Serie!$A$2:$A$${lastSet},A${row},Serie!$B$2:$B$${lastSet},B${row},Serie!$C$2:$C$${lastSet},D${row})`, v:vol, s:4},
+      typeof w.note === 'string' && w.note ? {v:w.note, s:7} : null]);
   });
 
   /* ---- Volume settimanale (serie per muscolo) ---- */
   const muscles = MUSCLE_ORDER.filter(m=> setRows.some(r=> r.muscles.split(', ').includes(m)));
   const weeks = [...new Set(setRows.map(r=>mondayIso(r.iso)))].sort();
+  const wkCount = {}, wkMus = {};
+  setRows.forEach(r=>{ const mw = mondayIso(r.iso); wkCount[mw] = (wkCount[mw] || 0) + 1; r.muscles.split(', ').forEach(m=>{ const k = mw + '|' + m; wkMus[k] = (wkMus[k] || 0) + 1; }); });
   const vol = [[H('Settimana (lunedì)'), ...muscles.map(H), H('Totale serie')]];
   weeks.forEach((wIso, i)=>{
     const row = i + 2;
     const cells = muscles.map((m, k)=>{
       const col = String.fromCharCode(66 + k);
-      const v = setRows.filter(r=>mondayIso(r.iso)===wIso && r.muscles.split(', ').includes(m)).length;
+      const v = wkMus[wIso + '|' + m] || 0;
       return {f:`COUNTIFS(Serie!$O$2:$O$${lastSet},$A${row},Serie!$P$2:$P$${lastSet},"*"&${col}$1&"*")`, v};
     });
     vol.push([D(wIso), ...cells,
-      {f:`COUNTIFS(Serie!$O$2:$O$${lastSet},$A${row})`, v: setRows.filter(r=>mondayIso(r.iso)===wIso).length}]);
+      {f:`COUNTIFS(Serie!$O$2:$O$${lastSet},$A${row})`, v: wkCount[wIso] || 0}]);
   });
 
   /* ---- Peso corporeo ---- */
@@ -3020,29 +3239,38 @@ function buildWorkbook(){
     ['by Filippo Filippi'],
   ];
 
-  return XL.build([
+  return ([
     {name:'Info', rows:info, widths:[24, 90]},
     {name:'Serie', rows:serie, widths:[11,8,8,34,8,8,7,8,8,9,7,11,11,13,13,26], freeze:true, filter:true},
-    {name:'Allenamenti', rows:allen, widths:[11,8,18,8,8,12], freeze:true, filter:true},
+    {name:'Allenamenti', rows:allen, widths:[11,8,18,8,8,12,50], freeze:true, filter:true},
     {name:'Volume settimanale', rows:vol, widths:[16, ...muscles.map(()=>12), 12], freeze:true},
     {name:'Peso corporeo', rows:peso, widths:[11,10,14,16,3,12,11], freeze:true},
     {name:'Test massimali', rows:test, widths:[11,26,8,7,15], freeze:true, filter:true},
   ]);
 }
 
+let excelReady = null;
 async function exportExcel(){
+  showToast('Preparo il file Excel…', null);
+  await new Promise(r=>setTimeout(r, 30));      // lascia comparire il messaggio
   let blob;
-  try{ blob = buildWorkbook(); }
+  try{ blob = await XL.buildCompressed(workbookSheets()); }
   catch(e){ console.error(e); showToast('⚠️ Esportazione Excel non riuscita: ' + e.message, null, true); return; }
   const name = `allenamenti-${todayISO()}.xlsx`;
+  excelReady = {blob, name};
+  // iOS vuole un tocco "fresco" per aprire la condivisione: il file è pronto, ora tocchi Condividi
+  showToast(`📊 Excel pronto (${Math.max(1, Math.round(blob.size/1024))} KB)`, ()=>shareFile(blob, name, 'Allenamenti (Excel)'), false, 'Condividi');
+  clearTimeout(toastTimeout); toastTimeout = setTimeout(hideToastWhenFree, 20000);
+}
+async function shareFile(blob, name, title){
   try{
     const file = new File([blob], name, {type: blob.type});
     if(navigator.canShare && navigator.canShare({files:[file]})){
-      await navigator.share({files:[file], title:'Allenamenti (Excel)'});
-      return;
+      await navigator.share({files:[file], title});
+      return true;
     }
   }catch(e){
-    if(e && e.name === 'AbortError') return;
+    if(e && e.name === 'AbortError') return false;
   }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -3050,6 +3278,7 @@ async function exportExcel(){
   document.body.appendChild(a);
   a.click();
   setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 60000);
+  return null;      // non si sa se il file è stato salvato
 }
 
 /* ============ BACKUP ============ */
@@ -3068,7 +3297,32 @@ function renderDataInfo(){
   const wk = getWorkouts().length;
   const bw = getWeights().length;
   document.getElementById('dataInfo').textContent =
-    `${n} serie registrate${lastIso ? `, ultima il ${dmOf(lastIso)}` : ''} · ${wk} allenamenti conclusi · ${bw} pesate · ${tests} test massimali. I dati stanno solo su questo telefono: esporta un backup ogni tanto.`;
+    `${n} serie registrate${lastIso ? `, ultima il ${dmOf(lastIso)}` : ''} · ${wk} allenamenti conclusi · ${bw} pesate · ${tests} test massimali. I dati stanno solo su questo telefono: esporta un backup ogni tanto.` +
+    ` Ultimo backup: ${ISO_RE.test(settings.lastBackup || '') ? dmOf(settings.lastBackup) + '/' + settings.lastBackup.slice(0,4) : 'mai'}.` +
+    (storagePersisted === true ? ' 🔒 Memoria protetta: iOS non cancella i dati per mancanza di spazio.' : storagePersisted === false ? ' Memoria non protetta: iOS potrebbe cancellare i dati se il telefono resta senza spazio, quindi il backup è importante.' : '');
+}
+function backupNote(){
+  if(!lastActiveBlock()) return '';
+  const lb = settings.lastBackup;
+  const days = ISO_RE.test(lb || '') ? isoDays(lb, todayISO()) : null;
+  if(days !== null && days < 14) return '';
+  return `<div class="t3 bkline">💾 ${days === null ? 'Non hai ancora fatto un backup' : `Ultimo backup ${days} giorni fa`} <button class="linkbtn" onclick="exportBackup()">Fai il backup</button></div>`;
+}
+function markBackup(){
+  settings.lastBackup = todayISO();
+  saveSettings();
+  renderToday(); renderDataInfo();
+  showToast('💾 Backup fatto', null);
+}
+/* Chiede a iOS di non cancellare i dati in caso di poco spazio (Safari 17+, concesso a sua discrezione) */
+let storagePersisted = null;
+async function askPersist(){
+  try{
+    if(!navigator.storage || !navigator.storage.persist) return;
+    storagePersisted = await navigator.storage.persisted();
+    if(!storagePersisted) storagePersisted = await navigator.storage.persist();
+  }catch(e){}
+  renderDataInfo();
 }
 async function exportBackup(){
   const data = {};
@@ -3080,11 +3334,13 @@ async function exportBackup(){
     const file = new File([blob], name, {type:'application/json'});
     if(navigator.canShare && navigator.canShare({files:[file]})){
       await navigator.share({files:[file], title:'Backup allenamenti'});
+      markBackup();
       return;
     }
   }catch(e){
     if(e && e.name === 'AbortError') return;   // condivisione annullata
   }
+  setTimeout(()=>{ if(confirm('Hai salvato il file di backup?')) markBackup(); }, 1200);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = name;
@@ -3168,6 +3424,24 @@ function renderTestHistory(){
     .map(([ex, pts])=>sparkline(`${ex} — 1RM stimato (kg)`, pts, 'kg')).join('');
 }
 
+/* ============ MENU IN BASSO ============ */
+const NAV_IDS = ['todaySection', 'bwSection', 'calSection', 'moreSection'];
+function navGo(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const y = el.getBoundingClientRect().top + window.scrollY - 8;
+  window.scrollTo({top: Math.max(0, y), behavior: 'smooth'});
+}
+function navMark(){
+  const y = window.scrollY + window.innerHeight * 0.35;
+  let cur = NAV_IDS[0], best = -1;
+  NAV_IDS.forEach(id=>{ const el = document.getElementById(id); if(!el) return; const t = el.getBoundingClientRect().top + window.scrollY; if(t <= y && t > best){ best = t; cur = id; } });
+  if(window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) cur = 'moreSection';
+  document.querySelectorAll('#bottomNav button').forEach(bt=> bt.classList.toggle('on', bt.dataset.go === cur));
+}
+let navRaf = 0;
+window.addEventListener('scroll', ()=>{ if(!navRaf) navRaf = requestAnimationFrame(()=>{ navRaf = 0; navMark(); }); }, {passive:true});
+
 /* ============ AVVIO ============ */
 try{
   migrateLegacy();
@@ -3178,6 +3452,10 @@ try{
   const start = renderToday();
   openBlock(start.bi);
   switchDay(start.bi, start.di);
+  renderToday();                      // ora le schede sono pronte: l'anteprima usa i pesi suggeriti
+  document.getElementById('warmInput').value = settings.warmup === undefined ? '50×8, 75×3' : settings.warmup;
+  navMark();
+  askPersist();
   renderTestHistory();
   renderDataInfo();
   renderCalendar();
