@@ -415,6 +415,8 @@
   .cardfoot .flash{flex:1 1 auto; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .rirrow > span{white-space:nowrap;}
   @media (max-width:380px){
+    .exright{flex-direction:column; align-items:flex-end; gap:3px;}
+    .extarget{font-size:13px;}
     .steprow button{font-size:12.5px;}
     .timerbtn{font-size:13px; padding:8px 10px;}
     .histbtn{padding:0 10px;}
@@ -689,7 +691,7 @@
 <script>
 const PLAN = [
   { id:'b1', title:'Fondamenta', period:'Mesi 1-2 · RIR 3',
-    goal:'Reintrodurre carico progressivo su tutti i pattern, consolidare tecnica, abituare la spalla a spinte a basso stress. Full Body A/B/C.',
+    goal:'Reintrodurre carico progressivo su tutti i pattern, consolidare tecnica, abituare la spalla a spinte a basso stress. Full Body A/B/C. Settimana 8: scarico.',
     days:[
       {id:'A', label:'A', exercises:[
         {n:'Leg press', t:'3×12', r:'90"'},
@@ -697,7 +699,7 @@ const PLAN = [
         {n:'Lat machine presa larga', t:'3×12', r:'90"'},
         {n:'Leg curl sdraiato', t:'3×12', r:'60"'},
         {n:'Alzate laterali (leggeri)', t:'3×15', r:'60"'},
-        {n:'Plank', t:'3×30-40"', r:'45"'}
+        {n:'Plank', t:'3×30-40"', r:'60"'}
       ]},
       {id:'B', label:'B', exercises:[
         {n:'Squat a macchina / hack squat', t:'3×12', r:'90"'},
@@ -705,144 +707,165 @@ const PLAN = [
         {n:'Shoulder press macchina', t:'3×12', r:'90"', note:'solo se asintomatica'},
         {n:'Leg extension', t:'3×12', r:'60"'},
         {n:'Curl bicipiti manubri', t:'3×12', r:'60"'},
-        {n:'Push-down tricipiti', t:'3×12', r:'60"'}
+        {n:'Push-down tricipiti', t:'3×12', r:'60"'},
+        {n:'Polpacci in piedi', t:'3×15', r:'60"'}
       ]},
       {id:'C', label:'C', exercises:[
         {n:'Stacco rumeno manubri', t:'3×10', r:'90"'},
         {n:'Chest press panca inclinata (macchina)', t:'3×12', r:'90"'},
         {n:'Lat machine presa stretta', t:'3×12', r:'90"'},
         {n:'Affondi alla spalliera / step-up', t:'3×10/lato', r:'60"'},
-        {n:'Face pull', t:'3×15', r:'45"'},
-        {n:'Crunch a cavo', t:'3×15', r:'45"'}
+        {n:'Leg curl seduto', t:'3×12', r:'60"'},
+        {n:'Alzate laterali', t:'3×15', r:'60"'},
+        {n:'Face pull', t:'3×15', r:'60"'}
       ]}
     ]
   },
   { id:'b2', title:'Volume', period:'Mesi 3-4 · RIR 2',
-    goal:'Stimolo principale della fase: +1 esercizio per gruppo grande. Split Upper/Lower/Full.',
+    goal:'Stimolo principale della fase: più serie per tutti i gruppi. Dalla settimana 3 alla 7 +1 serie sui fondamentali, settimana 8 scarico. Ultima serie degli esercizi di isolamento a RIR 0-1. Split Upper/Lower/Full.',
     days:[
       {id:'A', label:'A · Upper', exercises:[
-        {n:'Chest press macchina', t:'4×10', r:'90"'},
-        {n:'Pulley basso', t:'4×10', r:'90"'},
-        {n:'Croci a cavo basse', t:'3×12', r:'60"', note:'ROM controllato'},
-        {n:'Lat machine presa larga', t:'3×12', r:'60"'},
-        {n:'Alzate laterali', t:'3×15', r:'45"'},
-        {n:'Curl + push-down (superset)', t:'3×12+12', r:'60"'}
+        {n:'Chest press macchina', t:'4×10', r:'90"', up:1},
+        {n:'Pulley basso', t:'4×10', r:'90"', up:1},
+        {n:'Croci a cavo basse', t:'3×12', r:'60"', note:'ROM controllato', fail:1},
+        {n:'Lat machine presa larga', t:'3×12', r:'75"'},
+        {n:'Alzate laterali', t:'4×15', r:'60"', fail:1},
+        {n:'Curl + push-down (superset)', t:'3×12+12', r:'60"', fail:1}
       ]},
       {id:'B', label:'B · Lower', exercises:[
-        {n:'Squat a macchina', t:'4×10', r:'120"'},
+        {n:'Squat a macchina', t:'4×10', r:'120"', up:1},
         {n:'Leg press piedi alti', t:'3×12', r:'90"'},
-        {n:'Leg curl', t:'3×12', r:'60"'},
-        {n:'Leg extension', t:'3×15', r:'60"'},
-        {n:'Polpacci in piedi', t:'4×15', r:'45"'},
-        {n:'Plank + side plank', t:'3×30"', r:'45"'}
+        {n:'Leg curl', t:'4×12', r:'60"', fail:1},
+        {n:'Leg extension', t:'3×15', r:'60"', fail:1},
+        {n:'Polpacci in piedi', t:'4×15', r:'60"', fail:1},
+        {n:'Plank + side plank', t:'3×30"', r:'60"'}
       ]},
       {id:'C', label:'C · Full Body', exercises:[
-        {n:'Stacco rumeno bilanciere', t:'3×10', r:'120"'},
+        {n:'Stacco rumeno bilanciere', t:'3×10', r:'120"', up:1},
         {n:'Shoulder press macchina', t:'3×10', r:'90"', note:'se asintomatica'},
         {n:'Rematore manubrio panca', t:'3×12/lato', r:'75"'},
         {n:'Chest press manubri inclinata', t:'3×12', r:'75"', note:'ROM parziale'},
         {n:'Affondi alla spalliera', t:'3×10/lato', r:'60"'},
-        {n:'Face pull + extrarotazioni', t:'3×15', r:'45"'}
+        {n:'Alzate laterali', t:'3×15', r:'60"', fail:1},
+        {n:'Face pull + extrarotazioni', t:'3×15', r:'60"'}
       ]}
     ]
   },
   { id:'b3', title:'Intensità', period:'Mesi 5-6 · RIR 1-2',
-    goal:'Carichi più pesanti, rep range più basso, tecniche di intensità solo su macchine.',
+    goal:'Carichi più pesanti, rep range più basso, tecniche di intensità solo su macchine. Settimana 8: scarico.',
     days:[
       {id:'A', label:'A · Upper', exercises:[
         {n:'Chest press macchina', t:'4×8', r:'120"'},
         {n:'Lat machine presa larga', t:'4×8', r:'120"'},
         {n:'Pulley basso', t:'3×10', r:'90"'},
-        {n:'Croci a cavo', t:'3×10', r:'60"', note:'rest-pause ultima serie'},
-        {n:'Curl bicipiti + push-down', t:'3×10', r:'60"'}
+        {n:'Croci a cavo', t:'3×10', r:'60"', note:'rest-pause ultima serie', fail:1},
+        {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
+        {n:'Curl bicipiti + push-down', t:'3×10', r:'60"', fail:1}
       ]},
       {id:'B', label:'B · Lower', exercises:[
         {n:'Squat a macchina', t:'4×6-8', r:'150"'},
         {n:'Stacco rumeno bilanciere', t:'3×8', r:'120"'},
         {n:'Leg press', t:'3×10', r:'90"', note:'drop-set ultima serie'},
-        {n:'Leg curl', t:'3×10', r:'75"'},
-        {n:'Polpacci', t:'4×12', r:'45"'}
+        {n:'Leg curl', t:'3×10', r:'75"', fail:1},
+        {n:'Polpacci', t:'4×12', r:'60"', fail:1},
+        {n:'Crunch a cavo', t:'3×12', r:'60"'}
       ]},
       {id:'C', label:'C · Full Body', exercises:[
         {n:'Shoulder press macchina', t:'3×8', r:'100"', note:'se asintomatica'},
         {n:'Rematore a cavo seduto', t:'4×8', r:'100"'},
         {n:'Chest press manubri', t:'3×10', r:'90"', note:'ROM parziale'},
         {n:'Affondi bulgari', t:'3×8/lato', r:'75"'},
-        {n:'Face pull', t:'3×15', r:'45"'}
+        {n:'Leg curl seduto', t:'3×10', r:'75"', fail:1},
+        {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
+        {n:'Face pull', t:'3×15', r:'60"'}
       ]}
     ]
   },
   { id:'b4', title:'Metabolico', period:'Mesi 7-8 · RIR 2-3',
-    goal:'Alte ripetizioni, recuperi corti, mind-muscle connection. Sollievo articolare a metà anno.',
+    goal:'Alte ripetizioni, recuperi brevi (minimo 60"), mind-muscle connection. Sollievo articolare a metà anno. Settimana 8: scarico.',
     days:[
       {id:'A', label:'A · Push focus', exercises:[
         {n:'Chest press macchina', t:'3×15', r:'60"'},
-        {n:'Leg press', t:'3×15', r:'60"'},
-        {n:'Croci a cavo', t:'3×15', r:'45"'},
-        {n:'Alzate laterali', t:'3×15', r:'45"', note:'21s o drop-set'},
-        {n:'Push-down', t:'3×15', r:'45"'}
+        {n:'Leg press', t:'3×15', r:'75"'},
+        {n:'Croci a cavo', t:'3×15', r:'60"', fail:1},
+        {n:'Alzate laterali', t:'3×15', r:'60"', note:'21s o drop-set', fail:1},
+        {n:'Push-down', t:'3×15', r:'60"', fail:1}
       ]},
       {id:'B', label:'B · Pull focus', exercises:[
-        {n:'Squat a macchina', t:'3×15', r:'60"'},
+        {n:'Squat a macchina', t:'3×15', r:'75"'},
         {n:'Lat machine presa neutra', t:'3×15', r:'60"'},
-        {n:'Pulley basso', t:'3×15', r:'45"'},
-        {n:'Leg curl', t:'3×15', r:'45"'},
-        {n:'Curl bicipiti', t:'3×15', r:'45"'}
+        {n:'Pulley basso', t:'3×15', r:'60"'},
+        {n:'Leg curl', t:'3×15', r:'60"', fail:1},
+        {n:'Curl bicipiti', t:'3×15', r:'60"', fail:1},
+        {n:'Alzate laterali', t:'3×15', r:'60"', fail:1}
       ]},
       {id:'C', label:'C · Gambe/Core', exercises:[
-        {n:'Stacco rumeno manubri', t:'3×12', r:'60"'},
-        {n:'Leg extension', t:'3×18', r:'45"'},
-        {n:'Affondi alla spalliera', t:'3×12/lato', r:'45"'},
-        {n:'Polpacci', t:'4×15', r:'30"'},
-        {n:'Circuito core', t:'3 giri', r:'30"'}
+        {n:'Stacco rumeno manubri', t:'3×12', r:'75"'},
+        {n:'Leg extension', t:'3×18', r:'60"', fail:1},
+        {n:'Affondi alla spalliera', t:'3×12/lato', r:'60"'},
+        {n:'Leg curl seduto', t:'3×15', r:'60"', fail:1},
+        {n:'Polpacci', t:'4×15', r:'60"', fail:1},
+        {n:'Circuito core', t:'3 giri', r:'60"'}
       ]}
     ]
   },
   { id:'b5', title:'Forza-Ipertrofia', period:'Mesi 9-10 · RIR 1-2',
-    goal:'Powerbuilding: base pesante 6-8 rep, poi accessori 10-15 rep.',
+    goal:'Powerbuilding: base pesante 6-8 rep, poi accessori 10-15 rep. Settimana 8: scarico.',
     days:[
       {id:'A', label:'A · Upper', exercises:[
         {n:'Chest press macchina', t:'4×6-8', r:'150"'},
         {n:'Lat machine presa larga', t:'4×6-8', r:'150"'},
         {n:'Pulley basso', t:'3×10', r:'90"'},
-        {n:'Croci a cavo', t:'3×12', r:'60"'},
-        {n:'Curl + push-down', t:'3×10', r:'60"'}
+        {n:'Croci a cavo', t:'3×12', r:'60"', fail:1},
+        {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
+        {n:'Curl + push-down', t:'3×10', r:'60"', fail:1}
       ]},
       {id:'B', label:'B · Lower', exercises:[
         {n:'Squat a macchina', t:'4×6', r:'180"'},
         {n:'Stacco rumeno bilanciere', t:'3×6-8', r:'150"'},
         {n:'Leg press', t:'3×10', r:'90"'},
-        {n:'Leg curl', t:'3×10', r:'75"'},
-        {n:'Polpacci', t:'4×12', r:'45"'}
+        {n:'Leg curl', t:'3×10', r:'75"', fail:1},
+        {n:'Polpacci', t:'4×12', r:'60"', fail:1},
+        {n:'Crunch a cavo', t:'3×12', r:'60"'}
       ]},
       {id:'C', label:'C · Full Body', exercises:[
         {n:'Shoulder press macchina', t:'3×8', r:'120"', note:'se asintomatica'},
         {n:'Rematore a cavo', t:'4×8', r:'100"'},
         {n:'Chest press manubri', t:'3×10', r:'90"'},
         {n:'Affondi bulgari', t:'3×8/lato', r:'75"'},
-        {n:'Face pull', t:'3×15', r:'45"'}
+        {n:'Leg curl seduto', t:'3×10', r:'75"', fail:1},
+        {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
+        {n:'Face pull', t:'3×15', r:'60"'}
       ]}
     ]
   },
   { id:'b6', title:'Specializzazione', period:'Mesi 11-12 · RIR 1-2',
-    goal:'Struttura come Blocco 5. Scegli 1 gruppo indietro: mettilo per primo, aggiungi 1 esercizio extra da 3×10-12. Chiudi con il test massimali finale.',
+    goal:'Struttura come Blocco 5. Scegli 1 gruppo indietro: mettilo per primo, aggiungi 1 esercizio extra da 3×10-12. Settimana 8: scarico, poi il test massimali finale.',
     days:[
       {id:'A', label:'A · Upper', exercises:[
         {n:'Chest press macchina', t:'4×6-8', r:'150"'},
         {n:'Lat machine presa larga', t:'4×6-8', r:'150"'},
         {n:'Pulley basso', t:'3×10', r:'90"'},
+        {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
+        {n:'Curl + push-down', t:'3×10', r:'60"', fail:1},
         {n:'+ Esercizio di specializzazione', t:'3×10-12', r:'75"'}
       ]},
       {id:'B', label:'B · Lower', exercises:[
         {n:'Squat a macchina', t:'4×6', r:'180"'},
         {n:'Stacco rumeno bilanciere', t:'3×6-8', r:'150"'},
-        {n:'Leg curl', t:'3×10', r:'75"'},
+        {n:'Leg press', t:'3×10', r:'90"'},
+        {n:'Leg curl', t:'3×10', r:'75"', fail:1},
+        {n:'Polpacci', t:'4×12', r:'60"', fail:1},
+        {n:'Crunch a cavo', t:'3×12', r:'60"'},
         {n:'+ Esercizio di specializzazione', t:'3×10-12', r:'75"'}
       ]},
       {id:'C', label:'C · Full Body', exercises:[
         {n:'Shoulder press macchina', t:'3×8', r:'120"', note:'se asintomatica'},
         {n:'Rematore a cavo', t:'4×8', r:'100"'},
         {n:'Chest press manubri', t:'3×10', r:'90"'},
+        {n:'Affondi bulgari', t:'3×8/lato', r:'75"'},
+        {n:'Leg curl seduto', t:'3×10', r:'75"', fail:1},
+        {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
         {n:'+ Esercizio di specializzazione', t:'3×10-12', r:'75"'}
       ]}
     ]
@@ -858,7 +881,7 @@ const EX_KEYS = {
   'chest press panca inclinata (macchina)':'chestpress_incl',
   'chest press manubri':'chestpress_manubri', 'chest press manubri inclinata':'chestpress_manubri_incl',
   'lat machine presa larga':'lat_larga', 'lat machine presa stretta':'lat_stretta', 'lat machine presa neutra':'lat_neutra',
-  'leg curl sdraiato':'legcurl', 'leg curl':'legcurl',
+  'leg curl sdraiato':'legcurl', 'leg curl':'legcurl', 'leg curl seduto':'legcurl_seduto',
   'alzate laterali (leggeri)':'alzate', 'alzate laterali':'alzate',
   'plank':'plank', 'plank + side plank':'plank_side', 'crunch a cavo':'crunch', 'circuito core':'core_circ',
   'squat a macchina / hack squat':'squat_mac', 'squat a macchina':'squat_mac',
@@ -915,6 +938,56 @@ function blockRir(b){
   return m ? [parseInt(m[1],10), parseInt(m[2] || m[1],10)] : null;
 }
 const RIR_LBL = {1:'0-1', 2:'2', 3:'3+'};
+
+/* ============ SETTIMANE DEL BLOCCO E SCARICO ============
+   La settimana si conta dal primo allenamento del blocco (pause di più di 3 settimane = ripartenza).
+   Settimana 8 = scarico: metà serie, stesso peso, RIR 3-4. Gli esercizi con "up" fanno +1 serie dalla 3 alla 7. */
+const DELOAD_WEEK = 8, BLOCK_WEEKS = 8;
+let _wkCache = {};
+function isoDays(a, b){ const [y1,m1,d1] = a.split('-').map(Number), [y2,m2,d2] = b.split('-').map(Number); return Math.round((Date.UTC(y2,m2-1,d2) - Date.UTC(y1,m1-1,d1)) / 86400000); }
+function blockRunStart(bid){
+  const ck = bid + '|' + todayISO();
+  if(ck in _wkCache) return _wkCache[ck];
+  const bl = PLAN.find(x=>x.id===bid), dates = new Set();
+  bl.days.forEach(dd=> Object.values(getDayLog(bid, dd.id)).forEach(list=> Array.isArray(list) && list.forEach(e=>{
+    if(e && typeof e === 'object'){ const iso = entryIso(e); if(ISO_RE.test(iso)) dates.add(iso); }
+  })));
+  getWorkouts().forEach(w=>{ if(w.b === bid) dates.add(w.iso); });
+  const t = todayISO();
+  const ds = [...dates].filter(x=> x <= t).sort().reverse();
+  if(ds.length && isoDays(ds[0], t) > 21) return (_wkCache[ck] = null);   // pausa lunga: il blocco riparte da capo
+  let start = ds.length ? ds[0] : null;
+  for(let i = 1; i < ds.length; i++){ if(isoDays(ds[i], ds[i-1]) > 21) break; start = ds[i]; }
+  return (_wkCache[ck] = start);
+}
+function blockWeek(bid){ const s = blockRunStart(bid); return s ? Math.floor(isoDays(s, todayISO()) / 7) + 1 : 1; }
+function deloadKey(bid){ return `${bid}_${blockRunStart(bid)}`; }
+function isDeload(bid){
+  return !!blockRunStart(bid) && blockWeek(bid) === DELOAD_WEEK && !(settings.deloadSkip && settings.deloadSkip[deloadKey(bid)]);
+}
+function targetSets(bid, ex){
+  const base = parseSets(ex.t);
+  if(isDeload(bid)) return Math.max(1, Math.ceil(base / 2));
+  const w = blockWeek(bid);
+  return base + ((ex.up && blockRunStart(bid) && w >= 3 && w <= 7) ? ex.up : 0);
+}
+function targetLabel(bid, ex){
+  const n = targetSets(bid, ex), base = parseSets(ex.t);
+  return n === base ? ex.t : String(ex.t).replace(/^\d+/, n);
+}
+function skipDeload(bid){
+  if(!confirm('Saltare lo scarico di questa settimana? Le serie tornano quelle piene.')) return;
+  if(!settings.deloadSkip || typeof settings.deloadSkip !== 'object') settings.deloadSkip = {};
+  settings.deloadSkip[deloadKey(bid)] = true;
+  saveSettings();
+  refreshAfterWeekChange();
+}
+function refreshAfterWeekChange(){
+  _wkCache = {};
+  PLAN.forEach(bl=>{ const acc = accWrap.children[PLAN.indexOf(bl)]; if(acc && acc.dataset.built) loadAllLogsForBlock(bl.id); });
+  renderToday();
+  if(typeof focusState !== 'undefined' && focusState && document.getElementById('focus').classList.contains('show')) showFocus();
+}
 function fmtSecs(n){ n = Math.round(Number(n)); return n >= 60 ? `${Math.floor(n/60)}'${String(n%60).padStart(2,'0')}"` : `${n}"`; }
 
 /* Lettura sicura: se il dato salvato è rotto o del tipo sbagliato, usa il valore di default */
@@ -930,7 +1003,7 @@ function lsGet(key, def){
 }
 /* Scrittura sicura: se fallisce (memoria piena, navigazione privata) avvisa invece di bloccarsi a metà */
 function lsSet(key, val){
-  try{ localStorage.setItem(key, JSON.stringify(val)); return true; }
+  try{ localStorage.setItem(key, JSON.stringify(val)); if(/^log:|^workouts$/.test(key)) _wkCache = {}; return true; }
   catch(e){ showToast('⚠️ Salvataggio non riuscito: memoria del telefono piena o non disponibile.', null, true); return false; }
 }
 
@@ -987,15 +1060,19 @@ function exName(b, d, ei){ return settings.names[nameKey(b, d, ei)] || exDef(b, 
 /* Conversione una tantum (ripetuta a ogni avvio, ma non fa nulla se è già fatta):
    i dati salvati per posizione (0,1,2…) passano al codice dell'esercizio.
    Se per errore esistono entrambi (es. backup vecchio importato), le serie vengono unite senza doppioni. */
+/* Ordine degli esercizi del piano fino alla v16: serve solo a convertire i dati vecchi salvati per posizione
+   (il piano è cambiato dopo, quindi non si può usare l'ordine attuale). */
+const LEGACY_KEYS = {"b1_A":["legpress","chestpress","lat_larga","legcurl","alzate","plank"],"b1_B":["squat_mac","pulley","shoulderpress","legext","curl","pushdown"],"b1_C":["stacco_manubri","chestpress_incl","lat_stretta","affondi","facepull","crunch"],"b2_A":["chestpress","pulley","croci","lat_larga","alzate","curl_pushdown"],"b2_B":["squat_mac","legpress_alti","legcurl","legext","polpacci","plank_side"],"b2_C":["stacco_bil","shoulderpress","rematore_manubrio","chestpress_manubri_incl","affondi","facepull_extra"],"b3_A":["chestpress","lat_larga","pulley","croci","curl_pushdown"],"b3_B":["squat_mac","stacco_bil","legpress","legcurl","polpacci"],"b3_C":["shoulderpress","rematore_cavo","chestpress_manubri","bulgari","facepull"],"b4_A":["chestpress","legpress","croci","alzate","pushdown"],"b4_B":["squat_mac","lat_neutra","pulley","legcurl","curl"],"b4_C":["stacco_manubri","legext","affondi","polpacci","core_circ"],"b5_A":["chestpress","lat_larga","pulley","croci","curl_pushdown"],"b5_B":["squat_mac","stacco_bil","legpress","legcurl","polpacci"],"b5_C":["shoulderpress","rematore_cavo","chestpress_manubri","bulgari","facepull"],"b6_A":["chestpress","lat_larga","pulley","spec_b6_A"],"b6_B":["squat_mac","stacco_bil","legcurl","spec_b6_B"],"b6_C":["shoulderpress","rematore_cavo","chestpress_manubri","spec_b6_C"]};
 function migrateToKeys(){
   PLAN.forEach(bl=> bl.days.forEach(dd=>{
+    const legacy = (LEGACY_KEYS[`${bl.id}_${dd.id}`] || []).map(k=>({k}));
     const lk = `log:${bl.id}_${dd.id}`;
     const raw = localStorage.getItem(lk);
     if(!raw) return;
     const log = lsGet(lk, null);
     if(!log) return;
     let changed = false;
-    dd.exercises.forEach((ex, ei)=>{
+    legacy.forEach((ex, ei)=>{
       const old = log[String(ei)];
       if(old === undefined) return;
       const cur = Array.isArray(log[ex.k]) ? log[ex.k] : [];
@@ -1013,7 +1090,7 @@ function migrateToKeys(){
     });
     if(changed) lsSet(lk, log);
     // nomi personalizzati: da "b6_A_3" a "b6_A_spec_b6_A"
-    dd.exercises.forEach((ex, ei)=>{
+    legacy.forEach((ex, ei)=>{
       const oldN = `${bl.id}_${dd.id}_${ei}`, newN = `${bl.id}_${dd.id}_${ex.k}`;
       if(settings.names[oldN] !== undefined){
         if(settings.names[newN] === undefined) settings.names[newN] = settings.names[oldN];
@@ -1023,6 +1100,27 @@ function migrateToKeys(){
     });
   }));
   if(settings._namesMigrated){ delete settings._namesMigrated; saveSettings(); }
+}
+
+/* Un esercizio sostituito (codice x_...) il cui nome ora corrisponde a un esercizio del piano
+   (es. "Leg curl seduto" dalla v17): le sue serie passano al codice del piano, così lo storico resta unico. */
+function migrateCustomToPlan(){
+  for(let i=0; i<localStorage.length; i++){
+    const k = localStorage.key(i);
+    if(!k || !k.startsWith('log:')) continue;
+    const log = lsGet(k, {});
+    let changed = false;
+    Object.keys(log).forEach(key=>{
+      if(!/^x_/.test(key) || !Array.isArray(log[key])) return;
+      const nm = (settings.keyNames && settings.keyNames[key]) || key.slice(2).replace(/_/g, ' ');
+      const pk = keyForName(nm);
+      if(/^x_/.test(pk) || pk === key) return;
+      log[pk] = (Array.isArray(log[pk]) ? log[pk] : []).concat(log[key]);
+      delete log[key];
+      changed = true;
+    });
+    if(changed) lsSet(k, log);
+  }
 }
 
 /* Registrazioni vecchie senza anno: la data completa viene fissata una volta sola */
@@ -1145,6 +1243,9 @@ function buildBlock(bi){
   acc.dataset.built = '1';
 }
 
+function exNotes(ex){
+  return [ex.note, ex.up ? `sett. 3-7: +${ex.up} serie` : '', ex.fail ? 'ultima serie a RIR 0-1' : ''].filter(Boolean).join(' · ');
+}
 function cardHTML(b, d, ei, ex){
   const restSec = parseRestSeconds(ex.r);
   const a = `'${b}','${d}',${ei}`;
@@ -1185,7 +1286,7 @@ function cardHTML(b, d, ei, ex){
   const rr = blockRir(b);
   const rirRow = (kind !== 'timed' && rr) ? `
     <div class="rirrow">
-      <span>RIR <small>obiettivo ${rr[0]===rr[1] ? rr[0] : rr[0]+'-'+rr[1]}</small></span>
+      <span>RIR <small data-role="rirgoal">obiettivo ${rr[0]===rr[1] ? rr[0] : rr[0]+'-'+rr[1]}</small></span>
       <div class="seg" role="group" aria-label="Ripetizioni in riserva">
         ${[1,2,3].map(v=>`<button data-rir="${v}" aria-pressed="false" onclick="setRir(${a},${v})">${RIR_LBL[v]}</button>`).join('')}
       </div>
@@ -1195,11 +1296,11 @@ function cardHTML(b, d, ei, ex){
     <div class="exhead">
       <span class="exname"><span class="donemark">✓</span><span data-role="name">${esc(exName(b,d,ei))}</span><button class="renbtn" aria-label="Rinomina esercizio" onclick="renameEx(${a})">✎</button></span>
       <span class="exright">
-        <span class="extarget">${ex.t} · ${ex.r}</span>
-        <span class="setbadge" data-role="badge" aria-label="serie fatte oggi">0/${parseSets(ex.t)}</span>
+        <span class="extarget" data-role="target">${targetLabel(b, ex)} · ${ex.r}</span>
+        <span class="setbadge" data-role="badge" aria-label="serie fatte oggi">0/${targetSets(b, ex)}</span>
       </span>
     </div>
-    ${ex.note?`<div class="exnote">${ex.note}</div>`:''}
+    ${exNotes(ex) ? `<div class="exnote">${exNotes(ex)}</div>` : ''}
     <div class="altrow" data-role="alts" role="group" aria-label="Scegli l'esercizio"></div>
     <div class="cmp todayline" data-role="today" style="display:none"></div>
     <div class="cmp" data-role="prev" style="display:none"></div>
@@ -1245,7 +1346,7 @@ function renderCard(b, d, ei){
   renderAlts(b, d, ei);
   const ex = exDef(b, d, ei);
   const kind = exKind(ex);
-  const nSets = parseSets(ex.t);
+  const nSets = targetSets(b, ex);
   const step = stepFor(ex.n);
   const entries = getEntries(b, d, ei);
   const sessions = sessionsOf(entries);
@@ -1260,6 +1361,11 @@ function renderCard(b, d, ei){
   const done = today ? today.sets.length : 0;
 
   card.querySelector('[data-role="badge"]').textContent = `${done}/${nSets}`;
+  const deload = isDeload(b);
+  const tgEl = card.querySelector('[data-role="target"]');
+  if(tgEl){ tgEl.textContent = `${deload ? '🔻' : ''}${targetLabel(b, ex)} · ${ex.r}`; tgEl.title = deload ? 'Settimana di scarico' : ''; }
+  const rgEl = card.querySelector('[data-role="rirgoal"]');
+  if(rgEl){ const r0 = blockRir(b); rgEl.textContent = deload ? 'obiettivo 3-4 (scarico)' : `obiettivo ${r0[0]===r0[1] ? r0[0] : r0[0]+'-'+r0[1]}`; }
   card.classList.toggle('done', done >= nSets);
   card.classList.toggle('partial', done > 0 && done < nSets);
 
@@ -1273,10 +1379,20 @@ function renderCard(b, d, ei){
 
   // Suggerimento: guarda l'ultima seduta completa (oggi se finita, altrimenti la precedente)
   const sug = card.querySelector('[data-role="suggest"]');
-  const base = (today && done >= nSets) ? today : (!today ? prev : null);
+  // base del suggerimento: l'ultima seduta con almeno le serie del piano (le sedute di scarico non contano)
+  const need = Math.min(nSets, parseSets(ex.t));
+  let base = null;
+  if(today && done >= nSets) base = today;
+  else if(!today){ for(let i = past.length - 1; i >= 0 && i >= past.length - 4; i--){ if(past[i].sets.length >= need){ base = past[i]; break; } } if(!base && prev && prev.sets.length >= need) base = prev; }
   let sugTxt = '', sugFill = null;
-  if(base && base.sets.length >= nSets){
-    const work = base.sets.slice(0, nSets);
+  if(deload && kind !== 'timed'){
+    const ref = (today && today.sets[0]) || (base && base.sets[0]) || (prev && prev.sets[0]);
+    if(ref && ref.w){
+      sugFill = kind === 'super' ? {w: ref.w, w2: ref.w2} : {w: ref.w};
+      sugTxt = `🔻 Settimana di scarico: <b>${nSets} ${nSets === 1 ? 'serie' : 'serie'}</b> con <b>${kind === 'super' ? `① ${fmtKg(ref.w)} kg · ② ${fmtKg(ref.w2 || 0)} kg` : fmtKg(ref.w) + ' kg'}</b>, lontano dal cedimento (RIR 3-4)`;
+    } else sugTxt = `🔻 Settimana di scarico: <b>${nSets} serie</b>, lontano dal cedimento (RIR 3-4)`;
+  } else if(base && base.sets.length >= need){
+    const work = base.sets.slice(0, Math.min(base.sets.length, nSets));
     const when = base === today ? 'la prossima volta' : 'oggi';
     if(kind === 'timed'){
       const tgt = parseTargetSecs(ex.t);
@@ -1290,7 +1406,8 @@ function renderCard(b, d, ei){
       if(repsOk){
         const rr = blockRir(b);
         const RIR_VAL = {1:0.5, 2:2, 3:3};          // "0-1" vale 0,5: sotto l'obiettivo anche quando è 1-2
-        const tooHard = rr && work.some(s=>s.rir !== null && RIR_VAL[s.rir] !== undefined && RIR_VAL[s.rir] < rr[0]);
+        const judged = (ex.fail && work.length > 1) ? work.slice(0, -1) : work;   // l'ultima serie a cedimento è voluta
+        const tooHard = rr && judged.some(s=>s.rir !== null && RIR_VAL[s.rir] !== undefined && RIR_VAL[s.rir] < rr[0]);
         const easy = rr && rr[1] < 3 && work.length && work.every(s=>s.rir === 3);
         const w1 = Math.max(...work.map(s=>s.w || 0));
         const w2 = kind === 'super' ? Math.max(...work.map(s=>s.w2 || 0)) : 0;
@@ -2165,16 +2282,24 @@ function renderToday(){
   const sd = suggestedDay(bi);
   const day = block.days[sd.di];
   let t1, t3, note = '';
+  const wk = act ? blockWeek(block.id) : 0;
+  const wkTxt = act ? ` · sett. ${wk}${wk <= BLOCK_WEEKS ? ` di ${BLOCK_WEEKS}` : ''}` : '';
+  if(act && isDeload(block.id))
+    note += `<div class="t3 calnote">🔻 Settimana di scarico: metà serie, stesso peso, RIR 3-4 <button class="linkbtn" onclick="skipDeload('${block.id}')">Salta scarico</button></div>`;
+  else if(act && wk > BLOCK_WEEKS && bi < PLAN.length - 1 && !(cur && cur.bi > act.bi)){
+    const nd = suggestedDay(bi + 1).di;
+    note += `<div class="t3 calnote">✅ ${BLOCK_WEEKS} settimane di ${esc(block.title)} completate <button class="linkbtn" onclick="goToday(${bi+1},${nd})">Inizia blocco ${bi+2}</button></div>`;
+  }
   if(cur){
-    t1 = cur.month > 12 ? `Oltre i 12 mesi · Blocco ${bi+1}` : `Mese ${cur.month} di 12 · Blocco ${bi+1}`;
+    t1 = (cur.month > 12 ? `Oltre i 12 mesi · Blocco ${bi+1}` : `Mese ${cur.month} di 12 · Blocco ${bi+1}`) + wkTxt;
     t3 = sd.reason;
     // il calendario è più avanti dell'ultimo blocco usato: solo un promemoria
     if(act && cur.bi > act.bi){
       const nb = PLAN[cur.bi], nd = suggestedDay(cur.bi).di;
-      note = `<div class="t3 calnote">📅 ${cur.month > 12 ? 'Secondo il calendario saresti già al' : 'Secondo il calendario è ora del'} blocco ${cur.bi+1} · ${esc(nb.title)} <button class="linkbtn" onclick="goToday(${cur.bi},${nd})">Inizia blocco ${cur.bi+1}</button></div>`;
+      note += `<div class="t3 calnote">📅 ${cur.month > 12 ? 'Secondo il calendario saresti già al' : 'Secondo il calendario è ora del'} blocco ${cur.bi+1} · ${esc(nb.title)} <button class="linkbtn" onclick="goToday(${cur.bi},${nd})">Inizia blocco ${cur.bi+1}</button></div>`;
     }
   } else {
-    t1 = `Blocco ${bi+1} (data di inizio non impostata)`;
+    t1 = act ? `Blocco ${bi+1}${wkTxt}` : `Blocco ${bi+1} (data di inizio non impostata)`;
     t3 = `${sd.reason} · <button class="linkbtn" onclick="openSettings()">imposta la data di inizio</button>`;
   }
   box.innerHTML = `
@@ -2423,7 +2548,7 @@ function doneToday(b, d, ei){
 function openFocus(b, d){
   const day = PLAN.find(x=>x.id===b).days.find(x=>x.id===d);
   const n = day.exercises.length;
-  let idx = day.exercises.findIndex((ex, ei)=> doneToday(b, d, ei) < parseSets(ex.t));
+  let idx = day.exercises.findIndex((ex, ei)=> doneToday(b, d, ei) < targetSets(b, ex));
   if(idx < 0) idx = n;     // tutto fatto: schermata finale
   focusState = {b, d, idx, n};
   document.getElementById('focus').classList.add('show');
@@ -2447,7 +2572,7 @@ function showFocus(){
   document.getElementById('focusPrev').disabled = idx <= 0;
   document.getElementById('focusNext').disabled = idx >= n;
   const dots = day.exercises.map((ex, ei)=>{
-    const dn = doneToday(b, d, ei), ns = parseSets(ex.t);
+    const dn = doneToday(b, d, ei), ns = targetSets(b, ex);
     return `<span class="fdot${ei===idx?' cur':''}${dn>=ns?' ok':dn>0?' part':''}"></span>`;
   }).join('');
   document.getElementById('focusDots').innerHTML = dots;
@@ -2458,7 +2583,7 @@ function showFocus(){
     const done = getWorkouts().some(w=>w.iso===todayISO() && w.b===b && w.d===d);
     stage.innerHTML = `<div class="fend">
       <div class="fend-t">💪 Esercizi completati</div>
-      <div class="fend-s">${day.exercises.filter((ex,ei)=>doneToday(b,d,ei) >= parseSets(ex.t)).length} di ${n} con tutte le serie previste</div>
+      <div class="fend-s">${day.exercises.filter((ex,ei)=>doneToday(b,d,ei) >= targetSets(b, ex)).length} di ${n} con tutte le serie previste</div>
       <button class="finishbtn${done?' is-done':''}" onclick="finishWorkout('${b}','${d}')">${done ? `✓ Allenamento ${d} concluso oggi` : `✅ Concludi allenamento ${d}`}</button>
     </div>`;
     return;
@@ -2481,7 +2606,7 @@ function focusDotsOnly(){
   const {b, d, idx} = focusState;
   const day = PLAN.find(x=>x.id===b).days.find(x=>x.id===d);
   document.getElementById('focusDots').innerHTML = day.exercises.map((ex, ei)=>{
-    const dn = doneToday(b, d, ei), ns = parseSets(ex.t);
+    const dn = doneToday(b, d, ei), ns = targetSets(b, ex);
     return `<span class="fdot${ei===idx?' cur':''}${dn>=ns?' ok':dn>0?' part':''}"></span>`;
   }).join('');
 }
@@ -2505,7 +2630,7 @@ function closeFocus(){
 function focusAfterLog(b, d, ei){
   if(!focusState || focusState.b !== b || focusState.d !== d || focusState.idx !== ei) return;
   const ex = exDef(b, d, ei);
-  if(doneToday(b, d, ei) === parseSets(ex.t)){
+  if(doneToday(b, d, ei) === targetSets(b, ex)){
     clearTimeout(focusState.adv);
     focusState.adv = setTimeout(()=>{ if(focusState && focusState.idx === ei) focusMove(1); }, 1200);
   }
@@ -3047,6 +3172,7 @@ function renderTestHistory(){
 try{
   migrateLegacy();
   migrateToKeys();
+  migrateCustomToPlan();
   document.getElementById('startDate').value = settings.startDate || '';
   document.getElementById('loudBeep').checked = loudBeepOn();
   const start = renderToday();
