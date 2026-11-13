@@ -585,13 +585,15 @@
 </section>
 
 <section id="hiitSection">
-  <h2><span class="n">02</span>HIIT all'occorrenza</h2>
+  <details class="fold" id="hiitFold">
+  <summary><span><span class="n">02</span>HIIT all'occorrenza</span><span class="chev">›</span></summary>
   <div id="hiitBox"></div>
   <details class="note">
     <summary>Come funziona e fonti</summary>
     <p class="sub-note">Sessione extra, da fare quando vuoi: <b>non sposta il programma</b> (blocco, giorno, settimane e scarico restano uguali) e non entra nel volume per muscolo. Scegli un circuito, tocca un'alternativa per cambiare esercizio, imposta lavoro/recupero, giri e pausa tra i giri: l'app calcola la durata e ti guida con un timer a schermo intero e un beep a ogni cambio. Le sessioni finiscono nel calendario (⚡), nel backup e nell'Excel (foglio "HIIT").</p>
     <p class="sub-note"><b>Fonti.</b> Una meta-analisi di 39 studi ha trovato che l'HIIT riduce il grasso totale, addominale e viscerale (Maillard, Pereira, Boisseau — Sports Medicine 2018;48:269-288). Una network meta-analysis di 40 studi randomizzati non ha trovato differenze significative di ipertrofia tra pesi da soli e pesi + allenamento aerobico/HIIT, con prove di qualità moderata (Chen et al. — Journal of Exercise Science &amp; Fitness 2024;22(1):86-96). Se sia meglio farlo dopo i pesi o in un giorno separato non è stato verificato in questi studi.</p>
     <p class="sub-note">Gli esercizi con <b>⚠️ spalla</b> portano il carico sopra la testa o in tirata alta: considerato il fastidio alla spalla sinistra, sono solo alternative e non sono proposti di base.</p>
+  </details>
   </details>
 </section>
 
@@ -3932,6 +3934,7 @@ const NAV_IDS = ['todaySection', 'hiitSection', 'bwSection', 'calSection', 'more
 function navGo(id){
   const el = document.getElementById(id);
   if(!el) return;
+  if(id === 'hiitSection'){ const f = document.getElementById('hiitFold'); if(f) f.open = true; }
   const y = el.getBoundingClientRect().top + window.scrollY - 8;
   window.scrollTo({top: Math.max(0, y), behavior: 'smooth'});
 }
