@@ -456,6 +456,76 @@
   .cardfoot .histbtn{flex:0 0 auto; white-space:nowrap;}
   .cardfoot .flash{flex:1 1 auto; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
   .rirrow > span{white-space:nowrap;}
+  /* ---- v19: HIIT ---- */
+  .hcircs{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:4px 0 12px;}
+  .hcirc{min-height:56px; border-radius:10px; border:1.5px solid var(--line); background:var(--surface); color:var(--text); text-align:left;
+    padding:8px 10px; font:600 15px var(--body); cursor:pointer; line-height:1.2; min-width:0;}
+  .hcirc small{display:block; font:500 12.5px var(--mono); color:var(--mute); margin-top:3px;}
+  .hcirc.on{border-color:var(--accent); background:rgba(255,106,43,.14);}
+  .hcirc:last-child:nth-child(odd){grid-column:1 / -1;}
+  .hdesc{font-size:15px; color:var(--mute); margin:0 0 8px;}
+  .hst{list-style:none; margin:0 0 10px; padding:0;}
+  .hst li{padding:8px 0; border-bottom:1px dashed var(--line);}
+  .hst li:last-child{border-bottom:none;}
+  .hst .hn{font-weight:600; font-size:16px;}
+  .hst .hn i{font-style:normal; font-family:var(--mono); color:var(--mute); margin-right:6px;}
+  .hst .altrow{margin-top:6px;}
+  .hst .warnchip{color:var(--warn);}
+  .hopt{margin:10px 0 0;}
+  .hopt > label{display:block; font-size:14px; color:var(--mute); margin-bottom:5px;}
+  .hopt .seg{flex-wrap:wrap;}
+  .hopt .seg button{min-width:0; flex:1 1 0; padding:0 4px; font-family:var(--mono); font-size:14px;}
+  .hstep{display:flex; align-items:center; gap:10px;}
+  .hstep button{width:52px; height:44px; border-radius:8px; border:1.5px solid var(--line); background:var(--bg); color:var(--text); font-size:22px; cursor:pointer;}
+  .hstep button:disabled{opacity:.3;}
+  .hstep b{font-family:var(--mono); font-size:22px; min-width:70px; text-align:center;}
+  .htot{margin:14px 0 10px; font-family:var(--mono); font-size:15px; color:var(--mute);}
+  .htot b{color:var(--text); font-size:20px;}
+  .hstart{width:100%; min-height:56px; border-radius:10px; border:none; background:var(--accent); color:var(--bg); font:700 18px var(--body); cursor:pointer;}
+  .hlast{font-size:14px; color:var(--mute); margin-top:8px;}
+  .hlast .linkbtn{padding:4px 0; font-size:14px;}
+  #hiitRun{position:fixed; inset:0; z-index:46; background:var(--bg); display:none; flex-direction:column; overflow-y:auto;
+    padding:calc(10px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));}
+  #hiitRun.show{display:flex;}
+  body.hiit-open #bottomNav, body.hiit-open #timerBar{display:none !important;}
+  #hiitRun.k-work{background:#2A1408;} #hiitRun.k-rest, #hiitRun.k-rrest{background:#0C211C;} #hiitRun.k-prep{background:#22200C;}
+  .hbar{display:flex; align-items:center; gap:8px;}
+  .hbar button{height:48px; border-radius:8px; border:1.5px solid var(--line); background:var(--surface); color:var(--text); font:700 15px var(--mono); padding:0 12px; cursor:pointer;}
+  .hbar span{flex:1 1 auto; text-align:right; font-family:var(--mono); font-size:15px; color:var(--mute);}
+  .hmain{flex:1 1 auto; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:10px 0;}
+  .hphase{font:700 22px var(--disp); letter-spacing:.08em; text-transform:uppercase;}
+  .k-work .hphase{color:var(--accent);} .k-rest .hphase, .k-rrest .hphase{color:var(--accent2);} .k-prep .hphase{color:var(--warn);}
+  .hex{font:700 34px var(--disp); text-transform:uppercase; line-height:1.1; margin-top:6px; overflow-wrap:anywhere;}
+  .htime{font:700 104px var(--mono); line-height:1; margin:14px 0 6px; letter-spacing:-2px;}
+  .hprog{width:100%; height:8px; border-radius:4px; background:rgba(255,255,255,.1); overflow:hidden;}
+  .hprog i{display:block; height:100%; background:currentColor; width:0;}
+  .k-work .hprog{color:var(--accent);} .k-rest .hprog, .k-rrest .hprog{color:var(--accent2);} .k-prep .hprog{color:var(--warn);}
+  .hnext{font-size:17px; color:var(--mute); margin-top:14px;}
+  .hnext b{color:var(--text);}
+  .hrem{font-family:var(--mono); font-size:14px; color:var(--mute); margin-top:6px;}
+  .hctl{display:flex; gap:10px;}
+  .hctl button{flex:1 1 0; min-height:64px; border-radius:12px; border:1.5px solid var(--line); background:var(--surface); color:var(--text); font:700 18px var(--mono); cursor:pointer;}
+  .hctl .hpause.paused{background:var(--warn); color:var(--bg); border-color:var(--warn);}
+  .hintro{max-width:520px; margin:auto 0; padding:10px 0;}
+  .hintro h3{font:700 30px var(--disp); text-transform:uppercase; margin:0 0 6px;}
+  .hintro ol{padding-left:22px; color:var(--text); font-size:16px;}
+  .hintro .callout{margin:12px 0;}
+  .hend{max-width:560px; width:100%; margin:0 auto; padding:6px 0 20px;}
+  .hend .shead{margin-top:6px;}
+  .hkg{display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px dashed var(--line);}
+  .hkg span{flex:1 1 auto; min-width:0; font-size:15px;}
+  .hkg input{width:92px; height:44px; border-radius:8px; border:1.5px solid var(--line); background:var(--bg); color:var(--text); font:600 18px var(--mono); text-align:center;}
+  .cal-day{position:relative;}
+  .cal-day .hz{line-height:1; color:var(--warn);}
+  .cal-day .hzc{position:absolute; top:2px; right:3px; font-size:12px; line-height:1;}
+  .cal-day.h{cursor:pointer; color:var(--text);}
+  .cal-day.honly{background:rgba(242,201,76,.10);}
+  .hsess{border-top:1px solid var(--line); margin-top:14px; padding-top:12px;}
+  @media (max-width:380px){
+    .htime{font-size:88px;}
+    .hex{font-size:29px;}
+    .hcirc{font-size:14px;}
+  }
   @media (max-width:380px){
     .exright{flex-direction:column; align-items:flex-end; gap:3px;}
     .extarget{font-size:13px;}
@@ -504,8 +574,19 @@
   </details>
 </section>
 
+<section id="hiitSection">
+  <h2><span class="n">02</span>HIIT all'occorrenza</h2>
+  <div id="hiitBox"></div>
+  <details class="note">
+    <summary>Come funziona e fonti</summary>
+    <p class="sub-note">Sessione extra, da fare quando vuoi: <b>non sposta il programma</b> (blocco, giorno, settimane e scarico restano uguali) e non entra nel volume per muscolo. Scegli un circuito, tocca un'alternativa per cambiare esercizio, imposta lavoro/recupero, giri e pausa tra i giri: l'app calcola la durata e ti guida con un timer a schermo intero e un beep a ogni cambio. Le sessioni finiscono nel calendario (⚡), nel backup e nell'Excel (foglio "HIIT").</p>
+    <p class="sub-note"><b>Fonti.</b> Una meta-analisi di 39 studi ha trovato che l'HIIT riduce il grasso totale, addominale e viscerale (Maillard, Pereira, Boisseau — Sports Medicine 2018;48:269-288). Una network meta-analysis di 40 studi randomizzati non ha trovato differenze significative di ipertrofia tra pesi da soli e pesi + allenamento aerobico/HIIT, con prove di qualità moderata (Chen et al. — Journal of Exercise Science &amp; Fitness 2024;22(1):86-96). Se sia meglio farlo dopo i pesi o in un giorno separato non è stato verificato in questi studi.</p>
+    <p class="sub-note">Gli esercizi con <b>⚠️ spalla</b> portano il carico sopra la testa o in tirata alta: considerato il fastidio alla spalla sinistra, sono solo alternative e non sono proposti di base.</p>
+  </details>
+</section>
+
 <section id="bwSection">
-  <h2><span class="n">02</span>Peso corporeo</h2>
+  <h2><span class="n">03</span>Peso corporeo</h2>
   <div class="bwrow">
     <input type="text" id="bwInput" inputmode="decimal" autocomplete="off" enterkeyhint="done" placeholder="peso di oggi (kg)" aria-label="Peso di oggi in kg">
     <button onclick="saveWeight()">Salva</button>
@@ -526,7 +607,7 @@
 </section>
 
 <section id="calSection">
-  <h2><span class="n">03</span>Calendario allenamenti</h2>
+  <h2><span class="n">04</span>Calendario allenamenti</h2>
   <div class="cal">
     <div class="cal-head">
       <button class="cal-nav" aria-label="Mese precedente" onclick="calMove(-1)">‹</button>
@@ -541,7 +622,7 @@
 
 <section id="moreSection">
   <details class="fold">
-    <summary><span><span class="n">04</span>Test dei massimali</span><span class="chev">›</span></summary>
+    <summary><span><span class="n">05</span>Test dei massimali</span><span class="chev">›</span></summary>
     <details class="note">
       <summary>Perché 3RM e non 1RM</summary>
       <div class="callout">
@@ -569,7 +650,7 @@
 
 <section>
   <details class="fold">
-    <summary><span><span class="n">05</span>Info programma</span><span class="chev">›</span></summary>
+    <summary><span><span class="n">06</span>Info programma</span><span class="chev">›</span></summary>
 
     <details class="sub">
       <summary>Nota sulla spalla sinistra<span class="chev">›</span></summary>
@@ -642,7 +723,7 @@
 
 <section>
   <details class="fold" id="setFold">
-    <summary><span><span class="n">06</span>Impostazioni e backup</span><span class="chev">›</span></summary>
+    <summary><span><span class="n">07</span>Impostazioni e backup</span><span class="chev">›</span></summary>
     <div class="setbox">
       <label for="startDate">Data di inizio del programma</label>
       <input type="date" id="startDate" onchange="saveStartDate(this.value)">
@@ -681,7 +762,7 @@
 
 <section>
   <details class="fold" id="volFold">
-    <summary><span><span class="n">07</span>Volume settimanale</span><span id="volSum"></span><span class="chev">›</span></summary>
+    <summary><span><span class="n">08</span>Volume settimanale</span><span id="volSum"></span><span class="chev">›</span></summary>
     <div class="volhead">
       <button aria-label="Settimana precedente" onclick="volMove(-1)">‹</button>
       <div class="voltitle" id="volTitle"></div>
@@ -697,6 +778,7 @@
 
 <nav id="bottomNav" aria-label="Sezioni">
   <button data-go="todaySection" onclick="navGo('todaySection')"><span class="ic">🏋️</span>Allenati</button>
+  <button data-go="hiitSection" onclick="navGo('hiitSection')"><span class="ic">⚡</span>HIIT</button>
   <button data-go="bwSection" onclick="navGo('bwSection')"><span class="ic">⚖️</span>Peso</button>
   <button data-go="calSection" onclick="navGo('calSection')"><span class="ic">📅</span>Calendario</button>
   <button data-go="moreSection" onclick="navGo('moreSection')"><span class="ic">☰</span>Altro</button>
@@ -733,6 +815,8 @@
     <button id="focusNext" onclick="focusMove(1)">Successivo ›</button>
   </div>
 </div>
+
+<div id="hiitRun" role="dialog" aria-modal="true" aria-label="Sessione HIIT"></div>
 
 <div id="sheet" role="dialog" aria-modal="true" aria-label="Riepilogo allenamento" onclick="if(event.target===this) closeSummary()">
   <div class="sheet-card">
@@ -1869,7 +1953,7 @@ function refreshExercise(b, d, ei){
 /* tocco = scegli; pressione lunga (0,6 s) = togli */
 (function(){
   let t = null, fired = false, startXY = null;
-  const target = e => e.target.closest && e.target.closest('.altchip');
+  const target = e => e.target.closest && e.target.closest('.altchip:not(.hchip)');
   const args = el => { const box = el.parentElement; const [b, d, ei] = box.dataset.a.split('|'); return [b, d, +ei, +el.dataset.alt]; };
   document.addEventListener('pointerdown', e=>{
     const el = target(e); if(!el) return;
@@ -2156,13 +2240,14 @@ function keepAwakeSession(){
   sessionActive = true;
   acquireWakeLock();
   clearTimeout(sessionIdle);
-  sessionIdle = setTimeout(()=>{ sessionActive = false; if(!timer && !stopwatch) releaseWakeLock(); }, 20*60*1000);
+  sessionIdle = setTimeout(()=>{ sessionActive = false; if(!timer && !stopwatch && !hiitActive()) releaseWakeLock(); }, 20*60*1000);
 }
 function endAwakeSession(){
   sessionActive = false;
   clearTimeout(sessionIdle);
-  if(!timer && !stopwatch) releaseWakeLock();
+  if(!timer && !stopwatch && !hiitActive()) releaseWakeLock();
 }
+function hiitActive(){ return !!(typeof hiitRun !== 'undefined' && hiitRun && hiitRun.tick); }
 function releaseWakeLock(){
   wantWake = false;
   clearTimeout(wakeHold);
@@ -2224,7 +2309,7 @@ function hideBar(){
 function stopTimer(){
   clearTimer();
   clearTimeout(hideBarTimeout);
-  if(!sessionActive) releaseWakeLock();
+  if(!sessionActive && !hiitActive()) releaseWakeLock();
   hideBar();
 }
 function tickTimer(){
@@ -2238,7 +2323,7 @@ function tickTimer(){
     document.getElementById('timerBar').classList.add('done');
     playBeep();
     // lo schermo resta acceso finché la seduta è in corso (vedi keepAwakeSession)
-    if(!sessionActive){ clearTimeout(wakeHold); wakeHold = setTimeout(()=>{ if(!timer && !sessionActive) releaseWakeLock(); }, 120000); }
+    if(!sessionActive){ clearTimeout(wakeHold); wakeHold = setTimeout(()=>{ if(!timer && !sessionActive && !hiitActive()) releaseWakeLock(); }, 120000); }
     clearTimeout(hideBarTimeout);
     hideBarTimeout = setTimeout(()=>{ if(!timer) hideBar(); }, 6000);
     return;
@@ -2512,8 +2597,10 @@ function renderCalendar(){
   if(!calMonth){ const n = new Date(); calMonth = {y:n.getFullYear(), m:n.getMonth()}; }
   const {y, m} = calMonth;
   document.getElementById('calTitle').textContent = `${MESI[m]} ${y}`;
-  const byDay = {};
+  const byDay = {}, hByDay = {};
   getWorkouts().forEach(w=>{ (byDay[w.iso] = byDay[w.iso] || []).push(w); });
+  getHiit().forEach(h=>{ hByDay[h.iso] = (hByDay[h.iso] || 0) + 1; });
+  let hCount = 0;
   const lead = (new Date(y, m, 1).getDay() + 6) % 7;     // settimana che parte dal lunedì
   const nDays = new Date(y, m+1, 0).getDate();
   const tIso = todayISO();
@@ -2528,6 +2615,8 @@ function renderCalendar(){
     if(iso === tIso) cls.push('today');
     let inner = `<span>${day}</span>`;
     let attrs = '';
+    const hn = hByDay[iso] || 0;
+    if(hn) hCount += hn;
     if(ws.length){
       count += ws.length;
       ws.forEach(w=>{ letters[w.d]++; });
@@ -2535,18 +2624,27 @@ function renderCalendar(){
       if(ws.length > 1) cls.push('multi');
       inner += `<span class="wl">${ws.map(w=>w.d).join('')}</span>`;
       const desc = ws.map(w=>`blocco ${w.b.slice(1)} giorno ${w.d}`).join(', ');
-      attrs = ` role="button" tabindex="0" aria-label="${day} ${MESI[m]}: ${desc}" onclick="calTap('${iso}')"`;
+      attrs = ` role="button" tabindex="0" aria-label="${day} ${MESI[m]}: ${desc}${hn ? ', HIIT' : ''}" onclick="calTap('${iso}')"`;
+      if(hn) inner += '<span class="hzc">⚡</span>';
+    } else if(hn){
+      cls.push('h', 'honly');
+      inner += `<span class="wl hz" style="font-size:20px">⚡</span>`;
+      attrs = ` role="button" tabindex="0" aria-label="${day} ${MESI[m]}: HIIT" onclick="calTap('${iso}')"`;
     }
     html += `<div class="${cls.join(' ')}" data-iso="${iso}"${attrs}>${inner}</div>`;
   }
   document.getElementById('calGrid').innerHTML = html;
+  const hTxt = hCount ? ` · ⚡ HIIT ${hCount}` : '';
   document.getElementById('calFoot').textContent = count
-    ? `${count} allenament${count===1?'o':'i'} in ${MESI[m].toLowerCase()} · A ${letters.A} · B ${letters.B} · C ${letters.C}`
-    : `Nessun allenamento concluso in ${MESI[m].toLowerCase()}.`;
+    ? `${count} allenament${count===1?'o':'i'} in ${MESI[m].toLowerCase()} · A ${letters.A} · B ${letters.B} · C ${letters.C}${hTxt}`
+    : hCount ? `Nessun allenamento del programma in ${MESI[m].toLowerCase()}${hTxt}.` : `Nessun allenamento concluso in ${MESI[m].toLowerCase()}.`;
 }
 function calTap(iso){
   const ws = getWorkouts().filter(w=>w.iso===iso);
+  const hs = getHiit().filter(h=>h.iso===iso);
   if(ws.length) openSummary(iso, ws.map(w=>({b:w.b, d:w.d})), 'remove');
+  else if(hs.length) openSummary(iso, [], 'remove');
+  if(hs.length) document.getElementById('sheetBody').insertAdjacentHTML('beforeend', hiitSheetHTML(iso));
 }
 
 /* ============ RIEPILOGO ALLENAMENTO + RECORD ============ */
@@ -2688,6 +2786,7 @@ window.addEventListener('pagehide', flushNotes);
 document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'hidden') flushNotes(); });
 function closeSummary(){
   flushNotes();
+  flushHiitNote();
   renderCalendar();
   document.getElementById('sheet').classList.remove('show');
   document.body.classList.remove('sheet-open');
@@ -3220,6 +3319,16 @@ function workbookSheets(){
     test.push([D(iso), t.ex, {v:Number(t.w), s:3}, Number(t.r), {f:`C${row}*(1+D${row}/30)`, v:Number(t.w)*(1+Number(t.r)/30), s:3}]);
   });
 
+  /* ---- HIIT ---- */
+  const hiitList = getHiit().slice().sort((a, b)=> a.iso < b.iso ? -1 : a.iso > b.iso ? 1 : (a.t||0) - (b.t||0));
+  const hiitRows = [['Data','Circuito','Lavoro (s)','Recupero (s)','Pausa giri (s)','Giri fatti','Giri previsti','Intervalli saltati','Durata (min)','Esercizi (kg)','Note'].map(H)];
+  hiitList.forEach(h=>{
+    hiitRows.push([D(h.iso), String(h.title || ''), Number(h.w)||0, Number(h.r)||0, Number(h.rr)||0, Number(h.done)||0, Number(h.rounds)||0, Number(h.skip)||0,
+      {v:R1((Number(h.secs)||0)/60), s:3},
+      (Array.isArray(h.st) ? h.st : []).map(x=> x && typeof x === 'object' ? String(x.n || '') + (Number(x.kg) > 0 ? ` (${fmtKg(x.kg)} kg)` : '') : '').filter(Boolean).join(', '),
+      typeof h.note === 'string' ? h.note : '']);
+  });
+
   /* ---- Info ---- */
   const now = new Date();
   const info = [
@@ -3227,6 +3336,7 @@ function workbookSheets(){
     ['Esportato il', D(todayISO())],
     ['Serie registrate', setRows.length],
     ['Allenamenti conclusi', wk.length],
+    ['Sessioni HIIT', hiitList.length],
     [],
     [{v:'Come sono calcolate le colonne', s:1}, {v:'', s:1}],
     ['Volume (kg)', {v:'Kg × Reps (+ Kg ② × Reps ② nei superset). Gli esercizi a tempo valgono 0.', s:7}],
@@ -3246,6 +3356,7 @@ function workbookSheets(){
     {name:'Volume settimanale', rows:vol, widths:[16, ...muscles.map(()=>12), 12], freeze:true},
     {name:'Peso corporeo', rows:peso, widths:[11,10,14,16,3,12,11], freeze:true},
     {name:'Test massimali', rows:test, widths:[11,26,8,7,15], freeze:true, filter:true},
+    {name:'HIIT', rows:hiitRows, widths:[11,26,10,12,13,10,12,12,12,60,40], freeze:true, filter:true},
   ]);
 }
 
@@ -3282,7 +3393,7 @@ async function shareFile(blob, name, title){
 }
 
 /* ============ BACKUP ============ */
-const BACKUP_KEYS = k => k.startsWith('log:') || k === 'maxtests' || k === 'settings' || k === 'workouts' || k === 'bodyweight';
+const BACKUP_KEYS = k => k.startsWith('log:') || k === 'maxtests' || k === 'settings' || k === 'workouts' || k === 'bodyweight' || k === 'hiit';
 function allDataKeys(){
   const keys = [];
   for(let i=0; i<localStorage.length; i++){ const k = localStorage.key(i); if(k && BACKUP_KEYS(k)) keys.push(k); }
@@ -3297,7 +3408,7 @@ function renderDataInfo(){
   const wk = getWorkouts().length;
   const bw = getWeights().length;
   document.getElementById('dataInfo').textContent =
-    `${n} serie registrate${lastIso ? `, ultima il ${dmOf(lastIso)}` : ''} · ${wk} allenamenti conclusi · ${bw} pesate · ${tests} test massimali. I dati stanno solo su questo telefono: esporta un backup ogni tanto.` +
+    `${n} serie registrate${lastIso ? `, ultima il ${dmOf(lastIso)}` : ''} · ${wk} allenamenti conclusi · ${getHiit().length} HIIT · ${bw} pesate · ${tests} test massimali. I dati stanno solo su questo telefono: esporta un backup ogni tanto.` +
     ` Ultimo backup: ${ISO_RE.test(settings.lastBackup || '') ? dmOf(settings.lastBackup) + '/' + settings.lastBackup.slice(0,4) : 'mai'}.` +
     (storagePersisted === true ? ' 🔒 Memoria protetta: iOS non cancella i dati per mancanza di spazio.' : storagePersisted === false ? ' Memoria non protetta: iOS potrebbe cancellare i dati se il telefono resta senza spazio, quindi il backup è importante.' : '');
 }
@@ -3352,7 +3463,7 @@ async function exportBackup(){
 function validBackupValue(k, raw){
   if(typeof raw !== 'string') return false;
   let v; try{ v = JSON.parse(raw); }catch(e){ return false; }
-  if(k === 'maxtests' || k === 'workouts' || k === 'bodyweight') return Array.isArray(v);
+  if(k === 'maxtests' || k === 'workouts' || k === 'bodyweight' || k === 'hiit') return Array.isArray(v);
   return !!v && typeof v === 'object' && !Array.isArray(v);
 }
 function importBackup(input){
@@ -3424,8 +3535,385 @@ function renderTestHistory(){
     .map(([ex, pts])=>sparkline(`${ex} — 1RM stimato (kg)`, pts, 'kg')).join('');
 }
 
+
+/* ============ HIIT ALL'OCCORRENZA ============ */
+/* Sessione extra: dati separati (chiave "hiit"), non tocca serie, allenamenti conclusi, blocco o settimane. */
+const SH = ' ⚠️ spalla';
+const HIIT = [
+  { id:'manubri', title:'Total body manubri', eq:'Manubri', desc:'Tutto il corpo con una coppia di manubri.', stations:[
+    {alts:['Squat con manubri', 'Goblet squat con manubrio', 'Thruster con manubri' + SH], w:true},
+    {alts:['Rematore alternato con manubri', 'Rematore a due braccia con manubri', 'Renegade row'], w:true},
+    {alts:['Affondi alternati con manubri', 'Affondi indietro con manubri', 'Step-up con manubri'], w:true},
+    {alts:['Stacco rumeno con manubri', 'Push press con manubri' + SH], w:true},
+    {alts:['Swing con manubrio', 'Farmer walk con manubri'], w:true} ] },
+  { id:'kettlebell', title:'Kettlebell', eq:'Kettlebell', desc:'Circuito con un kettlebell.', stations:[
+    {alts:['Kettlebell swing', 'Swing a un braccio'], w:true},
+    {alts:['Goblet squat con kettlebell', 'Squat sumo con kettlebell'], w:true},
+    {alts:['Clean alternato con kettlebell', 'Clean & press con kettlebell' + SH], w:true},
+    {alts:['Stacco sumo con kettlebell', 'High pull con kettlebell' + SH], w:true},
+    {alts:['Affondi in avanzamento con kettlebell', 'Affondi indietro goblet'], w:true} ] },
+  { id:'corpo', title:'Solo corpo libero', eq:'Nessun attrezzo', desc:'Senza attrezzi: va bene anche a casa o in viaggio.', stations:[
+    {alts:['Squat thrust', 'Burpee senza piegamento', 'Burpee']},
+    {alts:['Jump squat', 'Squat a corpo libero']},
+    {alts:['Mountain climber', 'Plank jack']},
+    {alts:['Plank con tocco spalla', 'Piegamenti sulle ginocchia', 'Piegamenti']},
+    {alts:['Skater', 'Jumping jack', 'Skip alto']} ] },
+  { id:'misto', title:'Misto cardio + corpo libero', eq:'Bike o vogatore', desc:'Alterna una macchina cardio vicina a esercizi a corpo libero.', stations:[
+    {alts:['Bike', 'Vogatore', 'Tapis roulant (corsa)']},
+    {alts:['Squat a corpo libero', 'Jump squat', 'Affondi alternati']},
+    {alts:['Bike', 'Vogatore', 'Tapis roulant (corsa)']},
+    {alts:['Mountain climber', 'Plank jack', 'Plank con tocco spalla']},
+    {alts:['Bike', 'Vogatore', 'Tapis roulant (corsa)']} ] },
+  { id:'sprint', title:'Sprint su macchina', eq:'Bike, vogatore o tapis', desc:'Una sola macchina: 5 sprint per giro.', repeat:5, stations:[
+    {alts:['Bike', 'Vogatore', 'Tapis roulant (corsa)']} ] },
+];
+const HIIT_FMTS = [[20,10],[30,30],[40,20],[45,15],[20,40]];
+const HIIT_RR = [0, 30, 60, 90, 120];
+const HIIT_DEF = {manubri:'40/20', kettlebell:'40/20', corpo:'40/20', misto:'30/30', sprint:'20/40'};
+
+function hiitRaw(){ const l = lsGet('hiit', []); return Array.isArray(l) ? l : []; }
+function getHiit(){
+  return hiitRaw().filter(h=> h && typeof h === 'object' && ISO_RE.test(h.iso));
+}
+function saveHiit(list){ return lsSet('hiit', list); }
+/* all'avvio: ogni sessione ha un identificativo numerico unico (serve per modificarla o eliminarla) */
+function normalizeHiit(){
+  const raw = hiitRaw();
+  let max = 0, changed = false;
+  const seen = new Set();
+  raw.forEach(h=>{ if(h && typeof h === 'object'){ const t = Number(h.t); if(Number.isFinite(t) && t > max) max = t; } });
+  raw.forEach(h=>{
+    if(!h || typeof h !== 'object') return;
+    let t = Number(h.t);
+    if(!Number.isFinite(t) || t <= 0 || seen.has(t)){ t = ++max; }
+    if(h.t !== t){ h.t = t; changed = true; }
+    seen.add(t);
+  });
+  if(changed) saveHiit(raw);
+}
+function hiitCfg(){
+  const c = settings.hiit && typeof settings.hiit === 'object' ? settings.hiit : {};
+  const circ = HIIT.find(x=>x.id===c.cid) || HIIT[0];
+  const fmts = c.fmts && typeof c.fmts === 'object' ? c.fmts : {};
+  const fmt = HIIT_FMTS.map(f=>f.join('/')).includes(fmts[circ.id]) ? fmts[circ.id] : HIIT_DEF[circ.id];
+  const rounds = Math.min(5, Math.max(2, parseInt(c.rounds, 10) || 3));
+  const rr = HIIT_RR.includes(Number(c.rr)) ? Number(c.rr) : 60;
+  const alts = c.alts && typeof c.alts === 'object' ? c.alts : {};
+  return {circ, fmt, rounds, rr, alts};
+}
+function setHiitCfg(patch){
+  const c = settings.hiit && typeof settings.hiit === 'object' ? settings.hiit : {};
+  settings.hiit = Object.assign({}, c, patch);
+  saveSettings();
+}
+/* nome dell'esercizio scelto per ogni stazione del circuito */
+function hiitNames(circ, alts){
+  const a = alts && alts[circ.id] && typeof alts[circ.id] === 'object' ? alts[circ.id] : {};
+  return circ.stations.map((st, si)=>{ const i = parseInt(a[si], 10); return st.alts[i >= 0 && i < st.alts.length ? i : 0]; });
+}
+/* sequenza delle fasi: preparazione, poi per ogni giro lavoro/recupero; pausa lunga tra i giri */
+function hiitPhases(circ, names, fmt, rounds, rr){
+  const [w, r] = fmt.split('/').map(Number);
+  const seq = [];
+  const rep = circ.repeat || 1;
+  names.forEach((n, si)=>{ for(let k=0; k<rep; k++) seq.push({n, si}); });
+  const ph = [{k:'prep', d:10, n:seq[0].n, round:1}];
+  for(let round=1; round<=rounds; round++){
+    seq.forEach((x, i)=>{
+      ph.push({k:'work', d:w, n:x.n, si:x.si, round, pos:i+1, of:seq.length});
+      if(i < seq.length - 1) ph.push({k:'rest', d:r, n:seq[i+1].n, round});
+      else if(round < rounds) ph.push(rr > 0 ? {k:'rrest', d:rr, n:seq[0].n, round} : {k:'rest', d:r, n:seq[0].n, round});
+    });
+  }
+  return ph;
+}
+function hiitTotal(ph){ return ph.filter(p=>p.k !== 'prep').reduce((a, p)=>a + p.d, 0); }
+
+function renderHiit(){
+  const box = document.getElementById('hiitBox');
+  if(!box) return;
+  const {circ, fmt, rounds, rr, alts} = hiitCfg();
+  const names = hiitNames(circ, alts);
+  const total = hiitTotal(hiitPhases(circ, names, fmt, rounds, rr));
+  const circBtns = HIIT.map(c=>`<button class="hcirc${c.id===circ.id ? ' on' : ''}" onclick="pickHiitCirc('${c.id}')" aria-pressed="${c.id===circ.id}">${esc(c.title)}<small>${esc(c.eq)}</small></button>`).join('');
+  const st = circ.stations.map((s, si)=>{
+    const chips = s.alts.length > 1 ? `<div class="altrow">${s.alts.map((a, ai)=>`<button class="altchip hchip${a===names[si] ? ' on' : ''}${a.includes('⚠️') ? ' warnchip' : ''}" onclick="pickHiitAlt(${si},${ai})" aria-pressed="${a===names[si]}">${esc(a)}</button>`).join('')}</div>` : '';
+    const rep = circ.repeat ? ` × ${circ.repeat} per giro` : '';
+    return `<li><div class="hn"><i>${si+1}</i>${esc(names[si])}${rep}</div>${chips}</li>`;
+  }).join('');
+  const fmtBtns = HIIT_FMTS.map(f=>{ const v = f.join('/'); return `<button class="${v===fmt ? 'on' : ''}" onclick="pickHiitFmt('${v}')" aria-pressed="${v===fmt}">${f[0]}″/${f[1]}″</button>`; }).join('');
+  const rrBtns = HIIT_RR.map(v=>`<button class="${v===rr ? 'on' : ''}" onclick="pickHiitRR(${v})" aria-pressed="${v===rr}">${v ? v + '″' : 'no'}</button>`).join('');
+  const last = getHiit().sort((a, b)=> a.iso < b.iso ? 1 : a.iso > b.iso ? -1 : (b.t||0) - (a.t||0))[0];
+  const lastTxt = last ? `<div class="hlast">Ultima: ${dmOf(last.iso)} · ${esc(last.title || '')} · ${Number(last.done)||0}/${Number(last.rounds)||0} giri <button class="linkbtn" onclick="calTap('${last.iso}')">dettagli</button></div>` : '';
+  box.innerHTML = `
+    <div class="hcircs">${circBtns}</div>
+    <p class="hdesc">${esc(circ.desc)} Tocca un'alternativa per cambiare esercizio.</p>
+    <ol class="hst">${st}</ol>
+    <div class="hopt"><label>Lavoro / recupero</label><div class="seg">${fmtBtns}</div></div>
+    <div class="hopt"><label>Giri</label><div class="hstep"><button onclick="pickHiitRounds(-1)" aria-label="Un giro in meno"${rounds<=2 ? ' disabled' : ''}>−</button><b>${rounds}</b><button onclick="pickHiitRounds(1)" aria-label="Un giro in più"${rounds>=5 ? ' disabled' : ''}>+</button></div></div>
+    <div class="hopt"><label>Pausa tra i giri</label><div class="seg">${rrBtns}</div></div>
+    <div class="htot">Durata: <b>${formatMMSS(total)}</b> · + 3-5′ di riscaldamento</div>
+    <button class="hstart" onclick="openHiit()">▶ Inizia HIIT</button>
+    ${lastTxt}`;
+}
+function pickHiitCirc(id){ setHiitCfg({cid:id}); renderHiit(); }
+function pickHiitAlt(si, ai){
+  const {circ, alts} = hiitCfg();
+  const a = Object.assign({}, alts);
+  a[circ.id] = Object.assign({}, a[circ.id] && typeof a[circ.id] === 'object' ? a[circ.id] : {}, {[si]: ai});
+  setHiitCfg({alts:a}); renderHiit();
+}
+function pickHiitFmt(v){
+  const {circ} = hiitCfg();
+  const c = settings.hiit && settings.hiit.fmts && typeof settings.hiit.fmts === 'object' ? settings.hiit.fmts : {};
+  setHiitCfg({fmts: Object.assign({}, c, {[circ.id]: v})}); renderHiit();
+}
+function pickHiitRounds(d){ const {rounds} = hiitCfg(); setHiitCfg({rounds: Math.min(5, Math.max(2, rounds + d))}); renderHiit(); }
+function pickHiitRR(v){ setHiitCfg({rr:v}); renderHiit(); }
+
+/* ---- timer guidato ---- */
+let hiitRun = null;   // {cfg, names, ph, total, start, paused, pausedMs, idx, tick, savedId}
+function hiitEl(){ return document.getElementById('hiitRun'); }
+function openHiit(){
+  const cfg = hiitCfg();
+  const names = hiitNames(cfg.circ, cfg.alts);
+  const ph = hiitPhases(cfg.circ, names, cfg.fmt, cfg.rounds, cfg.rr);
+  hiitRun = {cfg, names, ph, total: ph.reduce((a, p)=>a + p.d, 0), start: 0, paused: 0, pausedMs: 0, skipMs: 0, skipped: new Set(), idx: -1, tick: null, savedId: null};
+  unlockAudio(); prepareBeep();
+  const el = hiitEl();
+  el.className = 'show';
+  document.body.classList.add('hiit-open');
+  lockScroll();
+  el.innerHTML = `
+    <div class="hbar"><button onclick="closeHiit()">✕ Esci</button><span>${esc(cfg.circ.title)}</span></div>
+    <div class="hintro">
+      <h3>Prima scaldati</h3>
+      <div class="callout"><b>3-5 minuti di riscaldamento</b>: cardio leggero e mobilità di anche, caviglie e spalle. Poi qualche ripetizione lenta dei primi esercizi.</div>
+      <ol>${names.map(n=>`<li>${esc(n)}${cfg.circ.repeat ? ` × ${cfg.circ.repeat}` : ''}</li>`).join('')}</ol>
+      <p class="hdesc">${cfg.fmt.replace('/', '″ lavoro / ')}″ recupero · ${cfg.rounds} giri${cfg.rr ? ` · pausa ${cfg.rr}″ tra i giri` : ''} · durata ${formatMMSS(hiitTotal(ph))}</p>
+      <button class="hstart" onclick="startHiit()">▶ Pronto: via tra 10″</button>
+    </div>`;
+}
+function startHiit(){
+  if(!hiitRun) return;
+  unlockAudio(); prepareBeep();
+  if(timer) stopTimer();
+  hiitRun.start = Date.now();
+  hiitRun.tick = -1;           // segna la sessione come attiva prima di chiedere lo schermo acceso
+  acquireWakeLock();
+  const el = hiitEl();
+  el.innerHTML = `
+    <div class="hbar"><button onclick="stopHiit()">■ Stop</button><span id="hRound"></span></div>
+    <div class="hmain">
+      <div class="hphase" id="hPhase"></div>
+      <div class="hex" id="hEx"></div>
+      <div class="htime" id="hTime" role="timer"></div>
+      <div class="hprog"><i id="hProg"></i></div>
+      <div class="hnext" id="hNext"></div>
+      <div class="hrem" id="hRem"></div>
+    </div>
+    <div class="hctl"><button class="hpause" id="hPause" onclick="pauseHiit()">❚❚ Pausa</button><button onclick="skipHiit()">Salta ›</button></div>`;
+  hiitRun.tick = setInterval(tickHiit, 200);
+  tickHiit();
+}
+function hiitElapsed(){
+  const r = hiitRun;
+  const now = r.paused || Date.now();
+  return Math.max(0, now - r.start - r.pausedMs);
+}
+function tickHiit(){
+  const r = hiitRun;
+  if(!r || !r.start || !r.tick) return;
+  const el = hiitElapsed();
+  if(el >= r.total * 1000){ finishHiit(true); return; }
+  let acc = 0, idx = 0;
+  while(idx < r.ph.length && acc + r.ph[idx].d * 1000 <= el){ acc += r.ph[idx].d * 1000; idx++; }
+  const p = r.ph[idx];
+  const left = p.d * 1000 - (el - acc);
+  if(idx !== r.idx){
+    const jumped = r.idx >= 0 && idx - r.idx > 1;
+    if(r.idx >= 0 && !jumped && document.visibilityState === 'visible') playBeep();
+    r.idx = idx;
+    const box = hiitEl();
+    box.className = 'show k-' + p.k;
+    const lbl = {prep:'Preparati', work:'Lavoro', rest:'Recupero', rrest:'Pausa tra i giri'}[p.k];
+    document.getElementById('hPhase').textContent = lbl;
+    document.getElementById('hEx').textContent = p.k === 'work' ? p.n : (p.k === 'prep' ? 'Primo: ' + p.n : 'Respira');
+    document.getElementById('hRound').textContent = `Giro ${p.round}/${r.cfg.rounds}${p.k === 'work' ? ` · ${p.pos}/${p.of}` : ''}`;
+    const nx = r.ph.slice(idx + 1).find(x=>x.k === 'work');
+    document.getElementById('hNext').innerHTML = p.k === 'work'
+      ? (nx ? `Poi: <b>${esc(nx.n)}</b>` : '<b>Ultimo sforzo!</b>')
+      : `Prossimo: <b>${esc(p.n)}</b>`;
+  }
+  const secs = Math.ceil(left / 1000);
+  document.getElementById('hTime').textContent = secs >= 60 ? formatMMSS(secs) : String(secs);
+  document.getElementById('hProg').style.width = `${Math.min(100, (1 - left / (p.d * 1000)) * 100)}%`;
+  const rem = Math.ceil((r.total * 1000 - el) / 1000);
+  document.getElementById('hRem').textContent = `Mancano ${formatMMSS(rem)}${r.paused ? ' · IN PAUSA' : ''}`;
+}
+function pauseHiit(){
+  const r = hiitRun;
+  if(!r || !r.start || !r.tick) return;
+  unlockAudio();
+  if(r.paused){ r.pausedMs += Date.now() - r.paused; r.paused = 0; acquireWakeLock(); }
+  else r.paused = Date.now();
+  const b = document.getElementById('hPause');
+  b.classList.toggle('paused', !!r.paused);
+  b.textContent = r.paused ? '▶ Riprendi' : '❚❚ Pausa';
+  tickHiit();
+}
+function skipHiit(){
+  const r = hiitRun;
+  if(!r || !r.start || !r.tick) return;
+  unlockAudio();
+  const el = hiitElapsed();
+  let acc = 0, i = 0;
+  for(; i<r.ph.length; i++){ acc += r.ph[i].d * 1000; if(acc > el){ break; } }
+  const gap = acc - el;
+  r.start -= gap;              // sposta l'inizio: la fase corrente risulta finita
+  if(r.ph[i] && r.ph[i].k !== 'prep') r.skipMs += gap;   // il tempo saltato non conta nella durata
+  if(r.ph[i] && r.ph[i].k === 'work') r.skipped.add(i);    // esercizio saltato: non conta come fatto
+  tickHiit();
+}
+function stopHiit(){
+  const r = hiitRun;
+  if(!r) return;
+  if(!confirm('Terminare la sessione HIIT? Verrà salvato quello che hai fatto.')) return;
+  finishHiit(false);
+}
+function hiitDoneRounds(r, el){
+  // giri completati = fasi di lavoro concluse / stazioni per giro
+  let acc = 0, works = 0;
+  const per = r.ph.filter(p=>p.k === 'work' && p.round === 1).length;
+  const full = {};
+  r.ph.some((p, i)=>{ acc += p.d * 1000; if(acc > el + 1) return true; if(p.k === 'work' && !r.skipped.has(i)){ works++; full[p.round] = (full[p.round] || 0) + 1; } return false; });
+  return {works, rounds: Object.values(full).filter(n=>n === per).length};
+}
+function hiitLastKg(name){
+  let best = null;
+  getHiit().forEach(h=> (Array.isArray(h.st) ? h.st : []).forEach(x=>{
+    if(x && x.n === name && Number(x.kg) > 0 && (!best || h.iso > best.iso || (h.iso === best.iso && (h.t||0) > best.t))) best = {iso:h.iso, t:h.t||0, kg:Number(x.kg)};
+  }));
+  return best ? best.kg : null;
+}
+function finishHiit(complete){
+  const r = hiitRun;
+  if(!r) return;
+  clearInterval(r.tick); r.tick = null;
+  const el = Math.min(hiitElapsed(), r.total * 1000);
+  const prepMs = r.ph[0].d * 1000;
+  const secs = Math.max(0, Math.round((el - prepMs - r.skipMs) / 1000));
+  const dr = hiitDoneRounds(r, complete ? r.total * 1000 : el);
+  if(!timer && !sessionActive && !stopwatch) releaseWakeLock();
+  if(complete && document.visibilityState === 'visible') playBeep();
+  if(dr.works === 0){
+    // nessun esercizio fatto: niente da salvare
+    closeHiit(true);
+    showToast('Sessione HIIT annullata: nessun esercizio completato', null);
+    return;
+  }
+  const c = r.cfg.circ;
+  const [w, rs] = r.cfg.fmt.split('/').map(Number);
+  const rec = {iso: todayISO(), t: Date.now(), c: c.id, title: c.title, w, r: rs, rr: r.cfg.rr, rounds: r.cfg.rounds, done: dr.rounds, secs, skip: r.skipped.size,
+    st: r.names.map((n, si)=>{ const kg = c.stations[si].w ? hiitLastKg(n) : null; return kg ? {n, kg} : {n}; })};
+  const list = hiitRaw();
+  let t = rec.t;
+  while(list.some(x=>x && Number(x.t) === t)) t++;
+  rec.t = t;
+  list.push(rec);
+  if(!saveHiit(list)){ closeHiit(true); return; }
+  r.savedId = rec.t;
+  renderHiit(); renderCalendar();
+  const box = hiitEl();
+  box.className = 'show';
+  const kgRows = rec.st.map((x, si)=> c.stations[si].w
+    ? `<label class="hkg"><span>${esc(x.n)}</span><input type="text" inputmode="decimal" autocomplete="off" enterkeyhint="done" placeholder="kg" value="${x.kg ? fmtKg(x.kg) : ''}" aria-label="Kg usati per ${esc(x.n)}" oninput="saveHiitKg(${rec.t},${si},this.value)"></label>` : '').join('');
+  box.innerHTML = `
+    <div class="hend">
+      <div class="shead">⚡ HIIT ${complete && !r.skipped.size ? 'completato' : 'terminato'} <small>${esc(c.title)} · ${dmOf(rec.iso)}</small></div>
+      <div class="sgrid">
+        <div class="sbox"><div class="sv">${formatMMSS(secs)}</div><div class="sl">durata</div></div>
+        <div class="sbox"><div class="sv">${rec.done}/${rec.rounds}</div><div class="sl">giri completi</div></div>
+        <div class="sbox"><div class="sv">${dr.works}</div><div class="sl">intervalli fatti${r.skipped.size ? ` (${r.skipped.size} saltati)` : ''}</div></div>
+        <div class="sbox"><div class="sv">${w}″/${rs}″</div><div class="sl">lavoro/recupero</div></div>
+      </div>
+      ${kgRows ? `<div class="scmp">Peso usato (facoltativo): la prossima volta lo ritrovi qui.</div>${kgRows}` : ''}
+      <label class="snote-l" for="hnote">Note</label>
+      <textarea class="snote" id="hnote" placeholder="Fatica, sensazioni, dolori…" oninput="saveHiitNote(${rec.t}, this.value)"></textarea>
+      <div class="sbtns"><button class="sbtn-b" onclick="deleteHiit(${rec.t}, true)">Elimina sessione</button><button class="hstart" style="flex:1 1 0" onclick="closeHiit(true)">Fatto</button></div>
+    </div>`;
+}
+function updHiit(t, fn){
+  const list = hiitRaw();
+  const h = list.find(x=>x && typeof x === 'object' && Number(x.t) === t);
+  if(!h) return;
+  fn(h);
+  saveHiit(list);
+}
+function saveHiitKg(t, si, v){
+  const kg = parseNum(v);
+  updHiit(t, h=>{ if(!Array.isArray(h.st) || !h.st[si]) return; if(!isNaN(kg) && kg > 0 && kg < 500) h.st[si].kg = Math.round(kg*100)/100; else delete h.st[si].kg; });
+}
+let hiitNoteT = null, hiitNotePending = null;
+function saveHiitNote(t, v){
+  clearTimeout(hiitNoteT);
+  hiitNotePending = {t, v};
+  hiitNoteT = setTimeout(flushHiitNote, 400);
+}
+function flushHiitNote(){
+  clearTimeout(hiitNoteT);
+  const p = hiitNotePending; hiitNotePending = null;
+  if(!p) return;
+  const txt = String(p.v).slice(0, 1000);
+  updHiit(p.t, h=>{ if(txt.trim()) h.note = txt; else delete h.note; });
+}
+window.addEventListener('pagehide', flushHiitNote);
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState === 'hidden') flushHiitNote(); });
+function closeHiit(force){
+  const r = hiitRun;
+  if(r && r.start && r.tick && !force){ stopHiit(); return; }
+  flushHiitNote();
+  if(r && r.tick) clearInterval(r.tick);
+  hiitRun = null;
+  hiitEl().className = '';
+  hiitEl().innerHTML = '';
+  document.body.classList.remove('hiit-open');
+  unlockScroll();
+  if(!timer && !sessionActive && !stopwatch) releaseWakeLock();
+  renderHiit(); renderCalendar();
+}
+function deleteHiit(t, fromRun){
+  if(!confirm('Eliminare questa sessione HIIT?')) return;
+  if(hiitNotePending && hiitNotePending.t === t){ clearTimeout(hiitNoteT); hiitNotePending = null; }
+  saveHiit(hiitRaw().filter(h=>!(h && typeof h === 'object' && Number(h.t) === t)));
+  if(fromRun) closeHiit(true);
+  else { const card = document.getElementById('hs-' + t); if(card) card.remove(); if(!document.querySelector('#sheetBody .swk, #sheetBody .hsess')) closeSummary(); }
+  renderHiit(); renderCalendar();
+  showToast('Sessione HIIT eliminata', null);
+}
+/* riquadro nel riepilogo del giorno (dal calendario) */
+function hiitSheetHTML(iso){
+  return getHiit().filter(h=>h.iso === iso).map(h=>{
+    const st = (Array.isArray(h.st) ? h.st : []).filter(x=>x && typeof x === 'object')
+      .map(x=>`<div class="srow"><span>${esc(x.n || '')}</span><span>${Number(x.kg) > 0 ? fmtKg(x.kg) + ' kg' : ''}</span></div>`).join('');
+    return `<div class="hsess" id="hs-${Number(h.t)||0}">
+      <div class="shead">⚡ HIIT <small>${esc(h.title || '')} · ${dmOf(h.iso)}</small></div>
+      <div class="sgrid">
+        <div class="sbox"><div class="sv">${formatMMSS(Math.max(0, Math.round(Number(h.secs)||0)))}</div><div class="sl">durata</div></div>
+        <div class="sbox"><div class="sv">${Number(h.done)||0}/${Number(h.rounds)||0}</div><div class="sl">giri completi</div></div>
+        <div class="sbox"><div class="sv">${Number(h.w)||0}″/${Number(h.r)||0}″</div><div class="sl">lavoro/recupero</div></div>
+        <div class="sbox"><div class="sv">${Number(h.rr)||0}″</div><div class="sl">pausa tra i giri</div></div>
+      </div>
+      ${st}
+      <label class="snote-l" for="hn-${Number(h.t)||0}">Note</label>
+      <textarea class="snote" id="hn-${Number(h.t)||0}" placeholder="Fatica, sensazioni, dolori…" oninput="saveHiitNote(${Number(h.t)||0}, this.value)">${esc(typeof h.note === 'string' ? h.note : '')}</textarea>
+      <div class="sbtns"><button class="sbtn-b" onclick="deleteHiit(${Number(h.t)||0}, false)">Elimina sessione</button></div>
+    </div>`;
+  }).join('');
+}
+
 /* ============ MENU IN BASSO ============ */
-const NAV_IDS = ['todaySection', 'bwSection', 'calSection', 'moreSection'];
+const NAV_IDS = ['todaySection', 'hiitSection', 'bwSection', 'calSection', 'moreSection'];
 function navGo(id){
   const el = document.getElementById(id);
   if(!el) return;
@@ -3456,6 +3944,8 @@ try{
   document.getElementById('warmInput').value = settings.warmup === undefined ? '50×8, 75×3' : settings.warmup;
   navMark();
   askPersist();
+  normalizeHiit();
+  renderHiit();
   renderTestHistory();
   renderDataInfo();
   renderCalendar();
@@ -3480,6 +3970,7 @@ document.addEventListener('visibilitychange', ()=>{
   renderCalendar();
   renderVolume();
   if(focusState) focusDotsOnly();
+  if(hiitRun && hiitRun.tick){ if(!hiitRun.paused) acquireWakeLock(); tickHiit(); }
 });
 </script>
 
