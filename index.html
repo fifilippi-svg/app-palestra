@@ -197,6 +197,16 @@
   .testform button{width:100%; min-height:48px; background:var(--accent2); color:var(--bg); border:none; border-radius:8px;
     font-family:var(--mono); font-weight:700; text-transform:uppercase; font-size:15px; padding:12px; cursor:pointer;}
   #testHistory{margin-top:12px; font-size:15px;}
+  .testform{padding:4px 12px;}
+  .trow{display:flex; align-items:center; gap:8px; padding:10px 0; border-bottom:1px dashed var(--line);}
+  .trow:last-child{border-bottom:none;}
+  .trow .tn{flex:1 1 auto; min-width:0; font-size:15.5px; font-weight:600; line-height:1.2;}
+  .trow .tn small{display:block; font:500 12.5px var(--mono); color:var(--mute); margin-top:3px;}
+  .trow .tn small b{color:var(--accent);}
+  .testform .trow input{flex:0 0 64px; width:64px; min-height:56px; height:56px; margin:0; padding:4px 2px; font-family:var(--mono); text-align:center; font-size:18px;}
+  .testform .trow input.tr{flex-basis:50px; width:50px;}
+  .testform .trow .logbtn{flex:0 0 56px; width:56px; min-height:56px; height:56px; padding:0; background:var(--accent); text-transform:none; font-size:17px;}
+  @media (max-width:380px){ .testform .trow input{flex-basis:58px; width:58px;} .testform .trow input.tr{flex-basis:44px; width:44px;} .trow{gap:6px;} .trow .tn{font-size:14.5px;} }
   .test-entry{display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding:9px 0; font-family:var(--mono); font-size:14px; gap:10px;}
   .test-entry .rm{color:var(--accent); font-weight:700;}
 
@@ -629,20 +639,7 @@
         <b>3RM, non 1RM vero.</b> A 52 anni con spalla infiammata evitiamo il singolo massimale su spinte: il test a 3 ripetizioni con stima Epley (1RM ≈ peso × (1 + reps/30)) è più sicuro e sufficiente per tarare i carichi. Da ripetere circa ogni 3 mesi.
       </div>
     </details>
-    <div class="testform">
-      <select id="testExercise" aria-label="Esercizio del test">
-        <option>Squat/Leg press</option>
-        <option>Stacco rumeno</option>
-        <option>Chest press macchina</option>
-        <option>Lat machine</option>
-        <option>Shoulder press macchina</option>
-      </select>
-      <div class="row3">
-        <input type="text" id="testWeight" placeholder="kg" inputmode="decimal" autocomplete="off" aria-label="Peso del test in kg">
-        <input type="text" id="testReps" placeholder="reps" value="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="Ripetizioni del test">
-      </div>
-      <button onclick="saveTest()">Registra test</button>
-    </div>
+    <div class="testform" id="testList"></div>
     <div id="testCharts"></div>
     <div id="testHistory"></div>
   </details>
@@ -3498,9 +3495,26 @@ function importBackup(input){
 
 /* ============ TEST MASSIMALI ============ */
 function getTestHistory(){ return lsGet('maxtests', []).filter(t=>t && typeof t === 'object'); }
-function saveTest(){
-  const ex = document.getElementById('testExercise').value;
-  const wIn = document.getElementById('testWeight'), rIn = document.getElementById('testReps');
+const TEST_EX = ['Squat/Leg press', 'Stacco rumeno', 'Chest press macchina', 'Lat machine', 'Shoulder press macchina'];
+function renderTestForm(){
+  const box = document.getElementById('testList');
+  if(!box) return;
+  const hist = getTestHistory();
+  box.innerHTML = TEST_EX.map((ex, i)=>{
+    const last = hist.filter(t=>t.ex === ex).pop();
+    const lt = last ? `${esc(String(last.d).slice(0,5))} · <b>~${fmtKg(last.rm)} kg</b> 1RM` : 'nessun test';
+    return `<div class="trow">
+      <div class="tn">${esc(ex)}<small>${lt}</small></div>
+      <input type="text" id="tw${i}" placeholder="kg" inputmode="decimal" autocomplete="off" enterkeyhint="done" aria-label="Kg del test ${esc(ex)}">
+      <input type="text" id="tr${i}" class="tr" value="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off" enterkeyhint="done" aria-label="Ripetizioni del test ${esc(ex)}">
+      <button class="logbtn" onclick="saveTest(${i})" aria-label="Registra test ${esc(ex)}">Reg</button>
+    </div>`;
+  }).join('');
+}
+function saveTest(i){
+  const ex = TEST_EX[i];
+  if(!ex) return;
+  const wIn = document.getElementById('tw' + i), rIn = document.getElementById('tr' + i);
   const w = parseNum(wIn.value);
   const r = parseInt(String(rIn.value).trim(), 10);
   if(isNaN(w) || w <= 0 || isNaN(r) || r <= 0){ showToast('Inserisci kg e reps del test', null, true); return; }
@@ -3509,9 +3523,9 @@ function saveTest(){
   const hist = getTestHistory();
   hist.push({d:dateStr, iso:todayISO(), ex, w, r, rm});
   if(!lsSet('maxtests', hist)) return;
-  wIn.value = '';
-  rIn.value = 3;
+  if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   renderTestHistory();
+  showToast(`Test registrato: ${ex} ~${fmtKg(rm)} kg (1RM stimato)`, null);
 }
 function deleteTest(idx){
   const hist = getTestHistory();
@@ -3522,6 +3536,7 @@ function deleteTest(idx){
   renderTestHistory();
 }
 function renderTestHistory(){
+  renderTestForm();
   const hist = getTestHistory();
   document.getElementById('testHistory').innerHTML = hist.map((t, idx)=>({t, idx})).reverse().map(({t, idx})=>`
     <div class="test-entry">
