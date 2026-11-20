@@ -2552,17 +2552,32 @@ function saveStartDate(v){
 }
 
 /* ============ ALLENAMENTI CONCLUSI + CALENDARIO ============ */
+/* allenamento valido e nel calendario (off = tolto dal calendario ma con la nota conservata) */
+function validWorkout(w){ return !!(w && typeof w === 'object' && !w.off && ISO_RE.test(w.iso) && /^b[1-6]$/.test(w.b) && /^[ABC]$/.test(w.d)); }
 function getWorkouts(){
-  return lsGet('workouts', []).filter(w=> w && ISO_RE.test(w.iso) && /^b[1-6]$/.test(w.b) && /^[ABC]$/.test(w.d));
+  return lsGet('workouts', []).filter(validWorkout);
 }
-function saveWorkouts(list){ return lsSet('workouts', list); }
+/* salva la lista valida senza perdere le voci non leggibili o tolte (con nota) già presenti */
+function saveWorkouts(list){ return lsSet('workouts', lsGet('workouts', []).filter(w=>!validWorkout(w)).concat(list)); }
+/* nota di un allenamento tolto dal calendario: la restituisce e la rimuove dall'archivio */
+function takeKeptNote(iso, b, d){
+  const raw = lsGet('workouts', []);
+  const isKept = w=> w && typeof w === 'object' && w.off && w.iso===iso && w.b===b && w.d===d;
+  const k = raw.filter(isKept).pop();
+  if(!k) return '';
+  lsSet('workouts', raw.filter(w=>!isKept(w)));
+  return typeof k.note === 'string' ? k.note : '';
+}
 
 function finishWorkout(b, d){
   const iso = todayISO();
   const list = getWorkouts();
   const i = list.findIndex(w=>w.iso===iso && w.b===b && w.d===d);
   if(i >= 0){ openSummary(iso, [{b, d}], 'remove'); return; }     // già concluso: mostra il riepilogo
-  list.push({iso, b, d, t: Date.now()});
+  const keptNote = takeKeptNote(iso, b, d);                         // nota rimasta da un "Togli dal calendario"
+  const nw = {iso, b, d, t: Date.now()};
+  if(keptNote.trim()) nw.note = keptNote;
+  list.push(nw);
   if(stopwatch) saveRunningStopwatch();
   if(timer) stopTimer();
   endAwakeSession();
@@ -2584,6 +2599,7 @@ function renderFinishButtons(){
 }
 
 let calMonth = null;   // {y, m} con m 0-11
+let calLastYM = null;  // mese corrente all'ultimo disegno: se stavi guardando quello, il calendario segue il cambio mese
 const MESI = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
 function calMove(delta){
   if(!calMonth){ const n = new Date(); calMonth = {y:n.getFullYear(), m:n.getMonth()}; }
@@ -2593,7 +2609,10 @@ function calMove(delta){
   renderCalendar();
 }
 function renderCalendar(){
-  if(!calMonth){ const n = new Date(); calMonth = {y:n.getFullYear(), m:n.getMonth()}; }
+  const now = new Date(), cur = {y:now.getFullYear(), m:now.getMonth()};
+  const wasOnCurrent = calMonth && calLastYM && calMonth.y === calLastYM.y && calMonth.m === calLastYM.m;
+  if(!calMonth || (wasOnCurrent && (cur.y !== calLastYM.y || cur.m !== calLastYM.m))) calMonth = cur;
+  calLastYM = cur;
   const {y, m} = calMonth;
   document.getElementById('calTitle').textContent = `${MESI[m]} ${y}`;
   const byDay = {}, hByDay = {};
@@ -2792,10 +2811,25 @@ function closeSummary(){
   unlockScroll();
 }
 function undoFinish(iso, b, d){
-  saveWorkouts(getWorkouts().filter(w=>!(w.iso===iso && w.b===b && w.d===d)));
+  flushNotes();     // prima salva la nota appena scritta
+  const match = w=> w.iso===iso && w.b===b && w.d===d;
+  const old = getWorkouts().find(match);
+  const note = old && typeof old.note === 'string' && old.note.trim() ? old.note : '';
+  // una sola scrittura: toglie l'allenamento e, se ha una nota, la conserva (torna se lo concludi di nuovo)
+  const raw = lsGet('workouts', []).filter(w=>!(w && typeof w === 'object' && match(w) && (w.off || validWorkout(w))));
+  if(note) raw.push({iso, b, d, off:true, note, t: Date.now()});
+  if(!lsSet('workouts', raw)) return;
   closeSummary();
   refreshWorkoutViews();
-  showToast(`Allenamento ${d} tolto dal calendario`, null);
+  showToast(`Allenamento ${d} tolto dal calendario`, old ? ()=>restoreWorkout(old) : null);
+}
+/* "Annulla" nel messaggio: rimette l'allenamento com'era, nota compresa */
+function restoreWorkout(old){
+  takeKeptNote(old.iso, old.b, old.d);
+  const list = getWorkouts();
+  if(!list.some(w=>w.iso===old.iso && w.b===old.b && w.d===old.d)) list.push(old);
+  saveWorkouts(list);
+  refreshWorkoutViews();
 }
 function removeWorkout(iso, b, d){
   if(!confirm(`Togliere l'allenamento ${d} del ${dmOf(iso)} dal calendario? Le serie registrate restano.`)) return;
@@ -3975,7 +4009,7 @@ try{
   document.getElementById('todayBox').innerHTML = `<div class="t1">Errore all'avvio</div><div class="t3">Alcuni dati salvati non sono leggibili. Apri "Impostazioni e backup" per esportarli o importare un backup valido. (${esc(e.message)})</div>`;
 }
 
-/* Ritorno in primo piano: aggiorna timer, schermo acceso, colori e seduta del giorno (senza spostare il calendario) */
+/* Ritorno in primo piano: aggiorna timer, schermo acceso, colori e seduta del giorno; il calendario passa al mese nuovo solo se stavi guardando il mese in corso */
 document.addEventListener('visibilitychange', ()=>{
   if(document.visibilityState !== 'visible') return;
   tickTimer();
