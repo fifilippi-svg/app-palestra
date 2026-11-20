@@ -687,7 +687,7 @@
           <div class="tl-block"><div class="lbl">Blocco 3</div><div class="name">Intensità</div><div class="months">Mesi 5-6</div></div>
           <div class="tl-block"><div class="lbl">Blocco 4</div><div class="name">Metabolico</div><div class="months">Mesi 7-8</div></div>
           <div class="tl-test">TEST 6</div>
-          <div class="tl-block"><div class="lbl">Blocco 5</div><div class="name">Forza-Ipert.</div><div class="months">Mesi 9-10</div></div>
+          <div class="tl-block"><div class="lbl">Blocco 5</div><div class="name">Forza</div><div class="months">Mesi 9-10</div></div>
           <div class="tl-test">TEST 9</div>
           <div class="tl-block"><div class="lbl">Blocco 6</div><div class="name">Special.</div><div class="months">Mesi 11-12</div></div>
           <div class="tl-test">TEST 12</div>
@@ -834,9 +834,10 @@ const PLAN = [
       {id:'A', label:'A', exercises:[
         {n:'Leg press', t:'3×12', r:'90"'},
         {n:'Chest press a macchina', t:'3×12', r:'90"', note:'ROM parziale'},
-        {n:'Lat machine presa larga', t:'3×12', r:'90"'},
+        {n:'Lat machine presa larga', t:'4×12', r:'90"'},
         {n:'Leg curl sdraiato', t:'3×12', r:'60"'},
         {n:'Alzate laterali (leggeri)', t:'3×15', r:'60"'},
+        {n:'Polpacci in piedi', t:'3×15', r:'60"'},
         {n:'Plank', t:'3×30-40"', r:'60"'}
       ]},
       {id:'B', label:'B', exercises:[
@@ -855,27 +856,29 @@ const PLAN = [
         {n:'Affondi alla spalliera / step-up', t:'3×10/lato', r:'60"'},
         {n:'Leg curl seduto', t:'3×12', r:'60"'},
         {n:'Alzate laterali', t:'3×15', r:'60"'},
-        {n:'Face pull', t:'3×15', r:'60"'}
+        {n:'Face pull', t:'3×15', r:'60"'},
+        {n:'Curl + push-down (superset)', t:'2×12+12', r:'60"'}
       ]}
     ]
   },
   { id:'b2', title:'Volume', period:'Mesi 3-4 · RIR 2',
-    goal:'Stimolo principale della fase: più serie per tutti i gruppi. Dalla settimana 3 alla 7 +1 serie sui fondamentali, settimana 8 scarico. Ultima serie degli esercizi di isolamento a RIR 0-1. Split Upper/Lower/Full.',
+    goal:'Stimolo principale della fase: più serie per tutti i gruppi (circa 10 a settimana per muscolo). Dalla settimana 3 alla 7 +1 serie su 8 esercizi (circa 12 per muscolo), settimana 8 scarico. Ultima serie degli esercizi di isolamento a RIR 0-1. Split Upper/Lower/Full.',
     days:[
       {id:'A', label:'A · Upper', exercises:[
         {n:'Chest press macchina', t:'4×10', r:'90"', up:1},
         {n:'Pulley basso', t:'4×10', r:'90"', up:1},
         {n:'Croci a cavo basse', t:'3×12', r:'60"', note:'ROM controllato', fail:1},
-        {n:'Lat machine presa larga', t:'3×12', r:'75"'},
+        {n:'Lat machine presa larga', t:'3×12', r:'75"', up:1},
         {n:'Alzate laterali', t:'4×15', r:'60"', fail:1},
-        {n:'Curl + push-down (superset)', t:'3×12+12', r:'60"', fail:1}
+        {n:'Curl + push-down (superset)', t:'4×12+12', r:'60"', up:1, fail:1}
       ]},
       {id:'B', label:'B · Lower', exercises:[
         {n:'Squat a macchina', t:'4×10', r:'120"', up:1},
-        {n:'Leg press piedi alti', t:'3×12', r:'90"'},
-        {n:'Leg curl', t:'4×12', r:'60"', fail:1},
+        {n:'Leg press piedi alti', t:'2×12', r:'90"'},
+        {n:'Leg curl', t:'4×12', r:'60"', up:1, fail:1},
         {n:'Leg extension', t:'3×15', r:'60"', fail:1},
-        {n:'Polpacci in piedi', t:'4×15', r:'60"', fail:1},
+        {n:'Leg curl seduto', t:'3×12', r:'60"', fail:1},
+        {n:'Polpacci in piedi', t:'4×15', r:'60"', up:1, fail:1},
         {n:'Plank + side plank', t:'3×30"', r:'60"'}
       ]},
       {id:'C', label:'C · Full Body', exercises:[
@@ -885,7 +888,8 @@ const PLAN = [
         {n:'Chest press manubri inclinata', t:'3×12', r:'75"', note:'ROM parziale'},
         {n:'Affondi alla spalliera', t:'3×10/lato', r:'60"'},
         {n:'Alzate laterali', t:'3×15', r:'60"', fail:1},
-        {n:'Face pull + extrarotazioni', t:'3×15', r:'60"'}
+        {n:'Face pull + extrarotazioni', t:'4×15', r:'60"'},
+        {n:'Polpacci in piedi', t:'3×15', r:'60"'}
       ]}
     ]
   },
@@ -898,7 +902,8 @@ const PLAN = [
         {n:'Pulley basso', t:'3×10', r:'90"'},
         {n:'Croci a cavo', t:'3×10', r:'60"', note:'rest-pause ultima serie', fail:1},
         {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
-        {n:'Curl bicipiti + push-down', t:'3×10', r:'60"', fail:1}
+        {n:'Curl bicipiti + push-down', t:'3×10', r:'60"', fail:1},
+        {n:'Polpacci', t:'3×12', r:'60"', fail:1}
       ]},
       {id:'B', label:'B · Lower', exercises:[
         {n:'Squat a macchina', t:'4×6-8', r:'150"'},
@@ -906,6 +911,7 @@ const PLAN = [
         {n:'Leg press', t:'3×10', r:'90"', note:'drop-set ultima serie'},
         {n:'Leg curl', t:'3×10', r:'75"', fail:1},
         {n:'Polpacci', t:'4×12', r:'60"', fail:1},
+        {n:'Curl + push-down', t:'2×10', r:'60"', fail:1},
         {n:'Crunch a cavo', t:'3×12', r:'60"'}
       ]},
       {id:'C', label:'C · Full Body', exercises:[
@@ -920,56 +926,62 @@ const PLAN = [
     ]
   },
   { id:'b4', title:'Metabolico', period:'Mesi 7-8 · RIR 2-3',
-    goal:'Alte ripetizioni, recuperi brevi (minimo 60"), mind-muscle connection. Sollievo articolare a metà anno. Settimana 8: scarico.',
+    goal:'Alte ripetizioni (12-18), recuperi brevi (60-90"), mind-muscle connection. Sollievo articolare a metà anno senza scendere sotto circa 10 serie a settimana per muscolo. Settimana 8: scarico.',
     days:[
-      {id:'A', label:'A · Push focus', exercises:[
-        {n:'Chest press macchina', t:'3×15', r:'60"'},
-        {n:'Leg press', t:'3×15', r:'75"'},
+      {id:'A', label:'A · Full Body', exercises:[
+        {n:'Chest press macchina', t:'3×15', r:'75"'},
+        {n:'Lat machine presa neutra', t:'4×15', r:'75"'},
+        {n:'Leg press', t:'3×15', r:'90"'},
         {n:'Croci a cavo', t:'3×15', r:'60"', fail:1},
-        {n:'Alzate laterali', t:'3×15', r:'60"', note:'21s o drop-set', fail:1},
-        {n:'Push-down', t:'3×15', r:'60"', fail:1}
+        {n:'Alzate laterali', t:'3×15', r:'60"', note:'drop-set ultima serie', fail:1},
+        {n:'Curl + push-down', t:'3×15', r:'60"', fail:1}
       ]},
-      {id:'B', label:'B · Pull focus', exercises:[
-        {n:'Squat a macchina', t:'3×15', r:'75"'},
-        {n:'Lat machine presa neutra', t:'3×15', r:'60"'},
-        {n:'Pulley basso', t:'3×15', r:'60"'},
+      {id:'B', label:'B · Full Body', exercises:[
+        {n:'Squat a macchina', t:'3×15', r:'90"'},
+        {n:'Pulley basso', t:'4×15', r:'75"'},
+        {n:'Chest press manubri', t:'3×15', r:'75"', note:'ROM parziale'},
         {n:'Leg curl', t:'3×15', r:'60"', fail:1},
-        {n:'Curl bicipiti', t:'3×15', r:'60"', fail:1},
-        {n:'Alzate laterali', t:'3×15', r:'60"', fail:1}
+        {n:'Face pull', t:'3×15', r:'60"'},
+        {n:'Curl + push-down', t:'2×15', r:'60"', fail:1},
+        {n:'Polpacci', t:'4×15', r:'60"', fail:1}
       ]},
-      {id:'C', label:'C · Gambe/Core', exercises:[
-        {n:'Stacco rumeno manubri', t:'3×12', r:'75"'},
+      {id:'C', label:'C · Gambe/Spalle', exercises:[
+        {n:'Stacco rumeno manubri', t:'3×12', r:'90"'},
         {n:'Leg extension', t:'3×18', r:'60"', fail:1},
-        {n:'Affondi alla spalliera', t:'3×12/lato', r:'60"'},
+        {n:'Rematore a cavo', t:'3×15', r:'60"'},
         {n:'Leg curl seduto', t:'3×15', r:'60"', fail:1},
-        {n:'Polpacci', t:'4×15', r:'60"', fail:1},
+        {n:'Alzate laterali', t:'3×15', r:'60"', fail:1},
+        {n:'Face pull', t:'3×15', r:'60"'},
+        {n:'Polpacci', t:'3×15', r:'60"', fail:1},
         {n:'Circuito core', t:'3 giri', r:'60"'}
       ]}
     ]
   },
-  { id:'b5', title:'Forza-Ipertrofia', period:'Mesi 9-10 · RIR 1-2',
-    goal:'Powerbuilding: base pesante 6-8 rep, poi accessori 10-15 rep. Settimana 8: scarico.',
+  { id:'b5', title:'Forza', period:'Mesi 9-10 · RIR 1-2',
+    goal:'Fondamentali pesanti a 5-6 ripetizioni con recuperi lunghi (3′) su macchine e stacco rumeno; complementari a 10-15 ripetizioni per mantenere il volume. Settimana 8: scarico.',
     days:[
       {id:'A', label:'A · Upper', exercises:[
-        {n:'Chest press macchina', t:'4×6-8', r:'150"'},
-        {n:'Lat machine presa larga', t:'4×6-8', r:'150"'},
-        {n:'Pulley basso', t:'3×10', r:'90"'},
+        {n:'Chest press macchina', t:'4×5-6', r:'180"'},
+        {n:'Lat machine presa larga', t:'4×5-6', r:'180"'},
+        {n:'Pulley basso', t:'3×8', r:'120"'},
         {n:'Croci a cavo', t:'3×12', r:'60"', fail:1},
         {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
-        {n:'Curl + push-down', t:'3×10', r:'60"', fail:1}
+        {n:'Curl + push-down', t:'3×10', r:'60"', fail:1},
+        {n:'Polpacci', t:'3×12', r:'60"', fail:1}
       ]},
       {id:'B', label:'B · Lower', exercises:[
-        {n:'Squat a macchina', t:'4×6', r:'180"'},
-        {n:'Stacco rumeno bilanciere', t:'3×6-8', r:'150"'},
+        {n:'Squat a macchina', t:'4×5-6', r:'180"'},
+        {n:'Stacco rumeno bilanciere', t:'3×6', r:'180"'},
         {n:'Leg press', t:'3×10', r:'90"'},
         {n:'Leg curl', t:'3×10', r:'75"', fail:1},
-        {n:'Polpacci', t:'4×12', r:'60"', fail:1},
+        {n:'Polpacci', t:'4×10', r:'60"', fail:1},
+        {n:'Curl + push-down', t:'2×10', r:'60"', fail:1},
         {n:'Crunch a cavo', t:'3×12', r:'60"'}
       ]},
       {id:'C', label:'C · Full Body', exercises:[
         {n:'Shoulder press macchina', t:'3×8', r:'120"', note:'se asintomatica'},
         {n:'Rematore a cavo', t:'4×8', r:'100"'},
-        {n:'Chest press manubri', t:'3×10', r:'90"'},
+        {n:'Chest press manubri', t:'3×10', r:'90"', note:'ROM parziale'},
         {n:'Affondi bulgari', t:'3×8/lato', r:'75"'},
         {n:'Leg curl seduto', t:'3×10', r:'75"', fail:1},
         {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
@@ -978,32 +990,36 @@ const PLAN = [
     ]
   },
   { id:'b6', title:'Specializzazione', period:'Mesi 11-12 · RIR 1-2',
-    goal:'Struttura come Blocco 5. Scegli 1 gruppo indietro: mettilo per primo, aggiungi 1 esercizio extra da 3×10-12. Settimana 8: scarico, poi il test massimali finale.',
+    goal:'Struttura del Blocco 3 (ipertrofia, 8-12 ripetizioni). Scegli 1 gruppo indietro: mettilo per primo e aggiungi 1 esercizio extra da 3×10-12. Settimana 8: scarico, poi il test massimali finale.',
     days:[
       {id:'A', label:'A · Upper', exercises:[
-        {n:'Chest press macchina', t:'4×6-8', r:'150"'},
-        {n:'Lat machine presa larga', t:'4×6-8', r:'150"'},
+        {n:'Chest press macchina', t:'4×8', r:'120"'},
+        {n:'Lat machine presa larga', t:'4×8', r:'120"'},
         {n:'Pulley basso', t:'3×10', r:'90"'},
+        {n:'Croci a cavo', t:'3×10', r:'60"', fail:1},
         {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
-        {n:'Curl + push-down', t:'3×10', r:'60"', fail:1},
+        {n:'Curl bicipiti + push-down', t:'3×10', r:'60"', fail:1},
+        {n:'Polpacci', t:'3×12', r:'60"', fail:1},
         {n:'+ Esercizio di specializzazione', t:'3×10-12', r:'75"'}
       ]},
       {id:'B', label:'B · Lower', exercises:[
-        {n:'Squat a macchina', t:'4×6', r:'180"'},
-        {n:'Stacco rumeno bilanciere', t:'3×6-8', r:'150"'},
+        {n:'Squat a macchina', t:'4×6-8', r:'150"'},
+        {n:'Stacco rumeno bilanciere', t:'3×8', r:'120"'},
         {n:'Leg press', t:'3×10', r:'90"'},
         {n:'Leg curl', t:'3×10', r:'75"', fail:1},
         {n:'Polpacci', t:'4×12', r:'60"', fail:1},
+        {n:'Curl + push-down', t:'2×10', r:'60"', fail:1},
         {n:'Crunch a cavo', t:'3×12', r:'60"'},
         {n:'+ Esercizio di specializzazione', t:'3×10-12', r:'75"'}
       ]},
       {id:'C', label:'C · Full Body', exercises:[
-        {n:'Shoulder press macchina', t:'3×8', r:'120"', note:'se asintomatica'},
-        {n:'Rematore a cavo', t:'4×8', r:'100"'},
-        {n:'Chest press manubri', t:'3×10', r:'90"'},
+        {n:'Shoulder press macchina', t:'3×8', r:'100"', note:'se asintomatica'},
+        {n:'Rematore a cavo seduto', t:'4×8', r:'100"'},
+        {n:'Chest press manubri', t:'3×10', r:'90"', note:'ROM parziale'},
         {n:'Affondi bulgari', t:'3×8/lato', r:'75"'},
         {n:'Leg curl seduto', t:'3×10', r:'75"', fail:1},
         {n:'Alzate laterali', t:'3×12', r:'60"', fail:1},
+        {n:'Face pull', t:'3×15', r:'60"'},
         {n:'+ Esercizio di specializzazione', t:'3×10-12', r:'75"'}
       ]}
     ]
